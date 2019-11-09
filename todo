@@ -1,0 +1,19 @@
+AquariumController class
+Done    - pump_on(pump_type)
+            : None
+Done    - pump_off(pump_type)
+            : None
+Done    - read_temp()
+            : (temp_a: float, temp_b: float)
+****    - read_humidity()
+            : humidity: float
+    - read_water_state()
+            : ?
+    - get_button_state()
+            : state: boolean
+    - led_off()
+            : None
+    - led_pulse()
+            : None
+    - led_flash()
+            : None
