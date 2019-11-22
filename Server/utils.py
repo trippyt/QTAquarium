@@ -2,7 +2,8 @@ import asyncio
 from time import sleep
 import RPi.GPIO as GPIO
 from w1thermsensor import W1ThermSensor
-#import dht11
+#  import dht11
+import threading
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -32,18 +33,24 @@ class AquariumController():
 
     def __init__(self):
         self.sensors = {
-        'temp_tank': W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, "011447ba3caa"),
-        #'temp_room': dht11.DHT11(pin=14)
+            'temp_tank': W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, "011447ba3caa"),
+            #'temp_room': dht11.DHT11(pin=14)
         }
 
         self.led_loop = True
         self.cal_stop_signal = False
+        self.led_task = None
+        self.event_loop = asyncio.get_event_loop()
+        if not self.event_loop.is_running():
+            t = threading.Thread(target=lambda: self.event_loop.run_forever())
+            t.start()
 
     def pump_on(self, pump_type):
         pin = pumps.get(pump_type, None)
         if pin is None:
             raise Exception('Invalid Pump Type!')
         GPIO.output(pumps[pump_type], 1)
+
     def pump_off(self, pump_type):
         pin = pumps.get(pump_type, None)
         if pin is None:
@@ -66,7 +73,10 @@ class AquariumController():
         pass
 
     def button_state(self):
-        pass
+        if Button == 1:
+            print("1")
+        else:
+            print("2")
 
     async def led(self, option):
         if option == FLASH:
@@ -86,3 +96,11 @@ class AquariumController():
         # once signal to stop is received, reset flag to True
         self.led_loop = True
 
+    def notification_led_flash(self):
+        self.led_task = asyncio.run_coroutine_threadsafe(self.led(FLASH), self.event_loop)
+
+    def notification_led_pulse(self):
+        self.led_task = asyncio.run_coroutine_threadsafe(self.led(PULSE), self.event_loop)
+
+    def notification_led_stop(self):
+        self.led_loop = False
