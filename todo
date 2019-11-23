@@ -9,7 +9,7 @@ Done    - read_temp()
             : humidity: float
     - read_water_state()
             : ?
-    - get_button_state()
+Done    - get_button_state()
             : state: boolean
     - led_off()
             : None
