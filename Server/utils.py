@@ -72,12 +72,13 @@ class AquariumController():
         pass
 
     def button_state(self):
-        if Button == 1:
-            print("1")
-        if Button == 2:
-            print("2")
+        while GPIO.input(Button):
+            print("a")
+        while not GPIO.input(Button):
+            print("b")
         else:
-            print("Button Error")
+            print("Error")
+
 
     async def led(self, option):
         if option == FLASH:
