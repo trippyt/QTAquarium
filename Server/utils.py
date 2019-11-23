@@ -74,8 +74,10 @@ class AquariumController():
     def button_state(self):
         if Button == 1:
             print("1")
-        else:
+        if Button == 2:
             print("2")
+        else:
+            print("Button Error")
 
     async def led(self, option):
         if option == FLASH:
