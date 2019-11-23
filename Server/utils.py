@@ -73,11 +73,11 @@ class AquariumController():
 
     def button_state(self):
         while GPIO.input(Button):
-            print(f"{Button}: Button Idle")
+            print(f"{GPIO.input(Button)}: Button Idle")
         while not GPIO.input(Button):
-            print(f"{Button}: Button Pushed")
+            print(f"{GPIO.input(Button)}: Button Pushed")
         else:
-            print(f"{Button}: Error")
+            print(f"{GPIO.input(Button)}: Error")
 
 
     async def led(self, option):
