@@ -78,8 +78,7 @@ class AquariumController():
         while not GPIO.input(Button):
             print(f"{GPIO.input(Button)}: Button Pushed")
             sleep(0.1)
-        else:
-            print(f"{GPIO.input(Button)}: Error")
+
 
 
     async def led(self, option):
