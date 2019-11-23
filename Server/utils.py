@@ -96,11 +96,9 @@ class AquariumController():
         self.led_loop = True
 
     def notification_led_flash(self):
-        self.notification_led_stop()
         self.led_task = asyncio.run_coroutine_threadsafe(self.led(FLASH), self.event_loop)
 
     def notification_led_pulse(self):
-        self.notification_led_stop()
         self.led_task = asyncio.run_coroutine_threadsafe(self.led(PULSE), self.event_loop)
 
     def notification_led_stop(self):
