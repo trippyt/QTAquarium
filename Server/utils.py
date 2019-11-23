@@ -16,14 +16,13 @@ pumps = {            # Initializing the GPIO pins 17,27,22 for Dosage pumps
 for (p_type, pin) in pumps.items():
     GPIO.setup(pin, GPIO.OUT)
 
-#GPIO.setup(Button, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # Setup Button
-#GPIO.setup(led_pin, GPIO.OUT)  # Notification LED pin
 Button = 16  # Initializing the GPIO pin 16 for Button
 led_pin = 12  # Initializing the GPIO pin 12 for LED
 
 FLASH = 0  # Initializing LED States
 PULSE = 1  # Initializing LED States
 
+GPIO.setup(Button, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # Setup Button
 GPIO.setup(led_pin, GPIO.OUT)  # Notification LED pin
 pwm = GPIO.PWM(led_pin, 100)  # Created a PWM object
 pwm.start(0)  # Started PWM at 0% duty cycle
