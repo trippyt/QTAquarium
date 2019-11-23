@@ -103,7 +103,7 @@ class AquariumController():
     def notification_led_pulse(self):
         self.led_task = asyncio.run_coroutine_threadsafe(self.led(PULSE), self.event_loop)
 
-    def notification_led_stop(self):
+    async def notification_led_stop(self):
         if self.led_task:
             self.led_loop = False
             await self.led_task
