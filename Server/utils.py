@@ -106,5 +106,5 @@ class AquariumController():
     async def notification_led_stop(self):
         if self.led_task:
             self.led_loop = False
-            await self.led_task
+            await self.led_task()
             self.led_task = None
