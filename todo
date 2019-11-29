@@ -11,11 +11,11 @@ Done    - read_temp()
             : ?
 Done    - get_button_state()
             : state: boolean
-    - led_off()
+Done    - led_off()
             : None
-    - led_pulse()
+Done    - led_pulse()
             : None
-    - led_flash()
+Done    - led_flash()
             : None
 
 
