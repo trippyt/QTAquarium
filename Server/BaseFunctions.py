@@ -75,9 +75,11 @@ class AquariumController():
         while GPIO.input(Button):
             print(f"{GPIO.input(Button)}: Button Idle")
             sleep(0.1)
+            return GPIO.input(Button)
         while not GPIO.input(Button):
             print(f"{GPIO.input(Button)}: Button Pushed")
             sleep(0.1)
+            return GPIO.input(Button)
 
     async def led(self, option):
         if option == FLASH:
@@ -99,14 +101,17 @@ class AquariumController():
 
     def notification_led_flash(self):
         self.notification_led_stop()
+        print("Starting Notification LED: Flash")
         self.led_task = asyncio.run_coroutine_threadsafe(self.led(FLASH), self.event_loop)
 
     def notification_led_pulse(self):
         self.notification_led_stop()
+        print("Starting Notification LED: Pulse")
         self.led_task = asyncio.run_coroutine_threadsafe(self.led(PULSE), self.event_loop)
 
     def notification_led_stop(self):
         if self.led_task:
+            print("Stopping Notification LED")
             self.led_loop = False
             self.led_task.result()
             self.led_task = None
