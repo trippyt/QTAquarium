@@ -75,7 +75,6 @@ class AquariumController():
         while GPIO.input(Button):
             print(f"{GPIO.input(Button)}: Button Idle")
             sleep(0.1)
-            return GPIO.input(Button)
         while not GPIO.input(Button):
             print(f"{GPIO.input(Button)}: Button Pushed")
             sleep(0.1)
