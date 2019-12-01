@@ -17,6 +17,11 @@ Done    - led_pulse()
             : None
 Done    - led_flash()
             : None
+    - Temperature Alarm()
+        : high alert
+        : low alert
+        - Email Notification()
+        - Possible Android Push Notification()
 
 
 

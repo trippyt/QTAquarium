@@ -78,7 +78,7 @@ class AquariumController():
         while not GPIO.input(Button):
             print(f"{GPIO.input(Button)}: Button Pushed")
             sleep(0.1)
-            return GPIO.input(Button)
+            #return GPIO.input(Button)
 
     async def led(self, option):
         if option == FLASH:
