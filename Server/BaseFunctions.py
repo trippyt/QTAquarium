@@ -8,9 +8,9 @@ import threading
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 pumps = {            # Initializing the GPIO pins 17,27,22 for Dosage pumps
-'co2': 17,
-'fertilizer': 27,
-'conditioner': 22
+    'co2': 17,
+    'fertilizer': 27,
+    'conditioner': 22
 }
 
 for (p_type, pin) in pumps.items():
@@ -28,7 +28,11 @@ pwm = GPIO.PWM(led_pin, 100)  # Created a PWM object
 pwm.start(0)  # Started PWM at 0% duty cycle
 
 
-class AquariumController():
+class CalibrationCancelled (Exception):
+    pass
+
+
+class AquariumController:
 
     def __init__(self):
         self.sensors = {
@@ -75,10 +79,14 @@ class AquariumController():
         while GPIO.input(Button):
             print(f"{GPIO.input(Button)}: Button Idle")
             sleep(0.1)
+            if cCancelled:
+                raise CalibrationCancelled()
+
         while not GPIO.input(Button):
             print(f"{GPIO.input(Button)}: Button Pushed")
             sleep(0.1)
-            #return GPIO.input(Button)
+            if cCancelled:
+                raise CalibrationCancelled()
 
     async def led(self, option):
         if option == FLASH:
