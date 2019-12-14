@@ -41,7 +41,7 @@ class AquariumController:
         }
 
         self.led_loop = True
-        self.cal_stop_signal = False
+        self.cCancelled = False
         self.led_task = None
         self.event_loop = asyncio.get_event_loop()
         if not self.event_loop.is_running():
@@ -79,13 +79,13 @@ class AquariumController:
         while GPIO.input(Button):
             print(f"{GPIO.input(Button)}: Button Idle")
             sleep(0.1)
-            if cCancelled:
+            if self.cCancelled:
                 raise CalibrationCancelled()
 
         while not GPIO.input(Button):
             print(f"{GPIO.input(Button)}: Button Pushed")
             sleep(0.1)
-            if cCancelled:
+            if self.cCancelled:
                 raise CalibrationCancelled()
 
     async def led(self, option):
