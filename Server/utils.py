@@ -13,9 +13,8 @@ class CalibrationCancelled (Exception):
     pass
 
 
-async def start_calibration(pump_type: str):
+def start_calibration(pump_type: str):
     controller = Ac()
-
     try:
         cal_time = None
         controller.notification_led_pulse()
