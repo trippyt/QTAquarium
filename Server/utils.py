@@ -13,7 +13,7 @@ class CalibrationCancelled (Exception):
     pass
 
 
-def start_calibration(pump_type: str):
+async def start_calibration(pump_type: str):
     controller = Ac()
 
     try:
