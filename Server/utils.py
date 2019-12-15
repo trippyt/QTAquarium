@@ -14,16 +14,18 @@ class CalibrationCancelled (Exception):
 
 
 def start_calibration(pump_type: str):
+    controller = Ac()
+
     try:
         cal_time = None
-        Ac.notification_led_pulse()
-        Ac.button_state()
+        controller.notification_led_pulse()
+        controller.button_state()
         logging.log(f"Running {pump_type}")
         logging.log(f"{pump_type}                      Calibration started.")
-        Ac.notification_led_flash()
+        controller.notification_led_flash()
         start = time.time()
         start_pump(pump_type)
-        Ac.button_state()
+        controller.button_state()
         logging.log(f"Stopping {pump_type}")
         logging.log(f"{pump_type}                      Calibration finished.")
         end = time.time()
@@ -31,7 +33,7 @@ def start_calibration(pump_type: str):
         cal_time = round(end - start, 2)
         co2_per_ml = round(cal_time/10, 2)
         logging.log(cal_time)
-        Ac.notification_led_stop()
+        controller.notification_led_stop()
     except CalibrationCancelled:
         print("!Calibration was Cancelled!")
 
