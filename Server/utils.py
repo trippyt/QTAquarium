@@ -37,7 +37,7 @@ def start_calibration(pump_type: str):
 
 
 async def start_pump(pump_type: str):
-    logging.log(f"Stopping {pump_type} Pump")
+    logging.log(f"Starting {pump_type} Pump")
     Ac.pump_on(pump_type)
 
 
