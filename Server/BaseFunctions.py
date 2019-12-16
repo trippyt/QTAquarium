@@ -43,7 +43,7 @@ class AquariumController:
         self.led_loop = True
         self.cCancelled = False
         self.led_task = None
-        self.event_loop = asyncio.get_event_loop()
+        self.event_loop = asyncio.new_event_loop ()
         if not self.event_loop.is_running():
             t = threading.Thread(target=lambda: self.event_loop.run_forever())
             t.start()
