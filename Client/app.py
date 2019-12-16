@@ -41,6 +41,18 @@ class App(object):
         self.window.show()
         self.app.exec()
 
+    def handle_response(self, response):
+        print(response.readAll()) # you can change this to show in the log instead if you want to
+
+    def start_timers(self):
+        return
+
+    def ws_receive(self, text):
+        self.form.tank_degrees_c_display.display(text)
+
+    def on_error(self, error_code):
+        return
+
 
 def main():
     App().run()
