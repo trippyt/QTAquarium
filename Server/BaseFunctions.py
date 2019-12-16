@@ -15,9 +15,9 @@ global calibration_data
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 pumps = {            # Initializing the GPIO pins 17,27,22 for Dosage pumps
-    'co2': 17,
-    'fertilizer': 27,
-    'conditioner': 22
+    'Co2': 17,
+    'Fertilizer': 27,
+    'Water Conditioner': 22
 }
 
 for (p_type, pin) in pumps.items():
