@@ -2,7 +2,6 @@ from quart import Quart, request, websocket
 from quart.json import jsonify
 import asyncio
 import utils
-import threading
 from time import sleep
 app = Quart(__name__)
 
