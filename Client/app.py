@@ -18,6 +18,7 @@ class InfoHandler(logging.Handler):  # inherit from Handler class
 
 class App(object):
     def __init__(self):
+        ipaddress = "192.168.1.33"
         self.nam = QtNetwork.QNetworkAccessManager()
         self.calibration_data = {
             "Co2 Calibration Data": {},
@@ -33,7 +34,7 @@ class App(object):
 
         self.client = QtWebSockets.QWebSocket("", QtWebSockets.QWebSocketProtocol.Version13, None)
         self.client.error.connect(self.on_error)
-        self.client.open(QUrl("ws://192.168.1.35:5000/temp"))
+        self.client.open(QUrl(f"ws://{ipaddress}:5000/temp"))
         self.client.pong.connect(self.ws_receive)
         self.client.textMessageReceived.connect(self.ws_receive)
 
