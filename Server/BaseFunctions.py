@@ -112,6 +112,7 @@ class AquariumController:
         print("Settings Updated")
 
     def calibrate_pump(self, pump_type):
+        global calibration_data
         cal_time = None
         logging.info(f"Running {pump_type} Pump")
         logging.info(f"{pump_type}                      Calibration started.")
