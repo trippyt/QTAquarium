@@ -46,7 +46,7 @@ class AquariumController:
             'temp_tank': W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, "011447ba3caa"),
             #'temp_room': dht11.DHT11(pin=14)
         }
-
+        global calibration_data
         self.led_loop = True
         self.cCancelled = False
         self.led_task = None
@@ -55,17 +55,17 @@ class AquariumController:
             t = threading.Thread(target=lambda: self.event_loop.run_forever())
             t.start()
 
-    conversion_data = {
-        "Tank Size": {},
-        "Co2 Ratio": {},
-        "Fertilizer Ratio": {},
-        "Water Conditioner Ratio": {},
-    }
-    calibration_data = {
-        "Co2 Calibration Data": {},
-        "Fertilizer Calibration Data": {},
-        "Water Conditioner Calibration Data": {},
-    }
+        conversion_data = {
+            "Tank Size": {},
+            "Co2 Ratio": {},
+            "Fertilizer Ratio": {},
+            "Water Conditioner Ratio": {},
+        }
+        calibration_data = {
+            "Co2 Calibration Data": {},
+            "Fertilizer Calibration Data": {},
+            "Water Conditioner Calibration Data": {},
+        }
 
     def pump_on(self, pump_type):
         pin = pumps.get(pump_type, None)
