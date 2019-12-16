@@ -11,6 +11,7 @@ import threading
 
 global conversion_data
 global calibration_data
+global setting_data
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -47,6 +48,7 @@ class AquariumController:
             #'temp_room': dht11.DHT11(pin=14)
         }
         global calibration_data
+        global setting_data
         self.led_loop = True
         self.cCancelled = False
         self.led_task = None
@@ -65,6 +67,11 @@ class AquariumController:
             "Co2 Calibration Data": {},
             "Fertilizer Calibration Data": {},
             "Water Conditioner Calibration Data": {},
+        }
+        setting_data = {
+            "Network": {},
+            "Temperature Alerts": {},
+            "Email Alert": {}
         }
 
     def pump_on(self, pump_type):
@@ -111,6 +118,9 @@ class AquariumController:
             json_file.write(json.dumps(data, indent=4))
         logging.info("Settings Updated")
 
+    def email_setup(self):
+        pass
+
     def calibrate_pump(self, pump_type):
         global calibration_data
         logging.info(f"Running {pump_type} Pump")
@@ -129,6 +139,19 @@ class AquariumController:
             {
                 "Time per 10mL": cal_time,
                 "Time per 1mL": per_ml
+            }
+        )
+        self.save()
+
+    def alert_data(self, ht: int, lt: int):
+        global setting_data
+        logging.info("New Alert Set")
+        logging.info(f"High Temperature: {ht}")
+        logging.info(f"Low Temperature: {lt}")
+        setting_data["Temperature Alerts"].update(
+            {
+                "High Temp": ht,
+                "Low Temp": lt
             }
         )
         self.save()

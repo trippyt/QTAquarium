@@ -27,16 +27,10 @@ def start_calibration(pump_type: str):
         print("!Calibration was Cancelled!")
 
 
-def start_pump(pump_type: str):
-    logging.info(f"Starting {pump_type} Pump")
-    controller.pump_on(pump_type)
-
-
-def stop_pump(pump_type: str):
-    logging.info(f"Stopping {pump_type} Pump")
-    controller.pump_off(pump_type)
-
-
 def tank_temperature():
     temp_c, temp_f = controller.read_temperature("temp_tank")
     return round(temp_c, 2)
+
+
+def alert_data(ht, lt):
+    controller.alert_data(ht, lt)

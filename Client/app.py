@@ -25,6 +25,11 @@ class App(object):
             "Fertilizer Calibration Data": {},
             "Water Conditioner Calibration Data": {},
         }
+        self.setting_data = {
+            "IP Address": {},
+            "Temperature Alerts": {},
+            "Email Alert": {}
+        }
         self.app = QtWidgets.QApplication(sys.argv)
         self.central = QtWidgets.QWidget()
         self.window = QtWidgets.QMainWindow()
@@ -37,6 +42,18 @@ class App(object):
         self.client.open(QUrl(f"ws://{ipaddress}:5000/temp"))
         self.client.pong.connect(self.ws_receive)
         self.client.textMessageReceived.connect(self.ws_receive)
+
+        self.form.ht_alert_doubleSpinBox.valueChanged.connect(self.set_temp_alert)
+
+    def set_temp_alert(self):
+        ht = self.form.ht_alert_doubleSpinBox.value()
+        lt = self.form.lt_alert_doubleSpinBox.value()
+        print(f"Sending Alert Changes to Network")
+        print(f"High Temperature: {ht}")
+        print(f"Low Temperature: {lt}")
+        url = f"http://192.168.1.33:5000/setTemperatureAlert?ht={ht}&lt={lt}"
+        request = QtNetwork.QNetworkRequest(QUrl(url))
+        self.nam.get(request)
 
     def run(self):
         self.window.show()
