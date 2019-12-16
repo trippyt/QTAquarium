@@ -38,5 +38,5 @@ def stop_pump(pump_type: str):
 
 
 def tank_temperature():
-    temp_c, temp_f = controller.read_temperature(temp_sensor_type)
+    temp_c, temp_f = controller.read_temperature("temp_tank")
     return round(temp_c, 2)
