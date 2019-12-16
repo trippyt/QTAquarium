@@ -35,3 +35,8 @@ def start_pump(pump_type: str):
 def stop_pump(pump_type: str):
     logging.info(f"Stopping {pump_type} Pump")
     controller.pump_off(pump_type)
+
+
+def tank_temperature():
+    temp_c, temp_f = controller.read_temp(W1ThermSensor)
+    return round(temp_c, 2)

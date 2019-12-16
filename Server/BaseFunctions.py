@@ -85,8 +85,8 @@ class AquariumController:
                 data = json.loads(json_file.read())
                 global conversion_data
                 global calibration_data
-                print("Loading Saved Data")
-                print(data)
+                logging.info("Loading Saved Data")
+                logging.info(data)
                 conversion_data = data["Conversion Data"]
                 # temperature_data = data["Temperature Data"]
                 # conversion_values
@@ -109,11 +109,10 @@ class AquariumController:
         }
         with open('data.txt', 'w') as json_file:
             json_file.write(json.dumps(data, indent=4))
-        print("Settings Updated")
+        logging.info("Settings Updated")
 
     def calibrate_pump(self, pump_type):
         global calibration_data
-        cal_time = None
         logging.info(f"Running {pump_type} Pump")
         logging.info(f"{pump_type}                      Calibration started.")
         start = time.time()
@@ -141,6 +140,7 @@ class AquariumController:
         if isinstance(sensor, W1ThermSensor):
             temperature_in_all_units = sensor.get_temperatures([W1ThermSensor.DEGREES_C, W1ThermSensor.DEGREES_F])
             return temperature_in_all_units
+
         #elif isinstance(sensor, dht11.DHT11):
         #    result = sensor.read()
         #    temp_c = result.temperature
@@ -182,17 +182,17 @@ class AquariumController:
 
     def notification_led_flash(self):
         self.notification_led_stop()
-        print("Starting Notification LED: Flash")
+        logging.info("Starting Notification LED: Flash")
         self.led_task = asyncio.run_coroutine_threadsafe(self.led(FLASH), self.event_loop)
 
     def notification_led_pulse(self):
         self.notification_led_stop()
-        print("Starting Notification LED: Pulse")
+        logging.info("Starting Notification LED: Pulse")
         self.led_task = asyncio.run_coroutine_threadsafe(self.led(PULSE), self.event_loop)
 
     def notification_led_stop(self):
         if self.led_task:
-            print("Stopping Notification LED")
+            logging.info("Stopping Notification LED")
             self.led_loop = False
             self.led_task.result()
             self.led_task = None
