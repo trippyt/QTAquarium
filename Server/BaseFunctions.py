@@ -1,5 +1,7 @@
 import asyncio
 from time import sleep
+import time
+import logging
 import RPi.GPIO as GPIO
 from w1thermsensor import W1ThermSensor
 #  import dht11
@@ -59,6 +61,20 @@ class AquariumController:
         if pin is None:
             raise Exception('Invalid Pump Type!')
         GPIO.output(pumps[pump_type], 0)
+
+    def calibrate_pump(self, pump_type):
+        logging.info(f"Running {pump_type} Pump")
+        logging.info(f"{pump_type}                      Calibration started.")
+        start = time.time()
+        self.pump_on(pump_type)
+        self.button_state()
+        logging.info(f"Stopping {pump_type}")
+        logging.info(f"{pump_type}                      Calibration finished.")
+        end = time.time()
+        self.pump_off(pump_type)
+        cal_time = round(end - start, 2)
+        co2_per_ml = round(cal_time / 10, 2)
+        logging.info(f"{pump_type} Runtime: {cal_time}")
 
     def read_temperature(self, temp_sensor_type):
         sensor = self.sensors.get(temp_sensor_type, None)
