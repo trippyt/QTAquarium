@@ -42,9 +42,9 @@ def start_calibration(pump_type: str):
 
 def start_pump(pump_type: str):
     logging.info(f"Starting {pump_type} Pump")
-    Ac.pump_on(pump_type)
+    controller.pump_on(pump_type)
 
 
 def stop_pump(pump_type: str):
     logging.info(f"Stopping {pump_type} Pump")
-    Ac.pump_off(pump_type)
+    controller.pump_off(pump_type)
