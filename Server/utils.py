@@ -17,9 +17,7 @@ controller = Ac()
 
 
 def start_calibration(pump_type: str):
-
     try:
-        cal_time = None
         controller.notification_led_pulse()
         controller.button_state()
         controller.notification_led_flash()

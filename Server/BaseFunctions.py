@@ -1,11 +1,16 @@
+import os
 import asyncio
 from time import sleep
 import time
 import logging
+import json
 import RPi.GPIO as GPIO
 from w1thermsensor import W1ThermSensor
 #  import dht11
 import threading
+
+global conversion_data
+global calibration_data
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -50,6 +55,18 @@ class AquariumController:
             t = threading.Thread(target=lambda: self.event_loop.run_forever())
             t.start()
 
+    conversion_data = {
+        "Tank Size": {},
+        "Co2 Ratio": {},
+        "Fertilizer Ratio": {},
+        "Water Conditioner Ratio": {},
+    }
+    calibration_data = {
+        "Co2 Calibration Data": {},
+        "Fertilizer Calibration Data": {},
+        "Water Conditioner Calibration Data": {},
+    }
+
     def pump_on(self, pump_type):
         pin = pumps.get(pump_type, None)
         if pin is None:
@@ -62,7 +79,40 @@ class AquariumController:
             raise Exception('Invalid Pump Type!')
         GPIO.output(pumps[pump_type], 0)
 
+    def load(self):
+        if os.path.isfile('data.txt'):
+            with open('data.txt', 'r') as json_file:
+                data = json.loads(json_file.read())
+                global conversion_data
+                global calibration_data
+                print("Loading Saved Data")
+                print(data)
+                conversion_data = data["Conversion Data"]
+                # temperature_data = data["Temperature Data"]
+                # conversion_values
+                # schedule_data
+                # calibration_data = data["Calibration Data"]
+                # light_hour_data
+                # dosage_data = data["Dosage Data"]
+                return data
+
+    def save(self):
+        global conversion_data
+        global calibration_data
+        data = {
+            "Conversion Data": conversion_data,
+            "Calibration Data": calibration_data,
+            # "Schedule Data": schedule_data,
+            # "Temperature Data": temperature_data,
+            # "Dosage Data": dosage_data,
+            # "Light Hour Data": light_hour_data
+        }
+        with open('data.txt', 'w') as json_file:
+            json_file.write(json.dumps(data, indent=4))
+        print("Settings Updated")
+
     def calibrate_pump(self, pump_type):
+        cal_time = None
         logging.info(f"Running {pump_type} Pump")
         logging.info(f"{pump_type}                      Calibration started.")
         start = time.time()
@@ -75,6 +125,13 @@ class AquariumController:
         cal_time = round(end - start, 2)
         co2_per_ml = round(cal_time / 10, 2)
         logging.info(f"{pump_type} Runtime: {cal_time}")
+        calibration_data["Co2 Calibration Data"].update(
+            {
+                "Time per 10mL": cal_time,
+                "Time per 1mL": co2_per_ml
+            }
+        )
+        self.save()
 
     def read_temperature(self, temp_sensor_type):
         sensor = self.sensors.get(temp_sensor_type, None)
