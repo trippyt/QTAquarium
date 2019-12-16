@@ -23,7 +23,7 @@ def start_calibration(pump_type: str):
         controller.notification_led_pulse()
         controller.button_state()
         controller.notification_led_flash()
-        controller.calibrate()
+        controller.calibrate_pump(pump_type)
         controller.notification_led_stop()
     except CalibrationCancelled:
         print("!Calibration was Cancelled!")
