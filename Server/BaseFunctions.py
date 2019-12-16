@@ -100,7 +100,7 @@ class AquariumController:
         global conversion_data
         global calibration_data
         data = {
-            "Conversion Data": conversion_data,
+            # "Conversion Data": conversion_data,
             "Calibration Data": calibration_data,
             # "Schedule Data": schedule_data,
             # "Temperature Data": temperature_data,
