@@ -123,12 +123,12 @@ class AquariumController:
         end = time.time()
         self.pump_off(pump_type)
         cal_time = round(end - start, 2)
-        co2_per_ml = round(cal_time / 10, 2)
+        per_ml = round(cal_time / 10, 2)
         logging.info(f"{pump_type} Runtime: {cal_time}")
-        calibration_data["Co2 Calibration Data"].update(
+        calibration_data[f"{pump_type} Calibration Data"].update(
             {
                 "Time per 10mL": cal_time,
-                "Time per 1mL": co2_per_ml
+                "Time per 1mL": per_ml
             }
         )
         self.save()
