@@ -9,7 +9,7 @@ app = Quart(__name__)
 @app.websocket('/temp')
 async def temp():
     while True:
-        temp = await utils.tank_temperature()
+        temp = await utils.tank_temperature('W1ThermSensor')
         print(temp)
         await asyncio.sleep(2)
         await websocket.send(str(temp))
