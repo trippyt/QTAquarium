@@ -171,7 +171,7 @@
       <property name="title">
        <string/>
       </property>
-      <widget class="QDoubleSpinBox" name="doubleSpinBox">
+      <widget class="QDoubleSpinBox" name="Co2_ml_doubleSpinBox">
        <property name="geometry">
         <rect>
          <x>160</x>
@@ -181,7 +181,7 @@
         </rect>
        </property>
       </widget>
-      <widget class="QDoubleSpinBox" name="doubleSpinBox_2">
+      <widget class="QDoubleSpinBox" name="Co2_water_doubleSpinBox">
        <property name="geometry">
         <rect>
          <x>450</x>
@@ -191,7 +191,7 @@
         </rect>
        </property>
       </widget>
-      <widget class="QLineEdit" name="lineEdit">
+      <widget class="QLineEdit" name="Co2_dosage_ml_lineEdit">
        <property name="geometry">
         <rect>
          <x>710</x>
@@ -266,7 +266,7 @@
         <string>Fertilizer Ratio</string>
        </property>
       </widget>
-      <widget class="QDoubleSpinBox" name="doubleSpinBox_4">
+      <widget class="QDoubleSpinBox" name="Fertilizer_ml_doubleSpinBox">
        <property name="geometry">
         <rect>
          <x>160</x>
@@ -276,7 +276,7 @@
         </rect>
        </property>
       </widget>
-      <widget class="QDoubleSpinBox" name="doubleSpinBox_5">
+      <widget class="QDoubleSpinBox" name="Fertilizer_water_doubleSpinBox">
        <property name="geometry">
         <rect>
          <x>450</x>
@@ -286,7 +286,7 @@
         </rect>
        </property>
       </widget>
-      <widget class="QLineEdit" name="lineEdit_2">
+      <widget class="QLineEdit" name="Fertilizer_dosage_ml_lineEdit">
        <property name="geometry">
         <rect>
          <x>710</x>
@@ -348,7 +348,7 @@
         <string>Water Condiontioner Ratio</string>
        </property>
       </widget>
-      <widget class="QDoubleSpinBox" name="doubleSpinBox_6">
+      <widget class="QDoubleSpinBox" name="WaterConditioner_ml_doubleSpinBox">
        <property name="geometry">
         <rect>
          <x>160</x>
@@ -358,7 +358,7 @@
         </rect>
        </property>
       </widget>
-      <widget class="QDoubleSpinBox" name="doubleSpinBox_7">
+      <widget class="QDoubleSpinBox" name="WaterConditioner_water_doubleSpinBox">
        <property name="geometry">
         <rect>
          <x>450</x>
@@ -368,7 +368,7 @@
         </rect>
        </property>
       </widget>
-      <widget class="QLineEdit" name="lineEdit_3">
+      <widget class="QLineEdit" name="WaterConditioner_dosage_ml_lineEdit">
        <property name="geometry">
         <rect>
          <x>710</x>
@@ -443,7 +443,7 @@
         <string>Save Ratios</string>
        </property>
       </widget>
-      <widget class="QDoubleSpinBox" name="doubleSpinBox_3">
+      <widget class="QDoubleSpinBox" name="Tank_doubleSpinBox">
        <property name="geometry">
         <rect>
          <x>160</x>
