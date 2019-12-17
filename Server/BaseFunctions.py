@@ -124,7 +124,7 @@ class AquariumController:
 
 
 
-    def ratio(self, ratio_results):
+    def ratios(self, ratio_results):
         global ratio_data
         logging.info(f"Ratio: {ratio_results}")
 
