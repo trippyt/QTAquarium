@@ -124,9 +124,9 @@ class AquariumController:
 
 
 
-    def ratio(self, ratio_type):
+    def ratio(self, ratio_results):
         global ratio_data
-        logging.info(f"Ratio: {ratio_type}")
+        logging.info(f"Ratio: {ratio_results}")
 
 
     def calibrate_pump(self, pump_type):

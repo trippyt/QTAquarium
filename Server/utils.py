@@ -38,3 +38,7 @@ def alert_data(ht, lt):
 
 def email_alert():
     pass
+
+
+def newRatios(ratio_results: str):
+    controller.ratios(ratio_results)
