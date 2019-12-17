@@ -17,9 +17,9 @@ async def set_temperature_alert():
 
 @app.route('/setRatios', methods=['GET', 'POST'])
 async def ratios():
-    ratio_results = [request.args.get(str(ratio)) for ratio in
-                     (Tank, Co2_ratio, Co2_water, Fertilizer_ratio, Fertilizer_water, WaterConditioner_ratio,
-                      WaterConditioner_water)]
+    ratio_results = [request.args.get(ratio) for ratio in
+                     ('Tank', 'Co2_ratio', 'Co2_water', 'Fertilizer_ratio', 'Fertilizer_water', 'WaterConditioner_ratio',
+                      'WaterConditioner_water')]
     utils.newRatios(ratio_results)
 
 
