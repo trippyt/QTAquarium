@@ -52,9 +52,10 @@ class App(object):
     def save_ratios(self):
         self.log.info("Sending New Ratio Data to Server")
         ratio_results = [ratio.value() for ratio in
-                   (self.form.Tank_doubleSpinBox, self.form.Co2_ml_doubleSpinBox, self.form.Fertilizer_ml_doubleSpinBox,
-                    self.form.Fertilizer_water_doubleSpinBox, self.form.WaterConditioner_ml_doubleSpinBox,
-                    self.form.WaterConditioner_water_doubleSpinBox)]
+                         (self.form.Tank_doubleSpinBox, self.form.Co2_ml_doubleSpinBox,
+                          self.form.Co2_water_doubleSpinBox, self.form.Fertilizer_ml_doubleSpinBox,
+                          self.form.Fertilizer_water_doubleSpinBox, self.form.WaterConditioner_ml_doubleSpinBox,
+                          self.form.WaterConditioner_water_doubleSpinBox)]
         Tank, Co2_ratio, Co2_water, Fertilizer_ratio, Fertilizer_water,WaterConditioner_ratio, WaterConditioner_water\
             = ratio_results
         self.log.info('Tank Size: {} Litres,\n'
