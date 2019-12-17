@@ -36,6 +36,9 @@ class App(object):
         self.form = Ui_Form()
         self.window.setCentralWidget(self.central)
         self.form.setupUi(self.central)
+        logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
+        self.log = logging.getLogger('AquariumQT')
+        self.log.handlers = [InfoHandler(self.form.textBrowser)]
 
         self.client = QtWebSockets.QWebSocket("", QtWebSockets.QWebSocketProtocol.Version13, None)
         self.client.error.connect(self.on_error)
@@ -47,14 +50,14 @@ class App(object):
         self.form.ht_alert_doubleSpinBox.valueChanged.connect(self.set_temp_alert)
 
     def save_ratios(self):
-        logging.info("Sending New Ratio Data to Server")
+        self.log.info("Sending New Ratio Data to Server")
         ratio_results = [ratio.value() for ratio in
                    (self.form.Tank_doubleSpinBox, self.form.Co2_ml_doubleSpinBox, self.form.Fertilizer_ml_doubleSpinBox,
                     self.form.Fertilizer_water_doubleSpinBox, self.form.WaterConditioner_ml_doubleSpinBox,
                     self.form.WaterConditioner_water_doubleSpinBox)]
         Tank, Co2_ratio, Co2_water, Fertilizer_ratio, Fertilizer_water,WaterConditioner_ratio, WaterConditioner_water\
             = ratio_results
-        logging.info('Tank Size: {} Litres,\n'
+        self.log.info('Tank Size: {} Litres,\n'
                      'Co2 Concentrate: {} mL,\n'
                      'Co2 to Water: {} Litres,\n'
                      'Fertilizer Concentrate: {} mL,\n'
