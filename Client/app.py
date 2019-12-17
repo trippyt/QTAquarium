@@ -56,15 +56,13 @@ class App(object):
                           self.form.Co2_water_doubleSpinBox, self.form.Fertilizer_ml_doubleSpinBox,
                           self.form.Fertilizer_water_doubleSpinBox, self.form.WaterConditioner_ml_doubleSpinBox,
                           self.form.WaterConditioner_water_doubleSpinBox)]
-        Tank, Co2_ratio, Co2_water, Fertilizer_ratio, Fertilizer_water,WaterConditioner_ratio, WaterConditioner_water\
+        Tank, Co2_ratio, Co2_water, Fertilizer_ratio, Fertilizer_water, WaterConditioner_ratio, WaterConditioner_water \
             = ratio_results
         self.log.info('Tank Size: {} Litres,\n'
-                     'Co2 Concentrate: {} mL,\n'
-                     'Co2 to Water: {} Litres,\n'
-                     'Fertilizer Concentrate: {} mL,\n'
-                     'Fertilizer to Water: {} Litres,\n'
-                     'WaterConditioner Concentrate: {} mL,\n'
-                     'WaterConditioner to Water: {} Litres'.format(*ratio_results))
+                      'Co2 Concentrate: {} mL, Co2 to Water: {} Litres,\n'
+                      'Fertilizer Concentrate: {} mL, Fertilizer to Water: {} Litres,\n'
+                      'WaterConditioner Concentrate: {} mL, WaterConditioner to Water: {} Litres'.format(
+                        *ratio_results))
         url = f"http://192.168.1.33:5000/setRatios?Tank={Tank}&Co2_ratio={Co2_ratio}&Co2_water={Co2_water}" \
               f"&Fertilizer_ratio={Fertilizer_ratio}&Fertilizer_water={Fertilizer_water}" \
               f"&WaterConditioner_ratio={WaterConditioner_ratio}&WaterConditioner_water={WaterConditioner_water}"
@@ -87,7 +85,7 @@ class App(object):
         self.app.exec()
 
     def handle_response(self, response):
-        print(response.readAll()) # you can change this to show in the log instead if you want to
+        print(response.readAll())  # you can change this to show in the log instead if you want to
 
     def start_timers(self):
         return
