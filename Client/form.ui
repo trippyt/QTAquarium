@@ -71,7 +71,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>5</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="Home_tab">
     <attribute name="title">
@@ -430,7 +430,7 @@
         <string> Tank Size  (L)</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="pushButton_3">
+      <widget class="QPushButton" name="save_ratios_pushButton">
        <property name="geometry">
         <rect>
          <x>80</x>

@@ -34,3 +34,7 @@ def tank_temperature():
 
 def alert_data(ht, lt):
     controller.alert_data(ht, lt)
+
+
+def email_alert():
+    pass

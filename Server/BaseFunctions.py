@@ -122,6 +122,13 @@ class AquariumController:
     def email_setup(self):
         pass
 
+
+
+    def ratio(self, ratio_type):
+        global ratio_data
+        logging.info(f"Ratio: {ratio_type}")
+
+
     def calibrate_pump(self, pump_type):
         global calibration_data
         logging.info(f"Running {pump_type} Pump")
@@ -207,12 +214,14 @@ class AquariumController:
     def notification_led_flash(self):
         self.notification_led_stop()
         logging.info("Starting Notification LED: Flash")
-        self.led_task = asyncio.run_coroutine_threadsafe(self.led(FLASH), self.event_loop)
+        await self.led(FLASH)
+        #self.led_task = asyncio.run_coroutine_threadsafe(self.led(FLASH), self.event_loop)
 
     def notification_led_pulse(self):
         self.notification_led_stop()
         logging.info("Starting Notification LED: Pulse")
-        self.led_task = asyncio.run_coroutine_threadsafe(self.led(PULSE), self.event_loop)
+        await self.led(PULSE)
+        #self.led_task = asyncio.run_coroutine_threadsafe(self.led(PULSE), self.event_loop)
 
     def notification_led_stop(self):
         if self.led_task:

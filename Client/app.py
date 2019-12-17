@@ -43,7 +43,30 @@ class App(object):
         self.client.pong.connect(self.ws_receive)
         self.client.textMessageReceived.connect(self.ws_receive)
 
+        self.form.save_ratios_pushButton.clicked.connect(self.save_ratios)
         self.form.ht_alert_doubleSpinBox.valueChanged.connect(self.set_temp_alert)
+
+    def save_ratios(self):
+        logging.info("Sending New Ratio Data to Server")
+        ratio_results = [ratio.value() for ratio in
+                   (self.form.Tank_doubleSpinBox, self.form.Co2_ml_doubleSpinBox, self.form.Fertilizer_ml_doubleSpinBox,
+                    self.form.Fertilizer_water_doubleSpinBox, self.form.WaterConditioner_ml_doubleSpinBox,
+                    self.form.WaterConditioner_water_doubleSpinBox)]
+        Tank, Co2_ratio, Co2_water, Fertilizer_ratio, Fertilizer_water,WaterConditioner_ratio, WaterConditioner_water\
+            = ratio_results
+        logging.info('Tank Size: {} Litres,\n'
+                     'Co2 Concentrate: {} mL,\n'
+                     'Co2 to Water: {} Litres,\n'
+                     'Fertilizer Concentrate: {} mL,\n'
+                     'Fertilizer to Water: {} Litres,\n'
+                     'WaterConditioner Concentrate: {} mL,\n'
+                     'WaterConditioner to Water: {} Litres'.format(*ratio_results))
+        url = f"http://192.168.1.33:5000/setRatios?Tank={Tank}&Co2_ratio={Co2_ratio}&Co2_water={Co2_water}" \
+              f"&Fertilizer_ratio={Fertilizer_ratio}&Fertilizer_water={Fertilizer_water}" \
+              f"&WaterConditioner_ratio={WaterConditioner_ratio}&WaterConditioner_water={WaterConditioner_water}"
+        request = QtNetwork.QNetworkRequest(QUrl(url))
+        self.nam.get(request)
+        # self.load_server()
 
     def set_temp_alert(self):
         ht = self.form.ht_alert_doubleSpinBox.value()
