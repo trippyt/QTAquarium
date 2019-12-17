@@ -211,17 +211,17 @@ class AquariumController:
         # once signal to stop is received, reset flag to True
         self.led_loop = True
 
-    def notification_led_flash(self):
+    async def notification_led_flash(self):
         self.notification_led_stop()
         logging.info("Starting Notification LED: Flash")
         await self.led(FLASH)
-        #self.led_task = asyncio.run_coroutine_threadsafe(self.led(FLASH), self.event_loop)
+        self.led_task = asyncio.run_coroutine_threadsafe(self.led(FLASH), self.event_loop)
 
-    def notification_led_pulse(self):
+    async def notification_led_pulse(self):
         self.notification_led_stop()
         logging.info("Starting Notification LED: Pulse")
         await self.led(PULSE)
-        #self.led_task = asyncio.run_coroutine_threadsafe(self.led(PULSE), self.event_loop)
+        self.led_task = asyncio.run_coroutine_threadsafe(self.led(PULSE), self.event_loop)
 
     def notification_led_stop(self):
         if self.led_task:
