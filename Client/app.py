@@ -51,7 +51,7 @@ class App(object):
 
     def save_ratios(self):
         self.log.info("Sending New Ratio Data to Server")
-        ratio_results = [ratio.value() for ratio in
+        ratio_results = [int(ratio.value()) for ratio in
                          (self.form.Tank_doubleSpinBox, self.form.Co2_ml_doubleSpinBox,
                           self.form.Co2_water_doubleSpinBox, self.form.Fertilizer_ml_doubleSpinBox,
                           self.form.Fertilizer_water_doubleSpinBox, self.form.WaterConditioner_ml_doubleSpinBox,
@@ -66,6 +66,7 @@ class App(object):
         url = f"http://192.168.1.33:5000/setRatios?Tank={Tank}&Co2_ratio={Co2_ratio}&Co2_water={Co2_water}" \
               f"&Fertilizer_ratio={Fertilizer_ratio}&Fertilizer_water={Fertilizer_water}" \
               f"&WaterConditioner_ratio={WaterConditioner_ratio}&WaterConditioner_water={WaterConditioner_water}"
+        print(type(Tank))
         request = QtNetwork.QNetworkRequest(QUrl(url))
         self.nam.get(request)
         # self.load_server()

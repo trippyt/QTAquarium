@@ -21,6 +21,7 @@ async def ratios():
                      ('Tank', 'Co2_ratio', 'Co2_water', 'Fertilizer_ratio', 'Fertilizer_water', 'WaterConditioner_ratio',
                       'WaterConditioner_water')]
     utils.newRatios(ratio_results)
+    return f"New ratios: {ratio_results}"
 
 
 @app.websocket('/temp')

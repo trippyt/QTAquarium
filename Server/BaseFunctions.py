@@ -1,13 +1,14 @@
-import os
 import asyncio
-from time import sleep
-import time
-import logging
 import json
-import RPi.GPIO as GPIO
-from w1thermsensor import W1ThermSensor
+import logging
+import os
 #  import dht11
 import threading
+import time
+from time import sleep
+
+import RPi.GPIO as GPIO
+from w1thermsensor import W1ThermSensor
 
 global conversion_data
 global calibration_data
@@ -122,6 +123,11 @@ class AquariumController:
     def email_setup(self):
         pass
 
+
+    def ratioequals(self, ratio_results):
+        Tank, Co2_ratio, Co2_water, Fertilizer_ratio, Fertilizer_water, WaterConditioner_ratio, WaterConditioner_water \
+            = ratio_results
+        ratio_data[f"{}"]
 
 
     def ratios(self, ratio_results):

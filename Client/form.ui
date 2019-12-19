@@ -180,6 +180,12 @@
          <height>22</height>
         </rect>
        </property>
+       <property name="decimals">
+        <number>2</number>
+       </property>
+       <property name="maximum">
+        <double>99.989999999999995</double>
+       </property>
       </widget>
       <widget class="QDoubleSpinBox" name="Co2_water_doubleSpinBox">
        <property name="geometry">
@@ -189,6 +195,9 @@
          <width>62</width>
          <height>22</height>
         </rect>
+       </property>
+       <property name="maximum">
+        <double>999.990000000000009</double>
        </property>
       </widget>
       <widget class="QLineEdit" name="Co2_dosage_ml_lineEdit">
@@ -275,6 +284,9 @@
          <height>22</height>
         </rect>
        </property>
+       <property name="maximum">
+        <double>99.989999999999995</double>
+       </property>
       </widget>
       <widget class="QDoubleSpinBox" name="Fertilizer_water_doubleSpinBox">
        <property name="geometry">
@@ -284,6 +296,9 @@
          <width>62</width>
          <height>22</height>
         </rect>
+       </property>
+       <property name="maximum">
+        <double>999.990000000000009</double>
        </property>
       </widget>
       <widget class="QLineEdit" name="Fertilizer_dosage_ml_lineEdit">
@@ -366,6 +381,9 @@
          <width>62</width>
          <height>22</height>
         </rect>
+       </property>
+       <property name="maximum">
+        <double>999.990000000000009</double>
        </property>
       </widget>
       <widget class="QLineEdit" name="WaterConditioner_dosage_ml_lineEdit">
@@ -451,6 +469,9 @@
          <width>61</width>
          <height>20</height>
         </rect>
+       </property>
+       <property name="maximum">
+        <double>999.990000000000009</double>
        </property>
       </widget>
      </widget>
