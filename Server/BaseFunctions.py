@@ -127,7 +127,7 @@ class AquariumController:
     def ratioequals(self, ratio_results):
         Tank, Co2_ratio, Co2_water, Fertilizer_ratio, Fertilizer_water, WaterConditioner_ratio, WaterConditioner_water \
             = ratio_results
-        ratio_data[f"{}"]
+        #ratio_data[f"{}"]
 
 
     def ratios(self, ratio_results):
