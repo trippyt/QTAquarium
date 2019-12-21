@@ -125,14 +125,28 @@ class AquariumController:
 
 
     def ratioequals(self, ratio_results):
+        print("ratio equals function")
+        print(f"values {ratio_results}")
+        new_ratio = ('Tank', 'Co2_ratio', 'Co2_water', 'Fertilizer_ratio', 'Fertilizer_water', 'WaterConditioner_ratio'\
+                                        , 'WaterConditioner_water')
+        filter(None, )
+
         Tank, Co2_ratio, Co2_water, Fertilizer_ratio, Fertilizer_water, WaterConditioner_ratio, WaterConditioner_water \
             = ratio_results
+        ratio_data["Ratio Data"].update(
+            (for ratio in ratio_results)
+        )
         #ratio_data[f"{}"]
 
 
     def ratios(self, ratio_results):
         global ratio_data
         logging.info(f"Ratio: {ratio_results}")
+        logging.info('Tank Size: {} Litres,\n'
+         'Co2 Concentrate: {} mL, Co2 to Water: {} Litres,\n'
+         'Fertilizer Concentrate: {} mL, Fertilizer to Water: {} Litres,\n'
+         'WaterConditioner Concentrate: {} mL, WaterConditioner to Water: {} Litres'.format(
+            *ratio_results))
 
 
     def calibrate_pump(self, pump_type):
