@@ -129,7 +129,7 @@ class AquariumController:
         print(f"values {ratio_results}")
         new_ratio = ('Tank', 'Co2_ratio', 'Co2_water', 'Fertilizer_ratio', 'Fertilizer_water', 'WaterConditioner_ratio'\
                                         , 'WaterConditioner_water')
-        filter(None, )
+        #filter(None, )
 
         Tank, Co2_ratio, Co2_water, Fertilizer_ratio, Fertilizer_water, WaterConditioner_ratio, WaterConditioner_water \
             = ratio_results
