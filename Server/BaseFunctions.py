@@ -134,7 +134,7 @@ class AquariumController:
         zipratio = zip(new_ratio, ratio_results)
         # Create a dictionary from zip object
         dictOfWords = dict(zipratio)
-        print(f"new Dict: {zipratio}")
+        print(f"new Dict: {dictOfWords}")
         #filter(None, )
 
         Tank, Co2_ratio, Co2_water, Fertilizer_ratio, Fertilizer_water, WaterConditioner_ratio, WaterConditioner_water \
