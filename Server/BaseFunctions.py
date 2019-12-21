@@ -146,7 +146,7 @@ class AquariumController:
          'Fertilizer Concentrate: {} mL, Fertilizer to Water: {} Litres,\n'
          'WaterConditioner Concentrate: {} mL, WaterConditioner to Water: {} Litres'.format(
             *ratio_results))
-        self.ratioequals()
+        self.ratioequals(ratio_results)
 
 
     def calibrate_pump(self, pump_type):
