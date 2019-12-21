@@ -133,10 +133,9 @@ class AquariumController:
 
         Tank, Co2_ratio, Co2_water, Fertilizer_ratio, Fertilizer_water, WaterConditioner_ratio, WaterConditioner_water \
             = ratio_results
-        ratio_data["Ratio Data"].update(
-            (for ratio in ratio_results)
-        )
+        #ratio_data["Ratio Data"].update
         #ratio_data[f"{}"]
+        print(f"New values {ratio_results}")
 
 
     def ratios(self, ratio_results):
