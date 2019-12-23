@@ -130,18 +130,13 @@ class AquariumController:
         new_ratio = ('Tank', 'Co2_ratio', 'Co2_water', 'Fertilizer_ratio', 'Fertilizer_water', 'WaterConditioner_ratio'\
                                         , 'WaterConditioner_water')
 
-        # Create a zip object from two lists
         zipratio = zip(new_ratio, ratio_results)
-        # Create a dictionary from zip object
-        dictOfWords = dict(zipratio)
-        print(f"new Dict: {dictOfWords}")
-        #filter(None, )
-
-        Tank, Co2_ratio, Co2_water, Fertilizer_ratio, Fertilizer_water, WaterConditioner_ratio, WaterConditioner_water \
-            = ratio_results
-        #ratio_data["Ratio Data"].update
-        #ratio_data[f"{}"]
-        print(f"New values {ratio_results}")
+        ratiodict = dict(zipratio)
+        print(f"new Dict: {ratiodict}")
+        for key, value in ratiodict.items():
+            if '_ratio' in key:
+                print(value)
+                #value*'Tank'
 
 
     def ratios(self, ratio_results):
