@@ -125,6 +125,7 @@ class AquariumController:
 
 
     def ratioequals(self, ratio_results):
+
         print("ratio equals function")
         print(f"values {ratio_results}")
         new_ratio = ('Tank', 'Co2_ratio', 'Co2_water', 'Fertilizer_ratio', 'Fertilizer_water', 'WaterConditioner_ratio'\
@@ -132,11 +133,18 @@ class AquariumController:
 
         zipratio = zip(new_ratio, ratio_results)
         ratiodict = dict(zipratio)
-        print(f"new Dict: {ratiodict}")
-        for key, value in ratiodict.items():
-            if '_ratio' in key:
-                print(value)
-                #value*'Tank'
+        #print(f"new Dict: {ratiodict}")
+        #for key, value in ratiodict.items():
+        #    if '_ratio' in key:
+        #        print(value)
+        #        #value*'Tank'
+        for value in ['Co2', 'Fertilizer', 'WaterConditioner']:
+            ratio = ratiodict[value + '_ratio']
+            water = ratiodict[value + '_water']
+            tank = ratiodict['Tank']
+
+            dosage = ratio * tank / water
+            ratiodict[value + '_dosage'] = dosage
 
 
     def ratios(self, ratio_results):
