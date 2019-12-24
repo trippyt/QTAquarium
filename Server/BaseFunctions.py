@@ -142,9 +142,11 @@ class AquariumController:
             ratio = int(ratiodict[value + '_ratio'])
             water = int(ratiodict[value + '_water'])
             tank = int(ratiodict['Tank'])
-
-            dosage = ratio * tank / water
-            ratiodict[value + '_dosage'] = dosage
+            try:
+                dosage = ratio * tank / water
+                ratiodict[value + '_dosage'] = dosage
+            except ZeroDivisionError:
+                dosage = 0
         print(f"Dosage Data: {dosage}")
 
 
