@@ -145,7 +145,7 @@ class AquariumController:
 
             dosage = ratio * tank / water
             ratiodict[value + '_dosage'] = dosage
-        print(dosage)
+        print(f"Dosage Data: {dosage}")
 
 
     def ratios(self, ratio_results):
