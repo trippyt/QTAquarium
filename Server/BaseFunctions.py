@@ -123,9 +123,7 @@ class AquariumController:
     def email_setup(self):
         pass
 
-
     def ratioequals(self, ratio_results):
-
         print("ratio equals function")
         print(f"values {ratio_results}")
         new_ratio = ('Tank', 'Co2_ratio', 'Co2_water', 'Fertilizer_ratio', 'Fertilizer_water', 'WaterConditioner_ratio'\
@@ -133,11 +131,6 @@ class AquariumController:
 
         zipratio = zip(new_ratio, ratio_results)
         ratiodict = dict(zipratio)
-        #print(f"new Dict: {ratiodict}")
-        #for key, value in ratiodict.items():
-        #    if '_ratio' in key:
-        #        print(value)
-        #        #value*'Tank'
         for value in ['Co2', 'Fertilizer', 'WaterConditioner']:
             ratio = int(ratiodict[value + '_ratio'])
             water = int(ratiodict[value + '_water'])
@@ -148,7 +141,7 @@ class AquariumController:
             except ZeroDivisionError:
                 dosage = 0
         print(f"Dosage Data: {dosage}")
-
+        print(f"Dict Data: {ratiodict}")
 
     def ratios(self, ratio_results):
         global ratio_data
@@ -159,7 +152,6 @@ class AquariumController:
          'WaterConditioner Concentrate: {} mL, WaterConditioner to Water: {} Litres'.format(
             *ratio_results))
         self.ratioequals(ratio_results)
-
 
     def calibrate_pump(self, pump_type):
         global calibration_data
