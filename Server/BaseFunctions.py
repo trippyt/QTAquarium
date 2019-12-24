@@ -139,9 +139,9 @@ class AquariumController:
         #        print(value)
         #        #value*'Tank'
         for value in ['Co2', 'Fertilizer', 'WaterConditioner']:
-            ratio = ratiodict[value + '_ratio']
-            water = ratiodict[value + '_water']
-            tank = ratiodict['Tank']
+            ratio = int(ratiodict[value + '_ratio'])
+            water = int(ratiodict[value + '_water'])
+            tank = int(ratiodict['Tank'])
 
             dosage = ratio * tank / water
             ratiodict[value + '_dosage'] = dosage
