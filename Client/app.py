@@ -5,6 +5,7 @@ from PyQt5.QtCore import QTime, QUrl, QEventLoop
 from form import Ui_Form
 import logging
 import sys
+import json
 
 
 class InfoHandler(logging.Handler):  # inherit from Handler class
@@ -16,10 +17,25 @@ class InfoHandler(logging.Handler):  # inherit from Handler class
         self.textBrowser.append(self.format(record))
 
 
+class RatioDisplays(displaytype):
+    form = Ui_Form()
+    Tank = form.Tank_doubleSpinBox
+    Co2_ml = form.Co2_ml_doubleSpinBox
+    Co2_water = form.Co2_water_doubleSpinBox
+    Fertilizer_ml = form.Fertilizer_ml_doubleSpinBox
+    Fertilizer_water = form.Fertilizer_water_doubleSpinBox
+    WaterConditioner_ml = form.WaterConditioner_ml_doubleSpinBox
+    WaterConditioner_water = form.WaterConditioner_water_doubleSpinBox
+
+
 class App(object):
     def __init__(self):
         ipaddress = "192.168.1.33"
         self.nam = QtNetwork.QNetworkAccessManager()
+        self.ratio_displays = ('Tank_doubleSpinBox', 'Co2_ml_doubleSpinBox',
+                          'Co2_water_doubleSpinBox', 'Fertilizer_ml_doubleSpinBox',
+                          'Fertilizer_water_doubleSpinBox', 'WaterConditioner_ml_doubleSpinBox',
+                          'WaterConditioner_water_doubleSpinBox')
         self.calibration_data = {
             "Co2 Calibration Data": {},
             "Fertilizer Calibration Data": {},
@@ -48,6 +64,36 @@ class App(object):
 
         self.form.save_ratios_pushButton.clicked.connect(self.save_ratios)
         self.form.ht_alert_doubleSpinBox.valueChanged.connect(self.set_temp_alert)
+        self.load_server()
+
+    def load_server(self):
+        url = f"http://192.168.1.35:5000/getServerData"
+        request = QtNetwork.QNetworkRequest(QUrl(url))
+        loop = QEventLoop()
+        resp = self.nam.get(request)
+        resp.finished.connect(loop.quit)
+        logging.info("=" * 125)
+        logging.info('Loading Data From the Server'.center(125))
+        loop.exec_()
+        data = resp.readAll()
+        byte_array = data
+        try:
+            new_data = json.loads(byte_array.data())
+            logging.info("JSON Data Loaded".center(125))
+        except json.decoder.JSONDecodeError:
+            logging.info("Couldn't Load JSON From Server".center(125))
+        try:
+            self.ratio_data = new_data["Ratio Data"]
+            logging.info("=" * 125)
+            x = [self.form.display.blockSignals(True) for display in self.ratio_displays]
+            try:
+                y = [self.form.display.setValue(value) for display in self.ratio_displays for value in self.ratio_data]
+            except KeyError:
+                logging.info("No Ratio Data From The Server to Load".center(125))
+
+        except UnboundLocalError:
+            logging.info("Couldn't Load Data".center(125))
+            logging.info("=" * 125)
 
     def save_ratios(self):
         self.log.info("Sending New Ratio Data to Server")
@@ -66,7 +112,6 @@ class App(object):
         url = f"http://192.168.1.33:5000/setRatios?Tank={Tank}&Co2_ratio={Co2_ratio}&Co2_water={Co2_water}" \
               f"&Fertilizer_ratio={Fertilizer_ratio}&Fertilizer_water={Fertilizer_water}" \
               f"&WaterConditioner_ratio={WaterConditioner_ratio}&WaterConditioner_water={WaterConditioner_water}"
-        print(type(Tank))
         request = QtNetwork.QNetworkRequest(QUrl(url))
         self.nam.get(request)
         # self.load_server()

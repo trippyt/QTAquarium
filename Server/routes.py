@@ -15,6 +15,12 @@ async def set_temperature_alert():
     return f"Temperature Alerts H:{ht} L:{lt}"
 
 
+@app.route('/getServerData', methods=['GET'])
+async def get_server_data():
+    print("Sending Data to Client")
+    return jsonify(utils.load())
+
+
 @app.route('/setRatios', methods=['GET', 'POST'])
 async def ratios():
     ratio_results = [request.args.get(ratio) for ratio in

@@ -10,7 +10,7 @@ from time import sleep
 import RPi.GPIO as GPIO
 from w1thermsensor import W1ThermSensor
 
-global conversion_data
+global ratio_data
 global calibration_data
 global setting_data
 
@@ -41,6 +41,29 @@ class CalibrationCancelled (Exception):
     pass
 
 
+class Calcs:
+    def __init__(self):
+        pass
+
+    def ratioequals(self, ratio_results):
+        print("ratio equals function")
+        print(f"values {ratio_results}")
+        new_ratio = ('Tank', 'Co2_ratio', 'Co2_water', 'Fertilizer_ratio', 'Fertilizer_water', 'WaterConditioner_ratio'\
+                                        , 'WaterConditioner_water')
+        zipratio = zip(new_ratio, ratio_results)
+        ratiodict = dict(zipratio)
+        for value in ['Co2', 'Fertilizer', 'WaterConditioner']:
+            ratio = int(ratiodict[value + '_ratio'])
+            water = int(ratiodict[value + '_water'])
+            tank = int(ratiodict['Tank'])
+            try:
+                dosage = ratio * tank / water
+                ratiodict[value + '_dosage'] = dosage
+            except ZeroDivisionError:
+                dosage = 0
+            #if dosage != 0 else 0
+        logging.info(f"Dict Data: {ratiodict}")
+
 class AquariumController:
 
     def __init__(self):
@@ -58,7 +81,7 @@ class AquariumController:
             t = threading.Thread(target=lambda: self.event_loop.run_forever())
             t.start()
 
-        conversion_data = {
+        ratio_data = {
             "Tank Size": {},
             "Co2 Ratio": {},
             "Fertilizer Ratio": {},
@@ -91,11 +114,11 @@ class AquariumController:
         if os.path.isfile('data.txt'):
             with open('data.txt', 'r') as json_file:
                 data = json.loads(json_file.read())
-                global conversion_data
+                global ratio_data
                 global calibration_data
                 logging.info("Loading Saved Data")
                 logging.info(data)
-                conversion_data = data["Conversion Data"]
+                ratio_data = data["Ratio Data"]
                 # temperature_data = data["Temperature Data"]
                 # conversion_values
                 # schedule_data
@@ -105,11 +128,11 @@ class AquariumController:
                 return data
 
     def save(self):
-        global conversion_data
+        global ratio_data
         global calibration_data
         data = {
             "Setting Data": setting_data,
-            # "Conversion Data": conversion_data,
+            "Ratio Data": ratio_data,
             "Calibration Data": calibration_data,
             # "Schedule Data": schedule_data,
             # "Temperature Data": temperature_data,
@@ -140,8 +163,14 @@ class AquariumController:
                 ratiodict[value + '_dosage'] = dosage
             except ZeroDivisionError:
                 dosage = 0
+            #if dosage != 0 else 0
         print(f"Dosage Data: {dosage}")
         print(f"Dict Data: {ratiodict}")
+        self.save()
+        #for key in ratiodict:
+        #    ratio_data["Ratio Data"].update(
+        #        f"{key}"
+        #    )
 
     def ratios(self, ratio_results):
         global ratio_data
