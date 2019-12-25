@@ -22,9 +22,10 @@ class App(object):
         ipaddress = "192.168.1.33"
         self.nam = QtNetwork.QNetworkAccessManager()
         self.ratio_displays = ('Tank_doubleSpinBox', 'Co2_ml_doubleSpinBox',
-                          'Co2_water_doubleSpinBox', 'Fertilizer_ml_doubleSpinBox',
-                          'Fertilizer_water_doubleSpinBox', 'WaterConditioner_ml_doubleSpinBox',
-                          'WaterConditioner_water_doubleSpinBox')
+                               'Co2_water_doubleSpinBox', 'Fertilizer_ml_doubleSpinBox',
+                               'Fertilizer_water_doubleSpinBox', 'WaterConditioner_ml_doubleSpinBox',
+                               'WaterConditioner_water_doubleSpinBox', 'Co2_dosage_ml_lineEdit',
+                               'Fertilizer_dosage_ml_lineEdit', 'WaterConditioner_dosage_ml_lineEdit')
         self.calibration_data = {
             "Co2 Calibration Data": {},
             "Fertilizer Calibration Data": {},
@@ -97,7 +98,7 @@ class App(object):
                       'Co2 Concentrate: {} mL, Co2 to Water: {} Litres,\n'
                       'Fertilizer Concentrate: {} mL, Fertilizer to Water: {} Litres,\n'
                       'WaterConditioner Concentrate: {} mL, WaterConditioner to Water: {} Litres'.format(
-                        *ratio_results))
+            *ratio_results))
         url = f"http://192.168.1.33:5000/setRatios?Tank={Tank}&Co2_ratio={Co2_ratio}&Co2_water={Co2_water}" \
               f"&Fertilizer_ratio={Fertilizer_ratio}&Fertilizer_water={Fertilizer_water}" \
               f"&WaterConditioner_ratio={WaterConditioner_ratio}&WaterConditioner_water={WaterConditioner_water}"

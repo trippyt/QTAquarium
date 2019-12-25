@@ -148,6 +148,7 @@ class AquariumController:
         pass
 
     def ratioequals(self, ratio_results):
+        global ratio_data
         print("ratio equals function")
         print(f"values {ratio_results}")
         new_ratio = ('Tank', 'Co2_ratio', 'Co2_water', 'Fertilizer_ratio', 'Fertilizer_water', 'WaterConditioner_ratio'\
@@ -165,7 +166,7 @@ class AquariumController:
             except ZeroDivisionError:
                 dosage = 0
             #if dosage != 0 else 0
-        print(f"Dosage Data: {dosage}")
+            ratio_data = ratiodict
         print(f"Dict Data: {ratiodict}")
         self.save()
         #for key in ratiodict:
