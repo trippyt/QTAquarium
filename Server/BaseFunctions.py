@@ -71,6 +71,7 @@ class AquariumController:
             'temp_tank': W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, "011447ba3caa"),
             #'temp_room': dht11.DHT11(pin=14)
         }
+        global ratio_data
         global calibration_data
         global setting_data
         self.led_loop = True
@@ -160,7 +161,7 @@ class AquariumController:
             tank = int(ratiodict['Tank'])
             try:
                 dosage = ratio * tank / water
-                ratiodict[value + '_dosage'] = dosage
+                ratiodict[value + '_dosage'] = int(dosage)
             except ZeroDivisionError:
                 dosage = 0
             #if dosage != 0 else 0

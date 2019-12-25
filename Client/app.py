@@ -17,17 +17,6 @@ class InfoHandler(logging.Handler):  # inherit from Handler class
         self.textBrowser.append(self.format(record))
 
 
-class RatioDisplays(displaytype):
-    form = Ui_Form()
-    Tank = form.Tank_doubleSpinBox
-    Co2_ml = form.Co2_ml_doubleSpinBox
-    Co2_water = form.Co2_water_doubleSpinBox
-    Fertilizer_ml = form.Fertilizer_ml_doubleSpinBox
-    Fertilizer_water = form.Fertilizer_water_doubleSpinBox
-    WaterConditioner_ml = form.WaterConditioner_ml_doubleSpinBox
-    WaterConditioner_water = form.WaterConditioner_water_doubleSpinBox
-
-
 class App(object):
     def __init__(self):
         ipaddress = "192.168.1.33"
