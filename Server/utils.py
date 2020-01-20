@@ -45,4 +45,4 @@ def newRatios(ratio_results: str):
 
 
 def load():
-    controller.load()
+    return controller.load()
