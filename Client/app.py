@@ -79,11 +79,13 @@ class App(object):
             try:
                 y = [self.form.display.setValue(value) for display in self.ratio_displays for value in self.ratio_data]
             except KeyError:
-                logging.info("No Ratio Data From The Server to Load".center(125))
+                logging.info("No Ratio Values From The Server to Load".center(125))
+        except TypeError:
+            logging.info("Couldn't Load Data from the Server".center(125))
 
         except UnboundLocalError:
             logging.info("Couldn't Load Data".center(125))
-            logging.info("=" * 125)
+        logging.info("=" * 125)
 
     def save_ratios(self):
         self.log.info("Sending New Ratio Data to Server")

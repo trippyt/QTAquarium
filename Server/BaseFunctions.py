@@ -119,7 +119,7 @@ class AquariumController:
                     global ratio_data
                     global calibration_data
                     logging.info("Loading Saved Data")
-                    logging.info(data)
+                    logging.info(f"Loading Data...{data}")
                     ratio_data = data["Ratio Data"]
                     # temperature_data = data["Temperature Data"]
                     # conversion_values
