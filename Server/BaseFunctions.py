@@ -140,7 +140,7 @@ class AquariumController:
             # "Dosage Data": dosage_data,
             # "Light Hour Data": light_hour_data
         }
-        with open('data.json', 'w') as json_file:
+        with open('data.txt', 'w') as json_file:
             json_file.write(json.dumps(data, indent=4))
         logging.info("Settings Updated")
 
