@@ -112,21 +112,24 @@ class AquariumController:
         GPIO.output(pumps[pump_type], 0)
 
     def load(self):
-        if os.path.isfile('data.txt'):
-            with open('data.txt', 'r') as json_file:
-                data = json.loads(json_file.read())
-                global ratio_data
-                global calibration_data
-                logging.info("Loading Saved Data")
-                logging.info(data)
-                ratio_data = data["Ratio Data"]
-                # temperature_data = data["Temperature Data"]
-                # conversion_values
-                # schedule_data
-                # calibration_data = data["Calibration Data"]
-                # light_hour_data
-                # dosage_data = data["Dosage Data"]
-                return data
+        try:
+            if os.path.isfile('data.txt'):
+                with open('data.txt', 'r') as json_file:
+                    data = json.loads(json_file.read())
+                    global ratio_data
+                    global calibration_data
+                    logging.info("Loading Saved Data")
+                    logging.info(data)
+                    ratio_data = data["Ratio Data"]
+                    # temperature_data = data["Temperature Data"]
+                    # conversion_values
+                    # schedule_data
+                    # calibration_data = data["Calibration Data"]
+                    # light_hour_data
+                    # dosage_data = data["Dosage Data"]
+                    return data
+        except TypeError:
+            logging.info("Couldn't Load Data from the Server")
 
     def save(self):
         global ratio_data
