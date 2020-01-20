@@ -38,7 +38,7 @@ controller.notification_led_stop()
 controller.read_temperature()
 
 
-cd QTAquarium
+cd QTAquarium Server
 cd Server
 git pull
 python3 server.py

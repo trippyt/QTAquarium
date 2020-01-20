@@ -157,12 +157,12 @@ class AquariumController:
         zipratio = zip(new_ratio, ratio_results)
         ratiodict = dict(zipratio)
         for value in ['Co2', 'Fertilizer', 'WaterConditioner']:
-            ratio = int(ratiodict[value + '_ratio'])
-            water = int(ratiodict[value + '_water'])
-            tank = int(ratiodict['Tank'])
+            ratio = float(ratiodict[value + '_ratio'])
+            water = float(ratiodict[value + '_water'])
+            tank = float(ratiodict['Tank'])
             try:
                 dosage = ratio * tank / water
-                ratiodict[value + '_dosage'] = int(dosage)
+                ratiodict[value + '_dosage'] = float(dosage)
             except ZeroDivisionError:
                 dosage = 0
             #if dosage != 0 else 0
