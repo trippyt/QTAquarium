@@ -57,7 +57,7 @@ class App(object):
         self.load_server()
 
     def load_server(self):
-        url = f"http://192.168.1.35:5000/getServerData"
+        url = f"http://192.168.1.33:5000/getServerData"
         request = QtNetwork.QNetworkRequest(QUrl(url))
         loop = QEventLoop()
         resp = self.nam.get(request)
