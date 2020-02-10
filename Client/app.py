@@ -19,13 +19,10 @@ class InfoHandler(logging.Handler):  # inherit from Handler class
 
 class App(object):
     def __init__(self):
-        ipaddress = "192.168.1.33"
+        global ip_address
+        ip_address = "192.168.1.33"
         self.nam = QtNetwork.QNetworkAccessManager()
-        self.ratio_displays = ('Tank_doubleSpinBox', 'Co2_ml_doubleSpinBox',
-                               'Co2_water_doubleSpinBox', 'Fertilizer_ml_doubleSpinBox',
-                               'Fertilizer_water_doubleSpinBox', 'WaterConditioner_ml_doubleSpinBox',
-                               'WaterConditioner_water_doubleSpinBox', 'Co2_dosage_ml_lineEdit',
-                               'Fertilizer_dosage_ml_lineEdit', 'WaterConditioner_dosage_ml_lineEdit')
+
         self.calibration_data = {
             "Co2 Calibration Data": {},
             "Fertilizer Calibration Data": {},
@@ -42,13 +39,18 @@ class App(object):
         self.form = Ui_Form()
         self.window.setCentralWidget(self.central)
         self.form.setupUi(self.central)
+        self.ratio_displays = [self.form.Tank_doubleSpinBox, self.form.Co2_ml_doubleSpinBox,
+                               self.form.Co2_water_doubleSpinBox, self.form.Fertilizer_ml_doubleSpinBox,
+                               self.form.Fertilizer_water_doubleSpinBox, self.form.WaterConditioner_ml_doubleSpinBox,
+                               self.form.WaterConditioner_water_doubleSpinBox, self.form.Co2_dosage_ml_lineEdit,
+                               self.form.Fertilizer_dosage_ml_lineEdit, self.form.WaterConditioner_dosage_ml_lineEdit]
         logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
         self.log = logging.getLogger('AquariumQT')
         self.log.handlers = [InfoHandler(self.form.textBrowser)]
 
         self.client = QtWebSockets.QWebSocket("", QtWebSockets.QWebSocketProtocol.Version13, None)
         self.client.error.connect(self.on_error)
-        self.client.open(QUrl(f"ws://{ipaddress}:5000/temp"))
+        self.client.open(QUrl(f"ws://{ip_address}:5000/temp"))
         self.client.pong.connect(self.ws_receive)
         self.client.textMessageReceived.connect(self.ws_receive)
 
@@ -58,6 +60,66 @@ class App(object):
 
     def load_server(self):
         url = f"http://192.168.1.33:5000/getServerData"
+        request = QtNetwork.QNetworkRequest(QUrl(url))
+        loop = QEventLoop()  # Do you intend to start a new loop instance here?
+        # If not: I don't use pyQT but I would expect there to be a function like QEventLoop.get_running_loop()
+        # which would give you reference rather than starting a new instance
+        resp = self.nam.get(request)
+        resp.finished.connect(loop.quit)
+        logging.info("=" * 125)
+        logging.info('Loading Data From the Server'.center(125))
+        loop.exec_()
+        data = resp.readAll()
+        byte_array = data
+        try:
+            new_data = json.loads(byte_array.data())
+            logging.info("JSON Data Loaded".center(125))
+        except json.decoder.JSONDecodeError:
+            logging.info("Couldn't Load JSON From Server".center(125))
+        try:
+            self.ratio_data = new_data["Ratio Data"]
+            logging.info("=" * 125)
+            # x = [self.form.display.blockSignals(True) for display in self.ratio_displays]
+
+
+            # We need to use getattr because in the above statement, display is its own variable. You can't access
+            # an attribute with the variable name like that. Because you don't use the variable `display`,
+            # the above code is equivalent to the following:
+            # x = [self.form.display.blockSignals(True) for _ in self.ratio_displays]
+
+            # since there is no .display attribute for self.form, this would cause an attribute error normally.
+            # However, since you call a method on the object, the first error raised is a TypeError which tells you it
+            # cannot find the function reference for this object, which is a symptom of the same problem.
+
+            # The correct way to get those attributes is as follows:
+
+            for display in self.ratio_displays:
+                form_display = getattr(self.form, display)
+                form_display.blockSignals(True)
+
+            try:
+                # y = [self.form.display.setValue(value) for display in self.ratio_displays for value in self.ratio_data]
+                # To iterate over pairs of values, you should zip them as shown below
+                # Nesting loops as you did initially creates a loop per variable value, which isn't what you want here.
+                # Generally you should avoid nesting loops in one line, but sometimes it is ok for simple tasks.
+                # We also use getattr here as we did before.
+
+                for display, value in zip(self.ratio_displays, self.ratio_data):
+                    print(display, value)
+                    form_display = getattr(self.form, display)
+                    form_display.setValue(value)
+
+            except KeyError:
+                logging.info("No Ratio Values From The Server to Load".center(125))
+        except TypeError:
+            logging.info("Couldn't Load Data from the Server".center(125))
+
+        except UnboundLocalError:
+            logging.info("Couldn't Load Data".center(125))
+        logging.info("=" * 125)
+    '''
+    def load_server(self):
+        url = f"http://{ip_address}:5000/getServerData"
         request = QtNetwork.QNetworkRequest(QUrl(url))
         loop = QEventLoop()
         resp = self.nam.get(request)
@@ -75,17 +137,18 @@ class App(object):
         try:
             self.ratio_data = new_data["Ratio Data"]
             logging.info("=" * 125)
-            x = [self.form.display.blockSignals(True) for display in self.ratio_displays]
+            x = [display.blockSignals(True) for display in self.ratio_displays]
             try:
-                y = [self.form.display.setValue(value) for display in self.ratio_displays for value in self.ratio_data]
+                y = [display.setValue(value) for display in self.ratio_displays for value in self.ratio_data]
             except KeyError:
-                logging.info("No Ratio Values From The Server to Load".center(125))
-        except TypeError:
-            logging.info("Couldn't Load Data from the Server".center(125))
+                logging.info("No Ratio Values From JSON".center(125))
+
+        except TypeError as e:
+            logging.info("Couldn't Load data from the Server: {}".format(e).center(125))
 
         except UnboundLocalError:
             logging.info("Couldn't Load Data".center(125))
-        logging.info("=" * 125)
+        logging.info("=" * 125)'''
 
     def save_ratios(self):
         self.log.info("Sending New Ratio Data to Server")
