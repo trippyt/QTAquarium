@@ -94,8 +94,6 @@ class App(object):
             # The correct way to get those attributes is as follows:
 
             for display in self.ratio_displays:
-                print(type(self.form))
-                print(type(display))
                 form_display = getattr(self.form, display)
                 form_display.blockSignals(True)
 

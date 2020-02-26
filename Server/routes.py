@@ -28,6 +28,7 @@ async def ratios():
     ratio_results = [request.args.get(ratio) for ratio in
                      ('Tank', 'Co2_ratio', 'Co2_water', 'Fertilizer_ratio', 'Fertilizer_water', 'WaterConditioner_ratio',
                       'WaterConditioner_water')]
+    print(type(ratio_results))
     utils.newRatios(ratio_results)
     return f"New ratios: {ratio_results}"
 
