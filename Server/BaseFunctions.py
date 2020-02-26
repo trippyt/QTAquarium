@@ -157,6 +157,7 @@ class AquariumController:
         zipratio = zip(new_ratio, ratio_results)
         ratiodict = dict(zipratio)
         for value in ['Co2', 'Fertilizer', 'WaterConditioner']:
+            print(type(value))
             ratio = float(ratiodict[value + '_ratio'])
             water = float(ratiodict[value + '_water'])
             tank = float(ratiodict['Tank'])

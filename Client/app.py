@@ -94,6 +94,8 @@ class App(object):
             # The correct way to get those attributes is as follows:
 
             for display in self.ratio_displays:
+                print(type(self.form))
+                print(type(display))
                 form_display = getattr(self.form, display)
                 form_display.blockSignals(True)
 
@@ -109,13 +111,17 @@ class App(object):
                     form_display = getattr(self.form, display)
                     form_display.setValue(value)
 
-            except KeyError:
+            except KeyError as e:
                 logging.info("No Ratio Values From The Server to Load".center(125))
-        except TypeError:
-            logging.info("Couldn't Load Data from the Server".center(125))
+                logging.info(e)
 
-        except UnboundLocalError:
+        except TypeError as e:
+            logging.info("Couldn't Load Data from the Server".center(125))
+            logging.exception(e)
+
+        except UnboundLocalError as e:
             logging.info("Couldn't Load Data".center(125))
+            logging.info(e)
         logging.info("=" * 125)
     '''
     def load_server(self):
