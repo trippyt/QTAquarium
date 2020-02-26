@@ -163,9 +163,9 @@ class AquariumController:
             tank = float(ratiodict['Tank'])
             try:
                 dosage = ratio * tank / water
-                ratiodict[value + '_dosage'] = float(dosage)
             except ZeroDivisionError:
                 dosage = 0
+            ratiodict[value + '_dosage'] = float(dosage)
             #if dosage != 0 else 0
             ratio_data = ratiodict
         print(f"Dict Data: {ratiodict}")
