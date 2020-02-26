@@ -25,7 +25,7 @@ async def get_server_data():
 
 @app.route('/setRatios', methods=['GET', 'POST'])
 async def ratios():
-    ratio_results = [request.args.get(ratio) for ratio in
+    ratio_results = [float(request.args.get(ratio)) for ratio in
                      ('Tank', 'Co2_ratio', 'Co2_water', 'Fertilizer_ratio', 'Fertilizer_water', 'WaterConditioner_ratio',
                       'WaterConditioner_water')]
     print(type(ratio_results))
