@@ -33,6 +33,9 @@ class App(object):
             "Temperature Alerts": {},
             "Email Alert": {}
         }
+        self.new_data = {
+            "Ratio Data": {}
+        }
         self.app = QtWidgets.QApplication(sys.argv)
         self.central = QtWidgets.QWidget()
         self.window = QtWidgets.QMainWindow()
@@ -72,12 +75,12 @@ class App(object):
         data = resp.readAll()
         byte_array = data
         try:
-            new_data = json.loads(byte_array.data())
+            self.new_data = json.loads(byte_array.data())
             logging.info("JSON Data Loaded".center(125))
         except json.decoder.JSONDecodeError:
             logging.info("Couldn't Load JSON From Server".center(125))
         try:
-            self.ratio_data = new_data["Ratio Data"]
+            self.ratio_data = self.new_data["Ratio Data"]
             logging.info("=" * 125)
             # x = [self.form.display.blockSignals(True) for display in self.ratio_displays]
 
@@ -94,8 +97,7 @@ class App(object):
             # The correct way to get those attributes is as follows:
 
             for display in self.ratio_displays:
-                form_display = getattr(self.form, display)
-                form_display.blockSignals(True)
+                display.blockSignals(True)
 
             try:
                 # y = [self.form.display.setValue(value) for display in self.ratio_displays for value in self.ratio_data]
@@ -103,11 +105,8 @@ class App(object):
                 # Nesting loops as you did initially creates a loop per variable value, which isn't what you want here.
                 # Generally you should avoid nesting loops in one line, but sometimes it is ok for simple tasks.
                 # We also use getattr here as we did before.
-
-                for display, value in zip(self.ratio_displays, self.ratio_data):
-                    print(display, value)
-                    form_display = getattr(self.form, display)
-                    form_display.setValue(value)
+                for key in self.ratio_data:
+                    getattr(self.form, key).setValue(self.ratio_data[key])
 
             except KeyError as e:
                 logging.info("No Ratio Values From The Server to Load".center(125))
@@ -119,7 +118,7 @@ class App(object):
 
         except UnboundLocalError as e:
             logging.info("Couldn't Load Data".center(125))
-            logging.info(e)
+            logging.exception(e)
         logging.info("=" * 125)
     '''
     def load_server(self):
