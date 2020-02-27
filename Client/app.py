@@ -45,8 +45,8 @@ class App(object):
         self.ratio_displays = [self.form.Tank_doubleSpinBox, self.form.Co2_ml_doubleSpinBox,
                                self.form.Co2_water_doubleSpinBox, self.form.Fertilizer_ml_doubleSpinBox,
                                self.form.Fertilizer_water_doubleSpinBox, self.form.WaterConditioner_ml_doubleSpinBox,
-                               self.form.WaterConditioner_water_doubleSpinBox, self.form.Co2_dosage_ml_lineEdit,
-                               self.form.Fertilizer_dosage_ml_lineEdit, self.form.WaterConditioner_dosage_ml_lineEdit]
+                               self.form.WaterConditioner_water_doubleSpinBox, self.form.Co2_dosage,
+                               self.form.Fertilizer_dosage, self.form.WaterConditioner_dosage]
         logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
         self.log = logging.getLogger('AquariumQT')
         self.log.handlers = [InfoHandler(self.form.textBrowser)]
@@ -82,20 +82,6 @@ class App(object):
         try:
             self.ratio_data = self.new_data["Ratio Data"]
             logging.info("=" * 125)
-            # x = [self.form.display.blockSignals(True) for display in self.ratio_displays]
-
-
-            # We need to use getattr because in the above statement, display is its own variable. You can't access
-            # an attribute with the variable name like that. Because you don't use the variable `display`,
-            # the above code is equivalent to the following:
-            # x = [self.form.display.blockSignals(True) for _ in self.ratio_displays]
-
-            # since there is no .display attribute for self.form, this would cause an attribute error normally.
-            # However, since you call a method on the object, the first error raised is a TypeError which tells you it
-            # cannot find the function reference for this object, which is a symptom of the same problem.
-
-            # The correct way to get those attributes is as follows:
-
             for display in self.ratio_displays:
                 display.blockSignals(True)
 
@@ -105,8 +91,9 @@ class App(object):
                 # Nesting loops as you did initially creates a loop per variable value, which isn't what you want here.
                 # Generally you should avoid nesting loops in one line, but sometimes it is ok for simple tasks.
                 # We also use getattr here as we did before.
+                print(self.ratio_data)
                 for key in self.ratio_data:
-                    getattr(self.form, key).setValue(self.ratio_data[key])
+                    getattr(self.form, key).setText(self.ratio_data[key])
 
             except KeyError as e:
                 logging.info("No Ratio Values From The Server to Load".center(125))

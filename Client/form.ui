@@ -200,7 +200,7 @@
         <double>999.990000000000009</double>
        </property>
       </widget>
-      <widget class="QLineEdit" name="Co2_dosage_ml_lineEdit">
+      <widget class="QLineEdit" name="Co2_dosage">
        <property name="geometry">
         <rect>
          <x>710</x>
@@ -301,7 +301,7 @@
         <double>999.990000000000009</double>
        </property>
       </widget>
-      <widget class="QLineEdit" name="Fertilizer_dosage_ml_lineEdit">
+      <widget class="QLineEdit" name="Fertilizer_dosage">
        <property name="geometry">
         <rect>
          <x>710</x>
@@ -386,7 +386,7 @@
         <double>999.990000000000009</double>
        </property>
       </widget>
-      <widget class="QLineEdit" name="WaterConditioner_dosage_ml_lineEdit">
+      <widget class="QLineEdit" name="WaterConditioner_dosage">
        <property name="geometry">
         <rect>
          <x>710</x>
