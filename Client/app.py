@@ -42,10 +42,10 @@ class App(object):
         self.form = Ui_Form()
         self.window.setCentralWidget(self.central)
         self.form.setupUi(self.central)
-        self.ratio_displays = [self.form.Tank_doubleSpinBox, self.form.Co2_ml_doubleSpinBox,
-                               self.form.Co2_water_doubleSpinBox, self.form.Fertilizer_ml_doubleSpinBox,
-                               self.form.Fertilizer_water_doubleSpinBox, self.form.WaterConditioner_ml_doubleSpinBox,
-                               self.form.WaterConditioner_water_doubleSpinBox, self.form.Co2_dosage,
+        self.ratio_displays = [self.form.Tank, self.form.Co2_ratio,
+                               self.form.Co2_water, self.form.Fertilizer_ratio,
+                               self.form.Fertilizer_water, self.form.WaterConditioner_ratio,
+                               self.form.WaterConditioner_water, self.form.Co2_dosage,
                                self.form.Fertilizer_dosage, self.form.WaterConditioner_dosage]
         logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
         self.log = logging.getLogger('AquariumQT')
@@ -93,11 +93,21 @@ class App(object):
                 # We also use getattr here as we did before.
                 print(self.ratio_data)
                 for key in self.ratio_data:
-                    getattr(self.form, key).setText(self.ratio_data[key])
+                    ui_obj = getattr(self.form, key)
+                    if isinstance(ui_obj, QtWidgets.QDoubleSpinBox):
+                        ui_obj.setValue(self.ratio_data[key])
+                    else:
+                        ui_obj.setText(str(self.ratio_data[key]))
+
+                    '''try:
+                        getattr(self.form, key).setValue(self.ratio_data[key])
+                    except AttributeError as e:
+                        getattr(self.form, key).setText(str(self.ratio_data[key]))
+                        logging.exception(e)'''
 
             except KeyError as e:
                 logging.info("No Ratio Values From The Server to Load".center(125))
-                logging.info(e)
+                logging.exception(e)
 
         except TypeError as e:
             logging.info("Couldn't Load Data from the Server".center(125))
@@ -143,10 +153,10 @@ class App(object):
     def save_ratios(self):
         self.log.info("Sending New Ratio Data to Server")
         ratio_results = [int(ratio.value()) for ratio in
-                         (self.form.Tank_doubleSpinBox, self.form.Co2_ml_doubleSpinBox,
-                          self.form.Co2_water_doubleSpinBox, self.form.Fertilizer_ml_doubleSpinBox,
-                          self.form.Fertilizer_water_doubleSpinBox, self.form.WaterConditioner_ml_doubleSpinBox,
-                          self.form.WaterConditioner_water_doubleSpinBox)]
+                         (self.form.Tank, self.form.Co2_ratio,
+                          self.form.Co2_water, self.form.Fertilizer_ratio,
+                          self.form.Fertilizer_water, self.form.WaterConditioner_ratio,
+                          self.form.WaterConditioner_water)]
         Tank, Co2_ratio, Co2_water, Fertilizer_ratio, Fertilizer_water, WaterConditioner_ratio, WaterConditioner_water \
             = ratio_results
         self.log.info('Tank Size: {} Litres,\n'
