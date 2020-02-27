@@ -84,13 +84,7 @@ class App(object):
             logging.info("=" * 125)
             for display in self.ratio_displays:
                 display.blockSignals(True)
-
             try:
-                # y = [self.form.display.setValue(value) for display in self.ratio_displays for value in self.ratio_data]
-                # To iterate over pairs of values, you should zip them as shown below
-                # Nesting loops as you did initially creates a loop per variable value, which isn't what you want here.
-                # Generally you should avoid nesting loops in one line, but sometimes it is ok for simple tasks.
-                # We also use getattr here as we did before.
                 print(self.ratio_data)
                 for key in self.ratio_data:
                     ui_obj = getattr(self.form, key)
@@ -98,12 +92,6 @@ class App(object):
                         ui_obj.setValue(self.ratio_data[key])
                     else:
                         ui_obj.setText(str(self.ratio_data[key]))
-
-                    '''try:
-                        getattr(self.form, key).setValue(self.ratio_data[key])
-                    except AttributeError as e:
-                        getattr(self.form, key).setText(str(self.ratio_data[key]))
-                        logging.exception(e)'''
 
             except KeyError as e:
                 logging.info("No Ratio Values From The Server to Load".center(125))
@@ -117,38 +105,6 @@ class App(object):
             logging.info("Couldn't Load Data".center(125))
             logging.exception(e)
         logging.info("=" * 125)
-    '''
-    def load_server(self):
-        url = f"http://{ip_address}:5000/getServerData"
-        request = QtNetwork.QNetworkRequest(QUrl(url))
-        loop = QEventLoop()
-        resp = self.nam.get(request)
-        resp.finished.connect(loop.quit)
-        logging.info("=" * 125)
-        logging.info('Loading Data From the Server'.center(125))
-        loop.exec_()
-        data = resp.readAll()
-        byte_array = data
-        try:
-            new_data = json.loads(byte_array.data())
-            logging.info("JSON Data Loaded".center(125))
-        except json.decoder.JSONDecodeError:
-            logging.info("Couldn't Load JSON From Server".center(125))
-        try:
-            self.ratio_data = new_data["Ratio Data"]
-            logging.info("=" * 125)
-            x = [display.blockSignals(True) for display in self.ratio_displays]
-            try:
-                y = [display.setValue(value) for display in self.ratio_displays for value in self.ratio_data]
-            except KeyError:
-                logging.info("No Ratio Values From JSON".center(125))
-
-        except TypeError as e:
-            logging.info("Couldn't Load data from the Server: {}".format(e).center(125))
-
-        except UnboundLocalError:
-            logging.info("Couldn't Load Data".center(125))
-        logging.info("=" * 125)'''
 
     def save_ratios(self):
         self.log.info("Sending New Ratio Data to Server")
@@ -169,7 +125,7 @@ class App(object):
               f"&WaterConditioner_ratio={WaterConditioner_ratio}&WaterConditioner_water={WaterConditioner_water}"
         request = QtNetwork.QNetworkRequest(QUrl(url))
         self.nam.get(request)
-        # self.load_server()
+        self.load_server()
 
     def set_temp_alert(self):
         ht = self.form.ht_alert_doubleSpinBox.value()

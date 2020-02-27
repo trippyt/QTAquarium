@@ -71,7 +71,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>2</number>
    </property>
    <widget class="QWidget" name="Home_tab">
     <attribute name="title">
@@ -551,7 +551,7 @@
           <enum>QLCDNumber::Flat</enum>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButton_4">
+        <widget class="QPushButton" name="Co2_calibrateButton">
          <property name="geometry">
           <rect>
            <x>10</x>
@@ -760,7 +760,7 @@
           <enum>QLCDNumber::Flat</enum>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButton_10">
+        <widget class="QPushButton" name="WaterConditioner_calibrateButton">
          <property name="geometry">
           <rect>
            <x>10</x>
@@ -969,7 +969,7 @@
           <enum>QLCDNumber::Flat</enum>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButton_8">
+        <widget class="QPushButton" name="Fertilizer_calibrateButton">
          <property name="geometry">
           <rect>
            <x>10</x>
