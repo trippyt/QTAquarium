@@ -6,6 +6,7 @@ from form import Ui_Form
 import logging
 import sys
 import json
+import requests
 
 
 class InfoHandler(logging.Handler):  # inherit from Handler class
@@ -36,6 +37,7 @@ class App(object):
         self.new_data = {
             "Ratio Data": {}
         }
+        self.calibration_mode_on = True
         self.app = QtWidgets.QApplication(sys.argv)
         self.central = QtWidgets.QWidget()
         self.window = QtWidgets.QMainWindow()
@@ -57,6 +59,7 @@ class App(object):
         self.client.pong.connect(self.ws_receive)
         self.client.textMessageReceived.connect(self.ws_receive)
 
+        self.form.Co2_calibrateButton.clicked.connect(lambda: self.enter_calibrationMode("Co2"))
         self.form.save_ratios_pushButton.clicked.connect(self.save_ratios)
         self.form.ht_alert_doubleSpinBox.valueChanged.connect(self.set_temp_alert)
         self.load_server()
@@ -97,6 +100,9 @@ class App(object):
                 logging.info("No Ratio Values From The Server to Load".center(125))
                 logging.exception(e)
 
+            for display in self.ratio_displays:
+                display.blockSignals(False)
+
         except TypeError as e:
             logging.info("Couldn't Load Data from the Server".center(125))
             logging.exception(e)
@@ -126,6 +132,15 @@ class App(object):
         request = QtNetwork.QNetworkRequest(QUrl(url))
         self.nam.get(request)
         self.load_server()
+
+    def enter_calibrationMode(self, pump_type):
+        self.calibration_mode_on = not self.calibration_mode_on
+        if not self.calibration_mode_on:
+            resp = requests.get(url=f"http://{ip_address}:5000/calibrationModeOn?type={pump_type}")
+            data = resp.json()
+            print(data)
+        else:
+            self.exit_calibrationMode(pump_type)
 
     def set_temp_alert(self):
         ht = self.form.ht_alert_doubleSpinBox.value()

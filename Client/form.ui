@@ -71,7 +71,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>2</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="Home_tab">
     <attribute name="title">
@@ -201,6 +201,9 @@
        </property>
       </widget>
       <widget class="QLineEdit" name="Co2_dosage">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
        <property name="geometry">
         <rect>
          <x>710</x>
@@ -208,6 +211,9 @@
          <width>113</width>
          <height>20</height>
         </rect>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
        </property>
       </widget>
       <widget class="QLabel" name="label_2">
@@ -310,6 +316,9 @@
          <height>20</height>
         </rect>
        </property>
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
       </widget>
       <widget class="QLabel" name="label_6">
        <property name="geometry">
@@ -394,6 +403,9 @@
          <width>113</width>
          <height>20</height>
         </rect>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
        </property>
       </widget>
       <widget class="QLabel" name="label_7">

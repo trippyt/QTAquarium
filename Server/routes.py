@@ -1,3 +1,5 @@
+import threading
+
 from quart import Quart, request, websocket
 from quart.json import jsonify
 import asyncio
@@ -31,6 +33,18 @@ async def ratios():
     print(type(ratio_results))
     utils.newRatios(ratio_results)
     return f"New ratios: {ratio_results}"
+
+
+@app.route('/calibrationModeOn', methods=['GET', 'POST'])
+async def run_calibration():
+    pump_type = request.args.get('type')
+    print(pump_type)
+    if pump_type in ['conditioner', 'co2', 'fertilizer']:
+        cal_thread = threading.Thread(target=utils.start_calibration, args=(pump_type,))
+        cal_thread.start()
+        return f"Calibrating {pump_type} pump."
+    else:
+        return "Invalid pump specified"
 
 
 @app.websocket('/temp')

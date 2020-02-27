@@ -72,7 +72,9 @@ class Ui_Form(object):
         self.Co2_water.setMaximum(999.99)
         self.Co2_water.setObjectName("Co2_water")
         self.Co2_dosage = QtWidgets.QLineEdit(self.groupBox)
+        self.Co2_dosage.setEnabled(True)
         self.Co2_dosage.setGeometry(QtCore.QRect(710, 30, 113, 20))
+        self.Co2_dosage.setReadOnly(True)
         self.Co2_dosage.setObjectName("Co2_dosage")
         self.label_2 = QtWidgets.QLabel(self.groupBox)
         self.label_2.setGeometry(QtCore.QRect(90, 30, 61, 21))
@@ -640,7 +642,7 @@ class Ui_Form(object):
         self.tabWidget.addTab(self.tab_4, "")
 
         self.retranslateUi(Form)
-        self.tabWidget.setCurrentIndex(2)
+        self.tabWidget.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(Form)
 
     def retranslateUi(self, Form):
