@@ -134,13 +134,17 @@ class App(object):
         self.load_server()
 
     def enter_calibrationMode(self, pump_type):
-        self.calibration_mode_on = not self.calibration_mode_on
-        if not self.calibration_mode_on:
-            resp = requests.get(url=f"http://{ip_address}:5000/calibrationModeOn?type={pump_type}")
-            data = resp.json()
-            print(data)
-        else:
-            self.exit_calibrationMode(pump_type)
+        try:
+            self.calibration_mode_on = not self.calibration_mode_on
+            if not self.calibration_mode_on:
+                resp = requests.get(url=f"http://{ip_address}:5000/calibrationModeOn?type={pump_type}")
+                data = resp.json()
+                print(f"Calibration Data{data}")
+            else:
+                self.exit_calibrationMode(pump_type)
+        except json.decoder.JSONDecodeError as e:
+            logging.exception(e)
+
 
     def set_temp_alert(self):
         ht = self.form.ht_alert_doubleSpinBox.value()
