@@ -47,6 +47,22 @@ async def run_calibration():
         return "Invalid pump specified"
 
 
+@app.route('/calibrationModeOff', methods=['GET', 'POST'])
+async def stop_calibration():
+    pump_type = request.args.get('type')
+    print(pump_type)
+    resp = {}
+    if pump_type in ['conditioner', 'co2', 'fertilizer']:
+        utils.stop_cal()
+        if utils.cal_time:
+            resp['cal_time'] = utils.cal_time
+        else:
+            resp['error'] = 'Calibration was cancelled'
+    else:
+        resp['error'] = 'Invalid pump type'
+    return jsonify(resp)
+
+
 @app.websocket('/temp')
 async def temp():
     while True:

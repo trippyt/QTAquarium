@@ -26,6 +26,10 @@ def start_calibration(pump_type: str):
     except CalibrationCancelled:
         print("!Calibration was Cancelled!")
 
+def stop_calibration(pump_type: str):
+    controller.stop_calibration()
+
+
 
 def tank_temperature():
     temp_c, temp_f = controller.read_temperature("temp_tank")

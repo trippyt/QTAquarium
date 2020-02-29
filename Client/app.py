@@ -137,13 +137,27 @@ class App(object):
         try:
             self.calibration_mode_on = not self.calibration_mode_on
             if not self.calibration_mode_on:
-                resp = requests.get(url=f"http://{ip_address}:5000/calibrationModeOn?type={pump_type}")
-                data = resp.json()
-                print(f"Calibration Data{data}")
+                requests.get(url=f"http://{ip_address}:5000/calibrationModeOn?type={pump_type}")
+                print(f"Calibration Data")
             else:
                 self.exit_calibrationMode(pump_type)
         except json.decoder.JSONDecodeError as e:
             logging.exception(e)
+
+
+    def exit_calibrationMode(self, pump_type):
+        #resp = requests.get(url=f"http://{ip_address}:5000/calibrationModeOff?type={pump_type}")
+        url = f"http://192.168.1.35:5000/calibrationModeOff?type={pump_type}"
+        print("Exiting Calibration Mode")
+        request = QtNetwork.QNetworkRequest(QUrl(url))
+        loop = QEventLoop()
+        resp = self.nam.get(request)
+        resp.finished.connect(loop.quit)
+        self.load_server()
+        #co2time = self.calibration_data["Co2 Calibration Data"]["Time per 10mL"]
+        #print(f"Loading Co2 Time Per 10mL: {co2time}")
+        #self.co2_perml()
+        #self.form.co2_dosing_lcd.display(co2time)
 
 
     def set_temp_alert(self):

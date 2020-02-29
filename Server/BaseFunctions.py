@@ -199,6 +199,7 @@ class AquariumController:
         self.pump_off(pump_type)
         cal_time = round(end - start, 2)
         per_ml = round(cal_time / 10, 2)
+        print(type(cal_time))
         logging.info(f"{pump_type} Runtime: {cal_time}")
         calibration_data[f"{pump_type} Calibration Data"].update(
             {
@@ -239,13 +240,13 @@ class AquariumController:
 
     def button_state(self):
         while GPIO.input(Button):
-            print(f"{GPIO.input(Button)}: Button Idle")
+            #print(f"{GPIO.input(Button)}: Button Idle")
             sleep(0.1)
             if self.cCancelled:
                 raise CalibrationCancelled()
 
         while not GPIO.input(Button):
-            print(f"{GPIO.input(Button)}: Button Pushed")
+            #print(f"{GPIO.input(Button)}: Button Pushed")
             sleep(0.1)
             if self.cCancelled:
                 raise CalibrationCancelled()
