@@ -1,7 +1,7 @@
 import asyncio
 import time
 import logging
-from BaseFunctions import AquariumController as Ac
+from AquariumHardware import Hardware as Ac
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s,%(msecs)d %(levelname)s: %(message)s",
@@ -28,6 +28,10 @@ async def start_calibration(pump_type: str):
 
 def stop_calibration(pump_type: str):
     controller.stop_calibration()
+
+
+def cal_status(pump_type: str):
+    controller.calibration_status()
 
 
 

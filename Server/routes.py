@@ -63,6 +63,13 @@ async def stop_calibration():
     return jsonify(resp)
 
 
+@app.route('/alibrationStatus', methods=['GET', 'POST'])
+async def calibration_status():
+    pump_type = request.args.get('type')
+    if pump_type in ['conditioner', 'co2', 'fertilizer']:
+        utils.cal_status()
+
+
 @app.websocket('/temp')
 async def temp():
     while True:

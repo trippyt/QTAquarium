@@ -10,9 +10,6 @@ from time import sleep
 import RPi.GPIO as GPIO
 from w1thermsensor import W1ThermSensor
 
-global ratio_data
-global calibration_data
-global setting_data
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -64,16 +61,13 @@ class Calcs:
             #if dosage != 0 else 0
         logging.info(f"Dict Data: {ratiodict}")
 
-class AquariumController:
+class Hardware:
 
     def __init__(self):
         self.sensors = {
             'temp_tank': W1ThermSensor(W1ThermSensor.THERM_SENSOR_DS18B20, "011447ba3caa"),
             #'temp_room': dht11.DHT11(pin=14)
         }
-        global ratio_data
-        global calibration_data
-        global setting_data
         self.led_loop = True
         self.cCancelled = False
         self.led_task = None
@@ -82,22 +76,24 @@ class AquariumController:
             t = threading.Thread(target=lambda: self.event_loop.run_forever())
             t.start()
 
-        ratio_data = {
+        self.ratio_data = {
             "Tank Size": {},
             "Co2 Ratio": {},
             "Fertilizer Ratio": {},
             "Water Conditioner Ratio": {},
         }
-        calibration_data = {
+        self.calibration_data = {
             "Co2 Calibration Data": {},
             "Fertilizer Calibration Data": {},
             "Water Conditioner Calibration Data": {},
         }
-        setting_data = {
+        self.setting_data = {
             "Network": {},
             "Temperature Alerts": {},
             "Email Alert": {}
         }
+
+        self.cal_status = ["Success", "Failed", "In Progress", "None"]
 
     def pump_on(self, pump_type):
         pin = pumps.get(pump_type, None)
@@ -115,11 +111,9 @@ class AquariumController:
         if os.path.isfile('data.txt'):
             with open('data.txt', 'r') as json_file:
                 data = json.loads(json_file.read())
-                global ratio_data
-                global calibration_data
                 print("Loading Saved Data")
                 print(f"Loading Data...{data}")
-                ratio_data = data["Ratio Data"]
+                self.ratio_data = data["Ratio Data"]
                 # temperature_data = data["Temperature Data"]
                 # conversion_values
                 # schedule_data
@@ -129,12 +123,10 @@ class AquariumController:
                 return data
 
     def save(self):
-        global ratio_data
-        global calibration_data
         data = {
-            "Setting Data": setting_data,
-            "Ratio Data": ratio_data,
-            "Calibration Data": calibration_data,
+            "Setting Data": self.setting_data,
+            "Ratio Data": self.ratio_data,
+            "Calibration Data": self.calibration_data,
             # "Schedule Data": schedule_data,
             # "Temperature Data": temperature_data,
             # "Dosage Data": dosage_data,
@@ -148,7 +140,6 @@ class AquariumController:
         pass
 
     def ratioequals(self, ratio_results):
-        global ratio_data
         print("ratio equals function")
         print(f"values {ratio_results}")
         new_ratio = ('Tank', 'Co2_ratio', 'Co2_water', 'Fertilizer_ratio', 'Fertilizer_water', 'WaterConditioner_ratio'\
@@ -168,7 +159,7 @@ class AquariumController:
             ratiodict[value + '_dosage'] =  "{:.2f}".format(float(dosage))
 
             #if dosage != 0 else 0
-            ratio_data = ratiodict
+            self.ratio_data = ratiodict
         print(f"Dict Data: {ratiodict}")
         self.save()
         #for key in ratiodict:
@@ -177,7 +168,6 @@ class AquariumController:
         #    )
 
     def ratios(self, ratio_results):
-        global ratio_data
         logging.info(f"Ratio: {ratio_results}")
         logging.info('Tank Size: {} Litres,\n'
          'Co2 Concentrate: {} mL, Co2 to Water: {} Litres,\n'
@@ -187,21 +177,22 @@ class AquariumController:
         self.ratioequals(ratio_results)
 
     def calibrate_pump(self, pump_type):
-        global calibration_data
         logging.info(f"Running {pump_type} Pump")
         logging.info(f"{pump_type}                      Calibration started.")
+        self.calibration_status(pump_type, self.cal_status[2])
         start = time.time()
         self.pump_on(pump_type)
         self.button_state()
         logging.info(f"Stopping {pump_type}")
         logging.info(f"{pump_type}                      Calibration finished.")
+        self.calibration_status(pump_type, self.cal_status[0])
         end = time.time()
         self.pump_off(pump_type)
         cal_time = round(end - start, 2)
         per_ml = round(cal_time / 10, 2)
         print(type(cal_time))
         logging.info(f"{pump_type} Runtime: {cal_time}")
-        calibration_data[f"{pump_type} Calibration Data"].update(
+        self.calibration_data[f"{pump_type} Calibration Data"].update(
             {
                 "Time per 10mL": cal_time,
                 "Time per 1mL": per_ml
@@ -209,12 +200,16 @@ class AquariumController:
         )
         self.save()
 
+    def calibration_status(self, pump_type, stat):
+        print(f"pump: {pump_type}, status: {stat}")
+        return stat
+
+
     def alert_data(self, ht: int, lt: int):
-        global setting_data
         logging.info("New Alert Set")
         logging.info(f"High Temperature: {ht}")
         logging.info(f"Low Temperature: {lt}")
-        setting_data["Temperature Alerts"].update(
+        self.setting_data["Temperature Alerts"].update(
             {
                 "High Temp": ht,
                 "Low Temp": lt
