@@ -65,7 +65,7 @@ class App(object):
         self.load_server()
 
     def load_server(self):
-        url = f"http://192.168.1.33:5000/getServerData"
+        url = f"http://{ip_address}:5000/getServerData"
         request = QtNetwork.QNetworkRequest(QUrl(url))
         loop = QEventLoop()  # Do you intend to start a new loop instance here?
         # If not: I don't use pyQT but I would expect there to be a function like QEventLoop.get_running_loop()
@@ -73,7 +73,7 @@ class App(object):
         resp = self.nam.get(request)
         resp.finished.connect(loop.quit)
         logging.info("=" * 125)
-        logging.info('Loading Data From the Server'.center(125))
+        logging.info('Connecting to the Server'.center(125))
         loop.exec_()
         data = resp.readAll()
         byte_array = data
@@ -88,7 +88,7 @@ class App(object):
             for display in self.ratio_displays:
                 display.blockSignals(True)
             try:
-                print(self.ratio_data)
+                #print(self.ratio_data)
                 for key in self.ratio_data:
                     ui_obj = getattr(self.form, key)
                     if isinstance(ui_obj, QtWidgets.QDoubleSpinBox):
@@ -109,6 +109,13 @@ class App(object):
 
         except UnboundLocalError as e:
             logging.info("Couldn't Load Data".center(125))
+            logging.exception(e)
+        try:
+            self.calibration_data = self.new_data["Calibration Data"]
+            #print(self.calibration_data)
+            co2_cal = self.calibration_data["Co2 Calibration Data"]["Time per 10mL"]
+            self.form.lcd_co2_cal.display(co2_cal)
+        except KeyError as e:
             logging.exception(e)
         logging.info("=" * 125)
 
@@ -138,7 +145,7 @@ class App(object):
             self.calibration_mode_on = not self.calibration_mode_on
             if not self.calibration_mode_on:
                 requests.get(url=f"http://{ip_address}:5000/calibrationModeOn?type={pump_type}")
-                print(f"Calibration Data")
+                logging.info("Entering Calibration Mode")
             else:
                 self.exit_calibrationMode(pump_type)
         except json.decoder.JSONDecodeError as e:
@@ -146,19 +153,9 @@ class App(object):
 
 
     def exit_calibrationMode(self, pump_type):
-        #resp = requests.get(url=f"http://{ip_address}:5000/calibrationModeOff?type={pump_type}")
-        url = f"http://192.168.1.35:5000/calibrationModeOff?type={pump_type}"
-        print("Exiting Calibration Mode")
-        request = QtNetwork.QNetworkRequest(QUrl(url))
-        loop = QEventLoop()
-        resp = self.nam.get(request)
-        resp.finished.connect(loop.quit)
+        requests.get(url=f"http://{ip_address}:5000/calibrationModeOff?type={pump_type}")
+        logging.info("Exiting Calibration Mode")
         self.load_server()
-        #co2time = self.calibration_data["Co2 Calibration Data"]["Time per 10mL"]
-        #print(f"Loading Co2 Time Per 10mL: {co2time}")
-        #self.co2_perml()
-        #self.form.co2_dosing_lcd.display(co2time)
-
 
     def set_temp_alert(self):
         ht = self.form.ht_alert_doubleSpinBox.value()

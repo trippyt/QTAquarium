@@ -16,13 +16,13 @@ class CalibrationCancelled (Exception):
 controller = Ac()
 
 
-def start_calibration(pump_type: str):
+async def start_calibration(pump_type: str):
     try:
-        controller.notification_led_pulse()
+        await controller.notification_led_pulse()
         controller.button_state()
-        controller.notification_led_flash()
+        await controller.notification_led_flash()
         controller.calibrate_pump(pump_type)
-        controller.notification_led_stop()
+        await controller.notification_led_stop()
     except CalibrationCancelled:
         print("!Calibration was Cancelled!")
 

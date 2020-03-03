@@ -71,7 +71,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>2</number>
    </property>
    <widget class="QWidget" name="Home_tab">
     <attribute name="title">
@@ -550,7 +550,7 @@
           <string>New Calibration</string>
          </property>
         </widget>
-        <widget class="QLCDNumber" name="lcdNumber_2">
+        <widget class="QLCDNumber" name="lcd_co2_cal">
          <property name="geometry">
           <rect>
            <x>170</x>
@@ -780,6 +780,11 @@
            <width>91</width>
            <height>23</height>
           </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>MS Shell Dlg 2</family>
+          </font>
          </property>
          <property name="text">
           <string>Calibrate Now</string>
