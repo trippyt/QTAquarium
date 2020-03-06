@@ -59,7 +59,7 @@ class AquariumController:
         logging.info(f"{pump_type}                      Calibration finished.")
         self.calibration_status(pump_type, self.cal_status[0])
         end = time.time()
-        self..hw_controllerpump_off(pump_type)
+        self.hw_controllerpump_off(pump_type)
         cal_time = round(end - start, 2)
         per_ml = round(cal_time / 10, 2)
         print(type(cal_time))
