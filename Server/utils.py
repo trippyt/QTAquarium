@@ -16,12 +16,18 @@ class CalibrationCancelled (Exception):
 class AquariumController:
 
     def __init__(self):
-        hw_controller = Hardware()
+        self.hw_controller = Hardware()
         self.calibration_data = {
                 "Co2 Calibration Data": {},
                 "Fertilizer Calibration Data": {},
                 "Water Conditioner Calibration Data": {},
             }
+        self.ratio_data = {
+            "Tank Size": {},
+            "Co2 Ratio": {},
+            "Fertilizer Ratio": {},
+            "Water Conditioner Ratio": {},
+        }
 
         async def start_calibration(self, pump_type: str):
             try:
@@ -76,5 +82,17 @@ class AquariumController:
         def newRatios(self,ratio_results: str):
             self.hw_controller.ratios(ratio_results)
 
-        def load(self):
-            return self.hw_controller.load()
+    def load(self):
+        if os.path.isfile('data.txt'):
+            with open('data.txt', 'r') as json_file:
+                data = json.loads(json_file.read())
+                print("Loading Saved Data")
+                print(f"Loading Data...{data}")
+                self.ratio_data = data["Ratio Data"]
+                # temperature_data = data["Temperature Data"]
+                # conversion_values
+                # schedule_data
+                # calibration_data = data["Calibration Data"]
+                # light_hour_data
+                # dosage_data = data["Dosage Data"]
+                return data
