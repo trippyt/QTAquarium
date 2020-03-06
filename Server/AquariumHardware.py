@@ -61,6 +61,7 @@ class Calcs:
             #if dosage != 0 else 0
         logging.info(f"Dict Data: {ratiodict}")
 
+
 class Hardware:
 
     def __init__(self):

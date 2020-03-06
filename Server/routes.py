@@ -3,17 +3,18 @@ import threading
 from quart import Quart, request, websocket
 from quart.json import jsonify
 import asyncio
-import utils
+from utils import AquariumController
 from time import sleep
 app = Quart(__name__)
 
+controller = AquariumController()
 
 @app.route('/setTemperatureAlert', methods=['GET', 'POST'])
 async def set_temperature_alert():
     ht = request.args.get('ht')
     lt = request.args.get('lt')
     print(f"Receiving Temperature Alert Data H:{ht} L:{lt}")
-    utils.alert_data(ht, lt)
+    controller.alert_data(ht, lt)
     return f"Temperature Alerts H:{ht} L:{lt}"
 
 
@@ -40,7 +41,7 @@ async def run_calibration():
     pump_type = request.args.get('type')
     print(pump_type)
     if pump_type in ['Conditioner', 'Co2', 'Fertilizer']:
-        cal_thread = threading.Thread(target=utils.start_calibration, args=(pump_type,))
+        cal_thread = threading.Thread(target=controller.start_calibration, args=(pump_type,))
         cal_thread.start()
         return f"Calibrating {pump_type} pump."
     else:

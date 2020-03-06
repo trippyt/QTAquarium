@@ -158,24 +158,6 @@ class App(object):
     def exit_calibrationMode(self, pump_type):
         requests.get(url=f"http://{ip_address}:5000/calibrationModeOff?type={pump_type}")
 
-'''
-    def enter_calibrationMode(self, pump_type):
-        try:
-            self.calibration_mode_on = not self.calibration_mode_on
-            if not self.calibration_mode_on:
-                requests.get(url=f"http://{ip_address}:5000/calibrationModeOn?type={pump_type}")
-                logging.info("Entering Calibration Mode")
-            else:
-                self.exit_calibrationMode(pump_type)
-        except Exception as e:
-            logging.exception(e)
-
-
-    def exit_calibrationMode(self, pump_type):
-        requests.get(url=f"http://{ip_address}:5000/calibrationModeOff?type={pump_type}")
-        logging.info("Exiting Calibration Mode")
-        self.load_server()
-'''
     def set_temp_alert(self):
         ht = self.form.ht_alert_doubleSpinBox.value()
         lt = self.form.lt_alert_doubleSpinBox.value()
