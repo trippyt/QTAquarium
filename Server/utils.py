@@ -23,13 +23,13 @@ class AquariumController:
                 "Water Conditioner Calibration Data": {},
             }
 
-        async def start_calibration(pump_type: str):
+        async def start_calibration(self, pump_type: str):
             try:
-                await hw_controller.notification_led_pulse()
-                hw_controller.button_state()
-                await hw_controller.notification_led_flash()
-                calibrate_pump(pump_type)
-                await hw_controller.notification_led_stop()
+                await self.hw_controller.notification_led_pulse()
+                self.hw_controller.button_state()
+                await self.hw_controller.notification_led_flash()
+                self.calibrate_pump(pump_type)
+                await self.hw_controller.notification_led_stop()
             except CalibrationCancelled:
                 print("!Calibration was Cancelled!")
 
@@ -57,24 +57,24 @@ class AquariumController:
             )
             self.save()
 
-        def stop_calibration(pump_type: str):
-            hw_controller.stop_calibration()
+        def stop_calibration(self, pump_type: str):
+            self.hw_controller.stop_calibration()
 
-        def cal_status(pump_type: str):
-            hw_controller.calibration_status()
+        def cal_status(self,pump_type: str):
+            self.hw_controller.calibration_status()
 
-        def tank_temperature():
-            temp_c, temp_f = hw_controller.read_temperature("temp_tank")
+        def tank_temperature(self):
+            temp_c, temp_f = self.hw_controller.read_temperature("temp_tank")
             return round(temp_c, 2)
 
-        def alert_data(ht, lt):
-            hw_controller.alert_data(ht, lt)
+        def alert_data(self,ht, lt):
+            self.hw_controller.alert_data(ht, lt)
 
-        def email_alert():
+        def email_alert(self):
             pass
 
-        def newRatios(ratio_results: str):
-            hw_controller.ratios(ratio_results)
+        def newRatios(self,ratio_results: str):
+            self.hw_controller.ratios(ratio_results)
 
-        def load():
-            return hw_controller.load()
+        def load(self):
+            return self.hw_controller.load()
