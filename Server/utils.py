@@ -1,6 +1,6 @@
 import asyncio
 import time
-inport os
+import os
 import json
 import logging
 from AquariumHardware2 import Hardware
