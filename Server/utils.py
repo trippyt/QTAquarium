@@ -81,8 +81,42 @@ class AquariumController:
     def email_alert(self):
         pass
 
-    def newRatios(self,ratio_results: str):
-        self.hw_controller.ratios(ratio_results)
+    def ratioequals(self, ratio_results):
+        print("ratio equals function")
+        print(f"values {ratio_results}")
+        new_ratio = ('Tank', 'Co2_ratio', 'Co2_water', 'Fertilizer_ratio', 'Fertilizer_water', 'WaterConditioner_ratio'\
+                                        , 'WaterConditioner_water')
+
+        zipratio = zip(new_ratio, ratio_results)
+        ratiodict = dict(zipratio)
+        for value in ['Co2', 'Fertilizer', 'WaterConditioner']:
+            print(type(value))
+            ratio = float(ratiodict[value + '_ratio'])
+            water = float(ratiodict[value + '_water'])
+            tank = float(ratiodict['Tank'])
+            try:
+                dosage = ratio * tank / water
+            except ZeroDivisionError:
+                dosage = 0
+            ratiodict[value + '_dosage'] =  "{:.2f}".format(float(dosage))
+
+            #if dosage != 0 else 0
+            self.ratio_data = ratiodict
+        print(f"Dict Data: {ratiodict}")
+        self.save()
+        #for key in ratiodict:
+        #    ratio_data["Ratio Data"].update(
+        #        f"{key}"
+        #    )
+
+    def ratios(self, ratio_results):
+        logging.info(f"Ratio: {ratio_results}")
+        logging.info('Tank Size: {} Litres,\n'
+         'Co2 Concentrate: {} mL, Co2 to Water: {} Litres,\n'
+         'Fertilizer Concentrate: {} mL, Fertilizer to Water: {} Litres,\n'
+         'WaterConditioner Concentrate: {} mL, WaterConditioner to Water: {} Litres'.format(
+            *ratio_results))
+        self.ratioequals(ratio_results)
 
     def load(self):
         if os.path.isfile('data.txt'):

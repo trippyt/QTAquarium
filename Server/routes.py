@@ -32,7 +32,7 @@ async def ratios():
                      ('Tank', 'Co2_ratio', 'Co2_water', 'Fertilizer_ratio', 'Fertilizer_water', 'WaterConditioner_ratio',
                       'WaterConditioner_water')]
     print(type(ratio_results))
-    controller.newRatios(ratio_results)
+    controller.ratios(ratio_results)
     return f"New ratios: {ratio_results}"
 
 
