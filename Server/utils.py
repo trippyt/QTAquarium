@@ -118,6 +118,20 @@ class AquariumController:
             *ratio_results))
         self.ratioequals(ratio_results)
 
+    def save(self):
+        data = {
+            "Setting Data": self.setting_data,
+            "Ratio Data": self.ratio_data,
+            "Calibration Data": self.calibration_data,
+            # "Schedule Data": schedule_data,
+            # "Temperature Data": temperature_data,
+            # "Dosage Data": dosage_data,
+            # "Light Hour Data": light_hour_data
+        }
+        with open('data.txt', 'w') as json_file:
+            json_file.write(json.dumps(data, indent=4))
+        logging.info("Settings Updated")
+
     def load(self):
         if os.path.isfile('data.txt'):
             with open('data.txt', 'r') as json_file:
