@@ -74,7 +74,7 @@ async def calibration_status():
 @app.websocket('/temp')
 async def temp():
     while True:
-        temp = controller.self.tank_temperature()
+        temp = controller.tank_temperature()
         print(temp)
         await asyncio.sleep(2)
         await websocket.send(str(temp))
