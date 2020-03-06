@@ -69,11 +69,6 @@ class Hardware:
     def email_setup(self):
         pass
 
-    def calibration_status(self, pump_type, stat):
-        print(f"pump: {pump_type}, status: {stat}")
-        return stat
-
-
     def alert_data(self, ht: int, lt: int):
         logging.info("New Alert Set")
         logging.info(f"High Temperature: {ht}")
