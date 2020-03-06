@@ -21,7 +21,7 @@ async def set_temperature_alert():
 @app.route('/getServerData', methods=['GET'])
 async def get_server_data():
     print("Sending Data to Client")
-    data = utils.load()
+    data = controller.load()
     print(f'Return data: {data}')
     return jsonify(data)
 
@@ -32,7 +32,7 @@ async def ratios():
                      ('Tank', 'Co2_ratio', 'Co2_water', 'Fertilizer_ratio', 'Fertilizer_water', 'WaterConditioner_ratio',
                       'WaterConditioner_water')]
     print(type(ratio_results))
-    utils.newRatios(ratio_results)
+    controller.newRatios(ratio_results)
     return f"New ratios: {ratio_results}"
 
 
@@ -54,9 +54,9 @@ async def stop_calibration():
     print(pump_type)
     resp = {}
     if pump_type in ['conditioner', 'co2', 'fertilizer']:
-        utils.stop_cal()
-        if utils.cal_time:
-            resp['cal_time'] = utils.cal_time
+        controller.stop_cal()
+        if controller.cal_time:
+            resp['cal_time'] = controller.cal_time
         else:
             resp['error'] = 'Calibration was cancelled'
     else:
@@ -68,13 +68,13 @@ async def stop_calibration():
 async def calibration_status():
     pump_type = request.args.get('type')
     if pump_type in ['conditioner', 'co2', 'fertilizer']:
-        utils.cal_status()
+        controller.cal_status()
 
 
 @app.websocket('/temp')
 async def temp():
     while True:
-        temp = utils.tank_temperature()
+        temp = controller.tank_temperature()
         print(temp)
         await asyncio.sleep(2)
         await websocket.send(str(temp))
