@@ -30,6 +30,13 @@ class AquariumController:
             "Fertilizer Ratio": {},
             "Water Conditioner Ratio": {},
         }
+        self.setting_data = {
+            "Network": {},
+            "Temperature Alerts": {},
+            "Email Alert": {}
+        }
+
+        self.cal_status = ["Success", "Failed", "In Progress", "None"]
 
     async def start_calibration(self, pump_type: str):
         try:
