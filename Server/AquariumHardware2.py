@@ -104,13 +104,13 @@ class Hardware:
 
     def button_state(self):
         while GPIO.input(Button):
-            #print(f"{GPIO.input(Button)}: Button Idle")
+            print(f"{GPIO.input(Button)}: Button Idle")
             sleep(0.1)
             if self.cCancelled:
                 raise CalibrationCancelled()
 
         while not GPIO.input(Button):
-            #print(f"{GPIO.input(Button)}: Button Pushed")
+            print(f"{GPIO.input(Button)}: Button Pushed")
             sleep(0.1)
             if self.cCancelled:
                 raise CalibrationCancelled()
