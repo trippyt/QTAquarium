@@ -41,9 +41,9 @@ async def run_calibration():
     pump_type = request.args.get('type')
     print(pump_type)
     if pump_type in ['Conditioner', 'Co2', 'Fertilizer']:
-        #cal_thread = threading.Thread(target=controller.start_calibration, args=(pump_type,))
-        #cal_thread.start()
-        controller.start_calibration(pump_type)
+        cal_thread = threading.Thread(target=controller.start_calibration, args=(pump_type,))
+        cal_thread.start()
+        #controller.start_calibration(pump_type)
         return f"Calibrating {pump_type} pump."
     else:
         return "Invalid pump specified"
