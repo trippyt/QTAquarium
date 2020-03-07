@@ -86,7 +86,7 @@ class AquariumController:
         pass
 
     def calibration_status(self, pump_type, stat):
-        print(f"pump: {pump_type}, status: {stat}")
+        logging.info(f"pump: {pump_type}, status: {stat}")
         return stat
 
     def ratioequals(self, ratio_results):

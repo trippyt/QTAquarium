@@ -65,8 +65,6 @@ class Hardware:
     def email_setup(self):
         pass
 
-
-
     def read_temperature(self, temp_sensor_type):
         sensor = self.sensors.get(temp_sensor_type, None)
         if sensor is None:
