@@ -111,10 +111,26 @@ class App(object):
             logging.info("Couldn't Load Data".center(125))
             logging.exception(e)
         try:
-            self.calibration_data = self.new_data["Calibration Data"]
-            #print(self.calibration_data)
-            co2_cal = self.calibration_data["Co2 Calibration Data"]["Time per 10mL"]
-            self.form.lcd_co2_cal.display(co2_cal)
+            self.form.ht_alert_doubleSpinBox.blockSignals(True)
+            self.form.lt_alert_doubleSpinBox.blockSignals(True)
+            try:
+                self.calibration_data = self.new_data["Calibration Data"]
+                #print(self.calibration_data)
+                co2_cal = self.calibration_data["Co2 Calibration Data"]["Time per 10mL"]
+                self.form.lcd_co2_cal.display(co2_cal)
+            except KeyError as e:
+                logging.exception(e)
+            self.form.ht_alert_doubleSpinBox.blockSignals(False)
+            self.form.lt_alert_doubleSpinBox.blockSignals(False)
+        except KeyError as e:
+            logging.exception(e)
+        try:
+            self.setting_data = self.new_data["Setting Data"]
+            ht = self.setting_data["Temperature Alerts"]["High Temp"]
+            lt = self.setting_data["Temperature Alerts"]["Low Temp"]
+            self.form.ht_alert_doubleSpinBox.setValue(ht)
+            self.form.lt_alert_doubleSpinBox.setValue(lt)
+
         except KeyError as e:
             logging.exception(e)
         logging.info("=" * 125)
