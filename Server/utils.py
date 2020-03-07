@@ -144,7 +144,6 @@ class AquariumController:
             "Ratio Data": self.ratio_data,
             "Calibration Data": self.calibration_data,
             # "Schedule Data": schedule_data,
-            # "Temperature Data": temperature_data,
             # "Dosage Data": dosage_data,
             # "Light Hour Data": light_hour_data
         }
@@ -162,7 +161,7 @@ class AquariumController:
                 # temperature_data = data["Temperature Data"]
                 # conversion_values
                 # schedule_data
-                # calibration_data = data["Calibration Data"]
+                self.calibration_data = data["Calibration Data"]
                 # light_hour_data
                 # dosage_data = data["Dosage Data"]
                 return data
