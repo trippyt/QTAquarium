@@ -44,7 +44,7 @@ async def run_calibration():
         #cal_thread = threading.Thread(target=controller.start_calibration, args=(pump_type,))
         #cal_thread.start()
         await controller.start_calibration(pump_type)
-        return controller.calibration_status(pump_type)
+        return controller.calibration_status(pump_type, cal_status)
     else:
         return "Invalid pump specified"
 
