@@ -177,12 +177,10 @@ class App(object):
     def set_temp_alert(self):
         ht = self.form.ht_alert_doubleSpinBox.value()
         lt = self.form.lt_alert_doubleSpinBox.value()
-        print(f"Sending Alert Changes to Network")
-        print(f"High Temperature: {ht}")
-        print(f"Low Temperature: {lt}")
-        url = f"http://192.168.1.33:5000/setTemperatureAlert?ht={ht}&lt={lt}"
-        request = QtNetwork.QNetworkRequest(QUrl(url))
-        self.nam.get(request)
+        logging.info(f"Sending Alert Changes to Network".center(125))
+        logging.info(f"High Temperature: {ht}")
+        logging.info(f"Low Temperature: {lt}")
+        requests.get(url=f"http://{ip_address}:5000/setTemperatureAlert?ht={ht}&lt={lt}")
 
     def run(self):
         self.window.show()
