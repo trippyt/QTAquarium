@@ -128,8 +128,8 @@ class App(object):
             self.setting_data = self.new_data["Setting Data"]
             ht = self.setting_data["Temperature Alerts"]["High Temp"]
             lt = self.setting_data["Temperature Alerts"]["Low Temp"]
-            self.form.ht_alert_doubleSpinBox.setValue(ht)
-            self.form.lt_alert_doubleSpinBox.setValue(lt)
+            self.form.ht_alert_doubleSpinBox.setValue(float(ht))
+            self.form.lt_alert_doubleSpinBox.setValue(float(lt))
 
         except KeyError as e:
             logging.exception(e)
