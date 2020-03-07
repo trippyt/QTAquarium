@@ -82,9 +82,6 @@ class AquariumController:
         temp_c, temp_f = self.hw_controller.read_temperature("temp_tank")
         return round(temp_c, 2)
 
-    def alert_data(self,ht, lt):
-        self.hw_controller.alert_data(ht, lt)
-
     def email_alert(self):
         pass
 
@@ -128,6 +125,18 @@ class AquariumController:
          'WaterConditioner Concentrate: {} mL, WaterConditioner to Water: {} Litres'.format(
             *ratio_results))
         self.ratioequals(ratio_results)
+
+    def alert_data(self, ht: int, lt: int):
+        logging.info("New Alert Set")
+        logging.info(f"High Temperature: {ht}")
+        logging.info(f"Low Temperature: {lt}")
+        self.setting_data["Temperature Alerts"].update(
+            {
+                "High Temp": ht,
+                "Low Temp": lt
+            }
+        )
+        self.save()
 
     def save(self):
         data = {

@@ -1,12 +1,8 @@
 import asyncio
-import json
 import logging
-import os
 #  import dht11
 import threading
-import time
 from time import sleep
-
 import RPi.GPIO as GPIO
 from w1thermsensor import W1ThermSensor
 
@@ -69,17 +65,7 @@ class Hardware:
     def email_setup(self):
         pass
 
-    def alert_data(self, ht: int, lt: int):
-        logging.info("New Alert Set")
-        logging.info(f"High Temperature: {ht}")
-        logging.info(f"Low Temperature: {lt}")
-        self.setting_data["Temperature Alerts"].update(
-            {
-                "High Temp": ht,
-                "Low Temp": lt
-            }
-        )
-        self.save()
+
 
     def read_temperature(self, temp_sensor_type):
         sensor = self.sensors.get(temp_sensor_type, None)
