@@ -38,7 +38,7 @@ class AquariumController:
 
         self.cal_status = ["Success", "Failed", "In Progress", "None"]
 
-    def start_calibration(self, pump_type: str):
+    async def start_calibration(self, pump_type: str):
         try:
             await self.hw_controller.notification_led_pulse()
             self.hw_controller.button_state()
