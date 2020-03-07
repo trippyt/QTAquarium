@@ -85,9 +85,9 @@ class AquariumController:
     def email_alert(self):
         pass
 
-    def calibration_status(self, pump_type, stat):
-        logging.info(f"pump: {pump_type}, status: {stat}")
-        return stat
+    def calibration_status(self, pump_type):
+        logging.info(f"pump: {pump_type}, status: {self.cal_status}")
+        return logging.info(f"pump: {pump_type}, status: {self.cal_status}")
 
     def ratioequals(self, ratio_results):
         print("ratio equals function")
