@@ -40,9 +40,9 @@ class AquariumController:
 
     async def start_calibration(self, pump_type: str):
         try:
-            self.hw_controller.notification_led_pulse()
+            await self.hw_controller.notification_led_pulse()
             self.hw_controller.button_state()
-            self.hw_controller.notification_led_flash()
+            await self.hw_controller.notification_led_flash()
             self.calibrate_pump(pump_type)
             self.hw_controller.notification_led_stop()
         except CalibrationCancelled:
