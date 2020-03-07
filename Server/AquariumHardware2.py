@@ -115,14 +115,14 @@ class Hardware:
     async def notification_led_flash(self):
         self.notification_led_stop()
         logging.info("Starting Notification LED: Flash")
-        self.led(FLASH)
+        await self.led(FLASH)
         self.led_task = asyncio.run_coroutine_threadsafe(self.led(FLASH), self.event_loop)
         #self.led_task = asyncio.create_task(self.led(FLASH))
 
     async def notification_led_pulse(self):
         self.notification_led_stop()
         logging.info("Starting Notification LED: Pulse")
-        self.led(PULSE)
+        await self.led(PULSE)
         self.led_task = asyncio.run_coroutine_threadsafe(self.led(PULSE), self.event_loop)
         #self.led_task = asyncio.create_task(self.led(PULSE))
 
