@@ -152,6 +152,7 @@ class App(object):
             #subprocess.call(["git", "status", "-uno"])
             #subprocess.call(["git", "status"])
             logging.info("Updating...")
+            logging.info(f"Response: {resp}")
 
         except:
             logging.exception("Couldn't Update")
