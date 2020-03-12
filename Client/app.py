@@ -133,15 +133,19 @@ class App(object):
             lt = self.setting_data["Temperature Alerts"]["Low Temp"]
             lt_enabled = self.setting_data["Temperature Alerts"]["Low Enabled"]
             self.form.ht_alert_doubleSpinBox.setValue(float(ht))
-            self.form.ht_checkBox.setChecked(bool(ht_enabled))
             self.form.lt_alert_doubleSpinBox.setValue(float(lt))
-            self.form.lt_checkBox.setChecked(bool(lt_enabled))
+            print(type(ht_enabled))
+            print(ht_enabled)
+            #self.form.ht_checkBox.blockSignals(True)
+            #self.form.lt_checkBox.blockSignals(True)
+            self.form.ht_checkBox.setChecked(bool(int(ht_enabled)))
+            self.form.lt_checkBox.setChecked(bool(int(lt_enabled)))
+            #self.form.ht_checkBox.blockSignals(False)
+            #self.form.lt_checkBox.blockSignals(False)
 
         except KeyError as e:
             logging.exception(e)
         logging.info("=" * 125)
-        #try:
-            #self.email_data = self.new_data["Email Data"]
 
     def load_config(self):
         resp = requests.get(url=f"{self.server_ip}/getConfig")
