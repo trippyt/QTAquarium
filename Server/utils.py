@@ -145,7 +145,7 @@ class AquariumController:
             *ratio_results))
         self.ratioequals(ratio_results)
 
-    def alert_data(self, ht: int, lt: int, ht_enabled: int, lt_enabled: int):
+    def alert_data(self, ht: int, lt: int, ht_enabled, lt_enabled):
         logging.info("New Alert Set")
         logging.info(f"High Temperature: {ht} Enabled:{ht_enabled}")
         logging.info(f"Low Temperature: {lt} Enabled:{lt_enabled}")
