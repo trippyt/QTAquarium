@@ -209,5 +209,6 @@ class AquariumController:
             logging.exception("Couldn't Load config.json")
 
     def update(self):
-        msg = git.pull()
+        g = git.cmd.Git(/home/pi/QTAquarium/)
+        msg = g.pull()
         print(msg)
