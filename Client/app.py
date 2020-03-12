@@ -67,6 +67,7 @@ class App(object):
         self.form.Co2_calibrateButton.clicked.connect(lambda: self.enter_calibrationMode("Co2"))
         self.form.save_ratios_pushButton.clicked.connect(self.save_ratios)
         self.form.ht_alert_doubleSpinBox.valueChanged.connect(self.set_temp_alert)
+        self.form.lt_alert_doubleSpinBox.valueChanged.connect(self.set_temp_alert)
         self.form.sys_setting_save_pushButton.clicked.connect(self.save_email)
         self.form.sys_setting_test_pushButton.clicked.connect(self.email_test)
         self.form.sys_setting_update_pushButton.clicked.connect(self.update)
