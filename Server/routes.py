@@ -18,7 +18,7 @@ async def set_temperature_alert():
     lt_enabled = request.args.get('lt_enabled')
     print(f"ht returns: {ht_enabled}")
     print(type(ht_enabled))
-    if ht_enabled == 0:
+    if ht_enabled == '0':
         print(f"ht is: TRUE")
     else:
         print(f"ht is: FALSE")
