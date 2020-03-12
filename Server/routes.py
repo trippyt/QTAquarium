@@ -16,10 +16,11 @@ async def set_temperature_alert():
     lt = request.args.get('lt')
     ht_enabled = request.args.get('ht_enabled')
     lt_enabled = request.args.get('lt_enabled')
+    print(f"ht returns: {ht_enabled}")
     if ht_enabled == 0:
-        print("TRUE")
+        print(f"ht is: TRUE")
     else:
-        print("FALSE")
+        print(f"ht is: FALSE")
 
     print(f"Receiving Temperature Alert Data H:{ht} L:{lt}")
     controller.alert_data(ht, lt)
