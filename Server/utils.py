@@ -199,7 +199,7 @@ class AquariumController:
                     email_data = json.loads(json_data_file.read())
                     print("Loading Email Data")
                     print(email_data)
-                    self.email_data = email_data["network_config"]
+                    self.email_data = email_data["Email Data"]
             return data, email_data
         except:
             logging.exception("Couldn't Load config.json")
