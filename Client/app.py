@@ -147,7 +147,8 @@ class App(object):
 
     def update(self):
         try:
-            subprocess.call(["git", "status", "-s", "-uno"])
+            resp = requests.get(url=f"{self.server_ip}/update")
+            #subprocess.call(["git", "status", "-s", "-uno"])
             #subprocess.call(["git", "status", "-uno"])
             #subprocess.call(["git", "status"])
             logging.info("Updating...")

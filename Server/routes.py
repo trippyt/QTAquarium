@@ -35,6 +35,11 @@ async def load_config():
     return jsonify(config_data)
 
 
+@app.route('/update', methods=['GET'])
+async def update():
+    data = controller.update()
+    return jsonify(data)
+
 @app.route('/getUpdates', methods=['GET'])
 async def get_updates():
     pass
