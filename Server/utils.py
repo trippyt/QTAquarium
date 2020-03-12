@@ -186,22 +186,23 @@ class AquariumController:
                     print("Loading Saved Data")
                     self.ratio_data = data["Ratio Data"]
                     self.calibration_data = data["Calibration Data"]
-                    print(type(self.calibration_data))
-                    print(self.calibration_data)
                     # temperature_data = data["Temperature Data"]
                     # conversion_values
                     # schedule_data
                     # light_hour_data
                     # dosage_data = data["Dosage Data"]
+                    return data
         except:
             logging.exception("Couldn't Load Data.txt")
+
+    def load_config(self):
         try:
             if os.path.isfile('config.json'):
                 with open('config.json', 'r') as json_data_file:
-                    email_data = json.loads(json_data_file.read())
+                    config_data = json.loads(json_data_file.read())
                     print("Loading Email Data")
-                    print(email_data)
-                    self.email_data = email_data["Email Data"]
-            return data, email_data
+                    print(config_data)
+                    self.config_data = config_data["Email Data"]
+            return config_data
         except:
             logging.exception("Couldn't Load config.json")

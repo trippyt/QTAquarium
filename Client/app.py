@@ -22,7 +22,7 @@ class App(object):
     def __init__(self):
         self.ip_address = "192.168.1.33"
         self.ip_port = "5000"
-        self.server_ip = "http://"+self.ip_address+":"+self.port
+        self.server_ip = "http://"+self.ip_address+":"+self.ip_port
         self.nam = QtNetwork.QNetworkAccessManager()
 
         self.calibration_data = {
@@ -56,7 +56,7 @@ class App(object):
 
         self.client = QtWebSockets.QWebSocket("", QtWebSockets.QWebSocketProtocol.Version13, None)
         self.client.error.connect(self.on_error)
-        self.client.open(QUrl(f"ws://{ip_address}:5000/temp"))
+        self.client.open(QUrl(f"ws://{self.ip_address}:5000/temp"))
         self.client.pong.connect(self.ws_receive)
         self.client.textMessageReceived.connect(self.ws_receive)
 
@@ -65,6 +65,7 @@ class App(object):
         self.form.ht_alert_doubleSpinBox.valueChanged.connect(self.set_temp_alert)
         self.form.sys_setting_save_pushButton.clicked.connect(self.save_email)
         self.form.sys_setting_test_pushButton.clicked.connect(self.email_test)
+        self.load_config()
         self.load_server()
 
     def load_server(self):
@@ -142,8 +143,10 @@ class App(object):
         #try:
             #self.email_data = self.new_data["Email Data"]
 
-    def load_sys_settings(self):
-        requests.get(url=f"")
+    def load_config(self):
+        resp = requests.get(url=f"{self.server_ip}/getConfig")
+        print(resp.content)
+
 
     def save_ratios(self):
         self.log.info("Sending New Ratio Data to Server")

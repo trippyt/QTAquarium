@@ -27,6 +27,14 @@ async def get_server_data():
     return jsonify(data)
 
 
+@app.route('/getConfig', methods=['GET'])
+async def load_config():
+    print("Sending Config to Client")
+    config_data = controller.load_config()
+    print(f"Return Config: {config_data}")
+    return jsonify(config_data)
+
+
 @app.route('/getUpdates', methods=['GET'])
 async def get_updates():
     pass
