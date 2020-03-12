@@ -7,6 +7,7 @@ import logging
 import sys
 import json
 import requests
+import subprocess
 
 
 class InfoHandler(logging.Handler):  # inherit from Handler class
@@ -65,25 +66,14 @@ class App(object):
         self.form.ht_alert_doubleSpinBox.valueChanged.connect(self.set_temp_alert)
         self.form.sys_setting_save_pushButton.clicked.connect(self.save_email)
         self.form.sys_setting_test_pushButton.clicked.connect(self.email_test)
+        self.form.sys_setting_update_pushButton.clicked.connect(self.update)
         self.load_config()
         self.load_server()
 
     def load_server(self):
-        url = f"{self.server_ip}/getServerData"
-        request = QtNetwork.QNetworkRequest(QUrl(url))
-        loop = QEventLoop()  # Do you intend to start a new loop instance here?
-        # If not: I don't use pyQT but I would expect there to be a function like QEventLoop.get_running_loop()
-        # which would give you reference rather than starting a new instance
-        resp = self.nam.get(request)
-        resp.finished.connect(loop.quit)
-        logging.info("=" * 125)
-        logging.info('Connecting to the Server'.center(125))
-        loop.exec_()
-        data = resp.readAll()
-        byte_array = data
-        print(data)
+        resp = requests.get(url=f"{self.server_ip}/getServerData")
         try:
-            self.new_data = json.loads(byte_array.data())
+            self.new_data = json.loads(resp.content)
             logging.info("JSON Data Loaded".center(125))
             print(f"New_Data = {self.new_data}")
         except json.decoder.JSONDecodeError:
@@ -145,7 +135,26 @@ class App(object):
 
     def load_config(self):
         resp = requests.get(url=f"{self.server_ip}/getConfig")
-        print(resp.content)
+        print(f"Response:{resp.content}")
+        try:
+            self.config_data = json.loads(resp.content)
+            email_user = self.config_data["Email Data"]["Email User"]
+            email_service = self.config_data["Email Data"]["Email Service"]
+            self.form.email_lineEdit.setText(email_user)
+            self.form.sys_setting_atemail_comboBox.setCurrentText(email_service)
+        except:
+            logging.exception("Couldn't Load 'config.json'")
+
+    def update(self):
+        try:
+            subprocess.call(["git", "status", "-s", "-uno"])
+            #subprocess.call(["git", "status", "-uno"])
+            #subprocess.call(["git", "status"])
+            logging.info("Updating...")
+
+        except:
+            logging.exception("Couldn't Update")
+
 
 
     def save_ratios(self):
