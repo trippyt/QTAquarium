@@ -211,9 +211,4 @@ class AquariumController:
     def update(self):
         g = git.cmd.Git("/home/pi/QTAquarium/")
         msg = g.pull()
-        print(f"Msg: {msg}")
-        if msg == "Already up to date.":
-            print("Update Not Required")
-        else:
-            print("Update Needed!")
-        #elif msg == "hi"
+        print(f"Repo Status: {msg}")
