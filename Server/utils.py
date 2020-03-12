@@ -94,6 +94,7 @@ class AquariumController:
         temp_c, temp_f = self.hw_controller.read_temperature("temp_tank")
         ht = self.setting_data["Temperature Alerts"]["High Temp"]
         lt = self.setting_data["Temperature Alerts"]["Low Temp"]
+        print(self.form.ht_checkBox.checkStateSet())
         if temp_c > float(ht):
             print("HIGH TEMP ALERT!!!")
         elif temp_c < float(lt):
