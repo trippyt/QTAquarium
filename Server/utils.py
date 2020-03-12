@@ -94,11 +94,14 @@ class AquariumController:
         temp_c, temp_f = self.hw_controller.read_temperature("temp_tank")
         ht = self.setting_data["Temperature Alerts"]["High Temp"]
         lt = self.setting_data["Temperature Alerts"]["Low Temp"]
-        #print(self.form.ht_checkBox.checkStateSet())
-        if temp_c > float(ht):
-            print("HIGH TEMP ALERT!!!")
-        elif temp_c < float(lt):
-            print("LOW TEMP ALERT!!!")
+        ht_checked = self.setting_data["Temperature Alerts"]["High Enabled"]
+        lt_checked = self.setting_data["Temperature Alerts"]["Low Enabled"]
+        if ht_checked == '2':
+            if temp_c > float(ht):
+                print("HIGH TEMP ALERT!!!")
+        if lt_checked == '2':
+            if temp_c < float(lt):
+                print("LOW TEMP ALERT!!!")
         return round(temp_c, 2)
 
     def email_alert(self):

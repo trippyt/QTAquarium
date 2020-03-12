@@ -23,6 +23,10 @@ async def set_temperature_alert():
         print(f"ht is: TRUE")
     else:
         print(f"ht is: FALSE")
+    if lt_enabled == '2':
+        print(f"lt is: TRUE")
+    else:
+        print(f"lt is: FALSE")
 
 
     print(f"Receiving Temperature Alert Data H:{ht} L:{lt}")
