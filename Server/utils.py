@@ -179,21 +179,26 @@ class AquariumController:
             logging.exception(f"ERROR: Email Details not Saved")
 
     def load(self):
-        if os.path.isfile('data.txt'):
-            with open('data.txt', 'r') as json_file:
-                data = json.loads(json_file.read())
-                print("Loading Saved Data")
-                self.ratio_data = data["Ratio Data"]
-                self.calibration_data = data["Calibration Data"]
-                # temperature_data = data["Temperature Data"]
-                # conversion_values
-                # schedule_data
-                # light_hour_data
-                # dosage_data = data["Dosage Data"]
-                return data
-        if os.path.isfile('config.json'):
-            with open('config.json', 'r') as json_data_file:
-                email_data = json.loads(json_data_file.read())
-                print("Loading Email Data")
-                self.email_data = email_data["email_data"]
-                return email_data
+        try:
+            if os.path.isfile('data.txt'):
+                with open('data.txt', 'r') as json_file:
+                    data = json.loads(json_file.read())
+                    print("Loading Saved Data")
+                    self.ratio_data = data["Ratio Data"]
+                    self.calibration_data = data["Calibration Data"]
+                    # temperature_data = data["Temperature Data"]
+                    # conversion_values
+                    # schedule_data
+                    # light_hour_data
+                    # dosage_data = data["Dosage Data"]
+        except:
+            logging.exception("ERROR: Couldn't Load Data.txt")
+        try:
+            if os.path.isfile('config.json'):
+                with open('config.json', 'r') as json_data_file:
+                    email_data = json.loads(json_data_file.read())
+                    print("Loading Email Data")
+                    self.email_data = email_data["email_data"]
+        return data, email_data
+        except:
+            logging.exception("ERROR: Couldn't Load config.json")

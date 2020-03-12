@@ -82,6 +82,7 @@ class App(object):
         try:
             self.new_data = json.loads(byte_array.data())
             logging.info("JSON Data Loaded".center(125))
+            print(f"{self.new_data}")
         except json.decoder.JSONDecodeError:
             logging.info("Couldn't Load JSON From Server".center(125))
         try:
@@ -136,6 +137,8 @@ class App(object):
         except KeyError as e:
             logging.exception(e)
         logging.info("=" * 125)
+        #try:
+            #self.email_data = self.new_data["Email Data"]
 
     def save_ratios(self):
         self.log.info("Sending New Ratio Data to Server")
