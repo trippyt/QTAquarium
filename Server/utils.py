@@ -145,14 +145,16 @@ class AquariumController:
             *ratio_results))
         self.ratioequals(ratio_results)
 
-    def alert_data(self, ht: int, lt: int):
+    def alert_data(self, ht: int, lt: int, ht_enabled: int, lt_enabled: int):
         logging.info("New Alert Set")
-        logging.info(f"High Temperature: {ht}")
-        logging.info(f"Low Temperature: {lt}")
+        logging.info(f"High Temperature: {ht} Enabled:{ht_enabled}")
+        logging.info(f"Low Temperature: {lt} Enabled:{lt_enabled}")
         self.setting_data["Temperature Alerts"].update(
             {
                 "High Temp": ht,
-                "Low Temp": lt
+                "High Enabled": ht_enabled,
+                "Low Temp": lt,
+                "Low Enabled": lt_enabled
             }
         )
         self.save()

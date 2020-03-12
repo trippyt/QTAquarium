@@ -23,8 +23,9 @@ async def set_temperature_alert():
     else:
         print(f"ht is: FALSE")
 
+
     print(f"Receiving Temperature Alert Data H:{ht} L:{lt}")
-    controller.alert_data(ht, lt)
+    controller.alert_data(ht, lt, ht_enabled, lt_enabled)
     return f"Temperature Alerts H:{ht} L:{lt}"
 
 
