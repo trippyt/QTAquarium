@@ -91,7 +91,10 @@ class AquariumController:
 
     def save_email(self, email_user: str, email_service: str):
         email_data = {
-            "Email Data": self.email_data
+            "Email Data": {
+                "Email User": email_user,
+                "Email Service": email_service
+            }
         }
         logging.info(f"Email Address Updated")
         logging.info(f"{email_user}{email_service}")
