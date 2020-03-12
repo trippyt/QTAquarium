@@ -190,6 +190,8 @@ class App(object):
             logging.info(f"Email: {email_user}{email_service}")
             requests.get(url=f"http://{ip_address}:5000/saveEmail?email_user={email_user}&email_service={email_service}")
             logging.info(f"SUCCESS: Email Saved")
+            r = requests.Response()
+            logging.info(f"{r}")
         except:
             logging.exception("ERROR: Email not Saved")
 
