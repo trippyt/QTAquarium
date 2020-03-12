@@ -14,6 +14,13 @@ controller = AquariumController()
 async def set_temperature_alert():
     ht = request.args.get('ht')
     lt = request.args.get('lt')
+    ht_enabled = request.args.get('ht_enabled')
+    lt_enabled = request.args.get('lt_enabled')
+    if ht_enabled:
+        print("TRUE")
+    else:
+        print("FALSE")
+
     print(f"Receiving Temperature Alert Data H:{ht} L:{lt}")
     controller.alert_data(ht, lt)
     return f"Temperature Alerts H:{ht} L:{lt}"

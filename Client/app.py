@@ -200,11 +200,14 @@ class App(object):
 
     def set_temp_alert(self):
         ht = self.form.ht_alert_doubleSpinBox.value()
+        ht_enabled = self.form.ht_checkBox.checkState()
         lt = self.form.lt_alert_doubleSpinBox.value()
+        lt_enabled = self.form.lt_checkBox.checkState()
         logging.info(f"Sending Alert Changes to Network".center(125))
         logging.info(f"High Temperature: {ht}")
         logging.info(f"Low Temperature: {lt}")
-        requests.get(url=f"{self.server_ip}/setTemperatureAlert?ht={ht}&lt={lt}")
+        requests.get(url=f"{self.server_ip}/setTemperatureAlert?ht={ht}&lt={lt}&ht_enabled={ht_enabled}"
+                         f"&lt_enabled={lt_enabled}")
 
     def save_email(self):
         try:
