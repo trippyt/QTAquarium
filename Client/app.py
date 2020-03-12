@@ -189,7 +189,7 @@ class App(object):
             email_service = self.form.sys_setting_atemail_comboBox.currentText()
             logging.info(f"Email: {email_user}{email_service}")
             requests.get(url=f"http://{ip_address}:5000/saveEmail?email_user={email_user}&email_service={email_service}")
-            logging.infor(f"SUCCESS: Email Saved")
+            logging.info(f"SUCCESS: Email Saved")
         except:
             logging.exception("ERROR: Email not Saved")
 

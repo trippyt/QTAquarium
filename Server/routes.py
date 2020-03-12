@@ -77,7 +77,7 @@ async def calibration_status():
 def save_email():
     email_user = request.args.get('email_user')
     email_service = request.args.get('email_service')
-    controller.save_email()
+    controller.save_email(email_user, email_service)
 
 
 @app.websocket('/temp')
