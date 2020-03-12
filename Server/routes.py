@@ -74,7 +74,7 @@ async def calibration_status():
 
 
 @app.route('/saveEmail', methods=['GET', 'POST'])
-def save_email():
+async def save_email():
     email_user = request.args.get('email_user')
     email_service = request.args.get('email_service')
     controller.save_email(email_user, email_service)
