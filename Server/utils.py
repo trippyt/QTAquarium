@@ -92,11 +92,12 @@ class AquariumController:
 
     def tank_temperature(self):
         temp_c, temp_f = self.hw_controller.read_temperature("temp_tank")
-        a = self.setting_data["Temperature Alerts"]["High Temp"]
-        print(type(temp_c))
-        print(a)
-        if temp_c > float(a):
+        ht = self.setting_data["Temperature Alerts"]["High Temp"]
+        lt = self.setting_data["Temperature Alerts"]["Low Temp"]
+        if temp_c > float(ht):
             print("HIGH TEMP ALERT!!!")
+        elif temp_c < float(lt):
+            print("LOW TEMP ALERT!!!")
         return round(temp_c, 2)
 
     def email_alert(self):
