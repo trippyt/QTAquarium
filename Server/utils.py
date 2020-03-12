@@ -211,4 +211,4 @@ class AquariumController:
     def update(self):
         data = subprocess.call(["git", "status", "-s", "-uno"])
         print(data)
-        return data
+        return data, f"foo"
