@@ -95,7 +95,7 @@ class AquariumController:
         a = self.setting_data["Temperature Alerts"]["High Temp"]
         print(type(temp_c))
         print(a)
-        if temp_c > int(a):
+        if temp_c > float(a):
             print("HIGH TEMP ALERT!!!")
         return round(temp_c, 2)
 
