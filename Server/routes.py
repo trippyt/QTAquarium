@@ -66,11 +66,18 @@ async def stop_calibration():
     return jsonify(resp)
 
 
-@app.route('/alibrationStatus', methods=['GET', 'POST'])
+@app.route('/calibrationStatus', methods=['GET', 'POST'])
 async def calibration_status():
     pump_type = request.args.get('type')
     if pump_type in ['conditioner', 'co2', 'fertilizer']:
         controller.cal_status()
+
+
+@app.route('/saveEmail', methods=['GET', 'POST'])
+def save_email():
+    email_user = request.args.get('email_user')
+    email_service = request.args.get('email_service')
+    controller.save_email()
 
 
 @app.websocket('/temp')

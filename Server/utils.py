@@ -38,6 +38,11 @@ class AquariumController:
 
         self.cal_status = ["Success", "Failed", "In Progress", "None"]
 
+        self.email_data = {
+            "Email User": {},
+            "Email Service": {}
+        }
+
     async def start_calibration(self, pump_type: str):
         try:
             '''asyncio.create_task(self.hw_controller.notification_led_pulse())
@@ -83,6 +88,19 @@ class AquariumController:
 
     def cal_status(self,pump_type: str):
         self.hw_controller.calibration_status()
+
+    def save_email(self, email_user: str, email_service: str):
+        email_data = {
+            "Email Data": self.email_data
+        }
+        logging.info(f"Email Address Updated")
+        logging.info(f"{email_user}{email_service}")
+        try:
+            with open('config.json', 'w') as json_data_file:
+                json_data_file.write(json.dumps(email_data, indent=4))
+            logging.info(f"Email Details Saved")
+        except:
+            logging.exception(f"ERROR: Email Details not Saved")
 
     def tank_temperature(self):
         temp_c, temp_f = self.hw_controller.read_temperature("temp_tank")

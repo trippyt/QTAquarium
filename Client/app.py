@@ -62,6 +62,8 @@ class App(object):
         self.form.Co2_calibrateButton.clicked.connect(lambda: self.enter_calibrationMode("Co2"))
         self.form.save_ratios_pushButton.clicked.connect(self.save_ratios)
         self.form.ht_alert_doubleSpinBox.valueChanged.connect(self.set_temp_alert)
+        self.form.sys_setting_save_pushButton.clicked.connect(self.save_email)
+        self.form.sys_setting_test_pushButton.clicked.connect(self.email_test)
         self.load_server()
 
     def load_server(self):
@@ -88,7 +90,7 @@ class App(object):
             for display in self.ratio_displays:
                 display.blockSignals(True)
             try:
-                #print(self.ratio_data)
+                # print(self.ratio_data)
                 for key in self.ratio_data:
                     ui_obj = getattr(self.form, key)
                     if isinstance(ui_obj, QtWidgets.QDoubleSpinBox):
@@ -115,7 +117,7 @@ class App(object):
             self.form.lt_alert_doubleSpinBox.blockSignals(True)
             try:
                 self.calibration_data = self.new_data["Calibration Data"]
-                #print(self.calibration_data)
+                # print(self.calibration_data)
                 co2_cal = self.calibration_data["Co2 Calibration Data"]["Time per 10mL"]
                 self.form.lcd_co2_cal.display(co2_cal)
             except KeyError as e:
@@ -170,7 +172,6 @@ class App(object):
         except Exception as e:
             logging.exception(e)
 
-
     def exit_calibrationMode(self, pump_type):
         requests.get(url=f"http://{ip_address}:5000/calibrationModeOff?type={pump_type}")
 
@@ -181,6 +182,23 @@ class App(object):
         logging.info(f"High Temperature: {ht}")
         logging.info(f"Low Temperature: {lt}")
         requests.get(url=f"http://{ip_address}:5000/setTemperatureAlert?ht={ht}&lt={lt}")
+
+    def save_email(self):
+        try:
+            email_user = self.form.email_lineEdit.text()
+            email_service = self.form.sys_setting_atemail_comboBox.currentText()
+            logging.info(f"Email: {email_user}{email_service}")
+            requests.get(url=f"http://{ip_address}:5000/saveEmail?email_user={email_user}&email_service={email_service}")
+            logging.infor(f"SUCCESS: Email Saved")
+        except:
+            logging.exception("ERROR: Email not Saved")
+
+    def email_test(self):
+        try:
+            logging.info("Asking Server to Test Email")
+            requests.get(url=f"http://{ip_address}:5000/email_test")
+        except:
+            logging.exception("ERROR: Couldn't Send Test Email")
 
     def run(self):
         self.window.show()
