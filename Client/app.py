@@ -20,8 +20,9 @@ class InfoHandler(logging.Handler):  # inherit from Handler class
 
 class App(object):
     def __init__(self):
-        global ip_address
-        ip_address = "192.168.1.33"
+        self.ip_address = "192.168.1.33"
+        self.ip_port = "5000"
+        self.server_ip = "http://"+self.ip_address+":"+self.port
         self.nam = QtNetwork.QNetworkAccessManager()
 
         self.calibration_data = {
@@ -67,7 +68,7 @@ class App(object):
         self.load_server()
 
     def load_server(self):
-        url = f"http://{ip_address}:5000/getServerData"
+        url = f"{self.server_ip}/getServerData"
         request = QtNetwork.QNetworkRequest(QUrl(url))
         loop = QEventLoop()  # Do you intend to start a new loop instance here?
         # If not: I don't use pyQT but I would expect there to be a function like QEventLoop.get_running_loop()
@@ -83,6 +84,7 @@ class App(object):
         try:
             self.new_data = json.loads(byte_array.data())
             logging.info("JSON Data Loaded".center(125))
+            print(f"New_Data = {self.new_data}")
         except json.decoder.JSONDecodeError:
             logging.info("Couldn't Load JSON From Server".center(125))
         try:
@@ -140,6 +142,9 @@ class App(object):
         #try:
             #self.email_data = self.new_data["Email Data"]
 
+    def load_sys_settings(self):
+        requests.get(url=f"")
+
     def save_ratios(self):
         self.log.info("Sending New Ratio Data to Server")
         ratio_results = [int(ratio.value()) for ratio in
@@ -166,17 +171,17 @@ class App(object):
             self.calibration_mode_on = not self.calibration_mode_on
             if not self.calibration_mode_on:
 
-                requests.get(url=f"http://{ip_address}:5000/calibrationModeOn?type={pump_type}")
+                requests.get(url=f"{self.server_ip}/calibrationModeOn?type={pump_type}")
                 logging.info("Calibration Mode: ON")
             else:
-                requests.get(url=f"http://{ip_address}:5000/calibrationModeOff?type={pump_type}")
+                requests.get(url=f"{self.server_ip}/calibrationModeOff?type={pump_type}")
                 logging.info("Calibration Mode: OFF")
                 self.load_server()
         except Exception as e:
             logging.exception(e)
 
     def exit_calibrationMode(self, pump_type):
-        requests.get(url=f"http://{ip_address}:5000/calibrationModeOff?type={pump_type}")
+        requests.get(url=f"{self.server_ip}/calibrationModeOff?type={pump_type}")
 
     def set_temp_alert(self):
         ht = self.form.ht_alert_doubleSpinBox.value()
@@ -184,14 +189,14 @@ class App(object):
         logging.info(f"Sending Alert Changes to Network".center(125))
         logging.info(f"High Temperature: {ht}")
         logging.info(f"Low Temperature: {lt}")
-        requests.get(url=f"http://{ip_address}:5000/setTemperatureAlert?ht={ht}&lt={lt}")
+        requests.get(url=f"{self.server_ip}/setTemperatureAlert?ht={ht}&lt={lt}")
 
     def save_email(self):
         try:
             email_user = self.form.email_lineEdit.text()
             email_service = self.form.sys_setting_atemail_comboBox.currentText()
             logging.info(f"Email: {email_user}{email_service}")
-            requests.get(url=f"http://{ip_address}:5000/saveEmail?email_user={email_user}&email_service={email_service}")
+            requests.get(url=f"{self.server_ip}/saveEmail?email_user={email_user}&email_service={email_service}")
             logging.info(f"SUCCESS: Email Saved")
             r = requests.Response()
             logging.info(f"{r}")
@@ -201,7 +206,7 @@ class App(object):
     def email_test(self):
         try:
             logging.info("Asking Server to Test Email")
-            requests.get(url=f"http://{ip_address}:5000/email_test")
+            requests.get(url=f"{self.server_ip}/email_test")
         except:
             logging.exception("ERROR: Couldn't Send Test Email")
 
