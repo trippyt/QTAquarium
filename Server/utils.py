@@ -92,9 +92,10 @@ class AquariumController:
 
     def tank_temperature(self):
         temp_c, temp_f = self.hw_controller.read_temperature("temp_tank")
-        print(type(self.setting_data["Temperature Alerts"]["High Temp"]))
-        print(type(self.setting_data["Temperature Alerts"]["High Temp"]))
-        if temp_c > int(self.setting_data["Temperature Alerts"]["High Temp"]):
+        a = self.setting_data["Temperature Alerts"]["High Temp"]
+        print(type(a))
+        print(a)
+        if temp_c > int(a):
             print("HIGH TEMP ALERT!!!")
         return round(temp_c, 2)
 
