@@ -131,9 +131,9 @@ class App(object):
             lt = self.setting_data["Temperature Alerts"]["Low Temp"]
             lt_enabled = self.setting_data["Temperature Alerts"]["Low Enabled"]
             self.form.ht_alert_doubleSpinBox.setValue(float(ht))
-            self.form.ht_checkBox.setState(ht_enabled)
+            self.form.ht_checkBox.setChecked(bool(ht_enabled))
             self.form.lt_alert_doubleSpinBox.setValue(float(lt))
-            self.form.lt_checkBox.setState(lt_enabled)
+            self.form.lt_checkBox.setChecked(bool(lt_enabled))
 
         except KeyError as e:
             logging.exception(e)
