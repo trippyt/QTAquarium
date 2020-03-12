@@ -211,4 +211,4 @@ class AquariumController:
     def update(self):
         g = git.cmd.Git("/home/pi/QTAquarium/")
         msg = g.pull()
-        print(msg)
+        print(f"Msg: {msg}")
