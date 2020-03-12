@@ -229,6 +229,9 @@ class Ui_Form(object):
         self.lcdNumber_14.setObjectName("lcdNumber_14")
         self.WaterConditioner_calibrateButton = QtWidgets.QPushButton(self.groupBox_Water_Conditioner_Pump)
         self.WaterConditioner_calibrateButton.setGeometry(QtCore.QRect(10, 80, 91, 23))
+        font = QtGui.QFont()
+        font.setFamily("MS Shell Dlg 2")
+        self.WaterConditioner_calibrateButton.setFont(font)
         self.WaterConditioner_calibrateButton.setObjectName("WaterConditioner_calibrateButton")
         self.time_per_10_label_7 = QtWidgets.QLabel(self.groupBox_Water_Conditioner_Pump)
         self.time_per_10_label_7.setGeometry(QtCore.QRect(310, 50, 81, 21))
@@ -641,10 +644,13 @@ class Ui_Form(object):
         self.lineEdit_4 = QtWidgets.QLineEdit(self.groupBox_8)
         self.lineEdit_4.setGeometry(QtCore.QRect(460, 170, 71, 20))
         self.lineEdit_4.setObjectName("lineEdit_4")
+        self.sys_setting_update_pushButton = QtWidgets.QPushButton(self.groupBox_8)
+        self.sys_setting_update_pushButton.setGeometry(QtCore.QRect(340, 10, 81, 23))
+        self.sys_setting_update_pushButton.setObjectName("sys_setting_update_pushButton")
         self.tabWidget.addTab(self.tab_4, "")
 
         self.retranslateUi(Form)
-        self.tabWidget.setCurrentIndex(2)
+        self.tabWidget.setCurrentIndex(5)
         QtCore.QMetaObject.connectSlotsByName(Form)
 
     def retranslateUi(self, Form):
@@ -773,4 +779,5 @@ class Ui_Form(object):
         self.ip_lineEdit.setText(_translate("Form", "192.168.1."))
         self.lineEdit_4.setInputMask(_translate("Form", "000.000.0.00;_"))
         self.lineEdit_4.setText(_translate("Form", "..."))
+        self.sys_setting_update_pushButton.setText(_translate("Form", "Check Updates"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_4), _translate("Form", "Sys Settings"))

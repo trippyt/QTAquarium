@@ -71,7 +71,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>2</number>
+    <number>5</number>
    </property>
    <widget class="QWidget" name="Home_tab">
     <attribute name="title">
@@ -2065,6 +2065,19 @@
       </property>
       <property name="text">
        <string>...</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="sys_setting_update_pushButton">
+      <property name="geometry">
+       <rect>
+        <x>340</x>
+        <y>10</y>
+        <width>81</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Check Updates</string>
       </property>
      </widget>
     </widget>

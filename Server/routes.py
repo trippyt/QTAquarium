@@ -4,6 +4,7 @@ from quart import Quart, request, websocket
 from quart.json import jsonify
 import asyncio
 from utils import AquariumController
+
 from time import sleep
 app = Quart(__name__)
 
@@ -24,6 +25,11 @@ async def get_server_data():
     data = controller.load()
     print(f'Return data: {data}')
     return jsonify(data)
+
+
+@app.route('/getUpdates', methods=['GET'])
+async def get_updates():
+    pass
 
 
 @app.route('/setRatios', methods=['GET', 'POST'])

@@ -186,8 +186,8 @@ class AquariumController:
                     print("Loading Saved Data")
                     self.ratio_data = data["Ratio Data"]
                     self.calibration_data = data["Calibration Data"]
-                    print(type(self.calibration_data))
-                    print(self.calibration_data)
+                    print(type(self.new_data))
+                    print(self.new_data)
                     # temperature_data = data["Temperature Data"]
                     # conversion_values
                     # schedule_data
