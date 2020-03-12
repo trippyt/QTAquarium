@@ -7,7 +7,6 @@ import logging
 import sys
 import json
 import requests
-import subprocess
 
 
 class InfoHandler(logging.Handler):  # inherit from Handler class
@@ -38,6 +37,10 @@ class App(object):
         }
         self.new_data = {
             "Ratio Data": {}
+        }
+        self.config_data = {
+            "Email User": {},
+            "Email Service": {}
         }
         self.calibration_mode_on = True
         self.app = QtWidgets.QApplication(sys.argv)
@@ -148,10 +151,7 @@ class App(object):
     def update(self):
         try:
             resp = requests.get(url=f"{self.server_ip}/update")
-            #subprocess.call(["git", "status", "-s", "-uno"])
-            #subprocess.call(["git", "status", "-uno"])
-            #subprocess.call(["git", "status"])
-            logging.info("Updating...")
+            logging.info("Checking for Updates...")
             logging.info(f"Response: {resp}")
 
         except:
