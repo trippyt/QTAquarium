@@ -78,6 +78,8 @@ async def save_email():
     email_user = request.args.get('email_user')
     email_service = request.args.get('email_service')
     controller.save_email(email_user, email_service)
+    resp = {}
+    return jsonify(resp)
 
 
 @app.websocket('/temp')
