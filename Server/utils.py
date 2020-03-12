@@ -89,22 +89,6 @@ class AquariumController:
     def cal_status(self,pump_type: str):
         self.hw_controller.calibration_status()
 
-    def save_email(self, email_user: str, email_service: str):
-        email_data = {
-            "Email Data": {
-                "Email User": email_user,
-                "Email Service": email_service
-            }
-        }
-        logging.info(f"Email Address Updated")
-        logging.info(f"{email_user}{email_service}")
-        try:
-            with open('config.json', 'w') as json_data_file:
-                json_data_file.write(json.dumps(email_data, indent=4))
-            logging.info(f"Email Details Saved")
-        except:
-            logging.exception(f"ERROR: Email Details not Saved")
-
     def tank_temperature(self):
         temp_c, temp_f = self.hw_controller.read_temperature("temp_tank")
         return round(temp_c, 2)
@@ -178,12 +162,27 @@ class AquariumController:
             json_file.write(json.dumps(data, indent=4))
         logging.info("Settings Updated")
 
+    def save_email(self, email_user: str, email_service: str):
+        email_data = {
+            "Email Data": {
+                "Email User": email_user,
+                "Email Service": email_service
+            }
+        }
+        logging.info(f"Email Address Updated")
+        logging.info(f"{email_user}{email_service}")
+        try:
+            with open('config.json', 'w') as json_data_file:
+                json_data_file.write(json.dumps(email_data, indent=4))
+            logging.info(f"Email Details Saved")
+        except:
+            logging.exception(f"ERROR: Email Details not Saved")
+
     def load(self):
         if os.path.isfile('data.txt'):
             with open('data.txt', 'r') as json_file:
                 data = json.loads(json_file.read())
                 print("Loading Saved Data")
-                print(f"Loading Data...{data}")
                 self.ratio_data = data["Ratio Data"]
                 self.calibration_data = data["Calibration Data"]
                 # temperature_data = data["Temperature Data"]
@@ -192,3 +191,9 @@ class AquariumController:
                 # light_hour_data
                 # dosage_data = data["Dosage Data"]
                 return data
+        if os.path.isfile('config.json'):
+            with open('config.json', 'r') as json_data_file:
+                email_data = json.loads(json_data_file.read())
+                print("Loading Email Data")
+                self.email_data = email_data["email_data"]
+                return email_data
