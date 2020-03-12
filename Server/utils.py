@@ -176,7 +176,7 @@ class AquariumController:
                 json_data_file.write(json.dumps(email_data, indent=4))
             logging.info(f"Email Details Saved")
         except:
-            logging.exception(f"ERROR: Email Details not Saved")
+            logging.exception(f" Email Details not Saved")
 
     def load(self):
         try:
@@ -192,13 +192,13 @@ class AquariumController:
                     # light_hour_data
                     # dosage_data = data["Dosage Data"]
         except:
-            logging.exception("ERROR: Couldn't Load Data.txt")
+            logging.exception("Couldn't Load Data.txt")
         try:
             if os.path.isfile('config.json'):
                 with open('config.json', 'r') as json_data_file:
                     email_data = json.loads(json_data_file.read())
                     print("Loading Email Data")
-                    self.email_data = email_data["email_data"]
+                    self.email_data = email_data["network_config"]
             return data, email_data
         except:
-            logging.exception("ERROR: Couldn't Load config.json")
+            logging.exception("Couldn't Load config.json")
