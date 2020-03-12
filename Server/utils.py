@@ -2,7 +2,7 @@ import asyncio
 import time
 import os
 import json
-import subprocess
+import git
 import logging
 from AquariumHardware2 import Hardware
 logging.basicConfig(
@@ -209,6 +209,5 @@ class AquariumController:
             logging.exception("Couldn't Load config.json")
 
     def update(self):
-        data = subprocess.call(["git", "status", "-s", "-uno"])
-        print(data)
-        return data, f"foo"
+        msg = git.pull()
+        print(msg)
