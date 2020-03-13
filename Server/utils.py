@@ -42,8 +42,11 @@ class AquariumController:
         self.cal_status = ["Success", "Failed", "In Progress", "None"]
 
         self.email_data = {
+            "sender_email": {},
             "target_email": {},
-            "Email Service": {}
+            "password_email": {},
+            "Email Service": {},
+            "alert_limit": {}
         }
 
     async def start_calibration(self, pump_type: str):

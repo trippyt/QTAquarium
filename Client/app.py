@@ -38,9 +38,12 @@ class App(object):
         self.new_data = {
             "Ratio Data": {}
         }
-        self.config_data = {
-            "Email User": {},
-            "Email Service": {}
+        self.email_data = {
+            "sender_email": {},
+            "target_email": {},
+            "password_email": {},
+            "Email Service": {},
+            "alert_limit": {}
         }
         self.calibration_mode_on = True
         self.app = QtWidgets.QApplication(sys.argv)
@@ -73,6 +76,7 @@ class App(object):
         self.form.sys_setting_save_pushButton.clicked.connect(self.save_email)
         self.form.sys_setting_test_pushButton.clicked.connect(self.email_test)
         self.form.sys_setting_update_pushButton.clicked.connect(self.update)
+        self.form.alert_limit_spinBox.valueChanged.connect(self.save_email)
         self.load_config()
         self.load_server()
 
@@ -134,15 +138,9 @@ class App(object):
             lt_enabled = self.setting_data["Temperature Alerts"]["Low Enabled"]
             self.form.ht_alert_doubleSpinBox.setValue(float(ht))
             self.form.lt_alert_doubleSpinBox.setValue(float(lt))
-            print(type(ht_enabled))
-            print(ht_enabled)
-            #self.form.ht_checkBox.blockSignals(True)
-            #self.form.lt_checkBox.blockSignals(True)
             self.form.ht_checkBox.setChecked(bool(int(ht_enabled)))
             self.form.lt_checkBox.setChecked(bool(int(lt_enabled)))
-            #self.form.ht_checkBox.blockSignals(False)
-            #self.form.lt_checkBox.blockSignals(False)
-
+            #self.form.alert_limit_spinBox.
         except KeyError as e:
             logging.exception(e)
         logging.info("=" * 125)
@@ -152,10 +150,12 @@ class App(object):
         print(f"Response:{resp.content}")
         try:
             self.config_data = json.loads(resp.content)
-            email_user = self.config_data["Email Data"]["Email User"]
-            email_service = self.config_data["Email Data"]["Email Service"]
+            email_user = self.config_data["network_config"]["target_email"]
+            email_service = self.config_data["network_config"]["service_email"]
+            alert_limit = self.config_data["network_config"]["alert_limit"]
             self.form.email_lineEdit.setText(email_user)
             self.form.sys_setting_atemail_comboBox.setCurrentText(email_service)
+            self.form.alert_limit_spinBox.setValue(alert_limit)
         except:
             logging.exception("Couldn't Load 'config.json'")
 
