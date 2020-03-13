@@ -22,6 +22,7 @@ class EmailAlerts:
         self.email_send()
 
     def aqua_pi_alert(self, config, alert_type):
+        print("Building Email")
         self.msg = config["email_msg"]["alerts"][alert_type]
         self.email_send()
 
