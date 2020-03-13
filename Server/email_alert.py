@@ -7,7 +7,7 @@ class EmailAlerts:
         with open('config.json', 'r') as json_data_file:
             config = json.load(json_data_file)
         with open('data.txt', 'r') as txt_data_file:
-            data = json.load(txt_data_file)
+            data = json.loads(txt_data_file.read())
 
         self.sender = config["network_config"]["sender_email"]
         self.target = config["network_config"]["target_email"]

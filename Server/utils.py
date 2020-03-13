@@ -42,7 +42,7 @@ class AquariumController:
         self.cal_status = ["Success", "Failed", "In Progress", "None"]
 
         self.email_data = {
-            "Email User": {},
+            "target_email": {},
             "Email Service": {}
         }
 
@@ -182,8 +182,8 @@ class AquariumController:
 
     def save_email(self, email_user: str, email_service: str):
         email_data = {
-            "Email Data": {
-                "Email User": email_user,
+            "network_config": {
+                "target_email": email_user,
                 "Email Service": email_service
             }
         }
@@ -218,9 +218,9 @@ class AquariumController:
             if os.path.isfile('config.json'):
                 with open('config.json', 'r') as json_data_file:
                     config_data = json.loads(json_data_file.read())
-                    print("Loading Email Data")
+                    print("Loading network_config")
                     print(config_data)
-                    self.config_data = config_data["Email Data"]
+                    self.config_data = config_data["network_config"]
             return config_data
         except:
             logging.exception("Couldn't Load config.json")
