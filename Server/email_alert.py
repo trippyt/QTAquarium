@@ -13,7 +13,11 @@ class EmailAlerts:
         self.msg = data["email_msg"]
 
     def aqua_pi_status_report(self, data):
-        self.msg = data["email_msg"]["status"]
+        self.msg = data["email_msg"]["Status Report"]
+        self.email_send()
+
+    def aqua_pi_alert(self, data):
+        self.msg = data["email_msg"]["ALERT"]
         self.email_send()
 
     def email_send(self):

@@ -218,6 +218,7 @@ class App(object):
         logging.info(f"Low Temperature: {lt}")
         requests.get(url=f"{self.server_ip}/setTemperatureAlert?ht={ht}&lt={lt}&ht_enabled={ht_enabled}"
                          f"&lt_enabled={lt_enabled}")
+        self.load_server()
 
     def save_email(self):
         try:
@@ -248,8 +249,38 @@ class App(object):
     def start_timers(self):
         return
 
+    def set_temp_display_color(self, color):
+        return self.form.tank_display_c.setStyleSheet(f"QLCDNumber {{background-color: {color}}}")
+
     def ws_receive(self, text):
         self.form.tank_display_c.display(text)
+        ht_chk = self.setting_data["Temperature Alerts"]["High Enabled"]
+        lt_chk = self.setting_data["Temperature Alerts"]["Low Enabled"]
+        ht_thr = self.setting_data["Temperature Alerts"]["High Temp"]
+        lt_thr = self.setting_data["Temperature Alerts"]["Low Temp"]
+        try:
+            print(f"ht_chk: {ht_chk}")
+            print(f"lt_chk: {lt_chk}")
+            print(f"ht_thr: {ht_thr}")
+            print(f"lt_thr: {lt_thr}")
+            if ht_thr < lt_thr:
+                logging.warning("High Temp Cannot Be Lower Than low Temp")
+                return
+            if ht_chk == '2':
+                if float(text) > float(ht_thr):
+                    print("High Temp Alert!!!")
+                    self.set_temp_display_color("red")
+            else:
+                self.set_temp_display_color("white")
+            if lt_chk == '2':
+                if float(text) < float(lt_thr):
+                    print("Low Temp Alert!!!")
+                    self.set_temp_display_color("cyan")
+            else:
+                self.set_temp_display_color("white")
+            print(f"ws_receive: {text}")
+        except:
+            logging.exception("Alert :ERROR")
 
     def on_error(self, error_code):
         return
