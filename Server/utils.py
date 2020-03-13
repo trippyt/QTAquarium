@@ -5,6 +5,7 @@ import json
 import git
 import logging
 from AquariumHardware2 import Hardware
+from email_alert import EmailAlerts
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s,%(msecs)d %(levelname)s: %(message)s",
@@ -20,6 +21,7 @@ class AquariumController:
 
     def __init__(self):
         self.hw_controller = Hardware()
+        self.email = EmailAlerts()
         self.calibration_data = {
                 "Co2 Calibration Data": {},
                 "Fertilizer Calibration Data": {},
@@ -99,6 +101,9 @@ class AquariumController:
         if ht_checked == '2':
             if temp_c > float(ht):
                 print("HIGH TEMP ALERT!!!")
+                cur_temp = temp_c
+                high_temp_threshold = ht
+                self.email.high_temp_alert_example(cur_temp, high_temp_threshold)
         if lt_checked == '2':
             if temp_c < float(lt):
                 print("LOW TEMP ALERT!!!")

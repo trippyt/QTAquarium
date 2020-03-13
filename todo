@@ -42,3 +42,38 @@ cd QTAquarium Server
 cd Server
 git pull
 python3 server.py
+
+
+alert types:
+
+High temp               # Temperature Breaches Threshold
+High water tank         # Tank Water level too full
+High water out          # Tank Output container full
+
+Low temp                # Temperature Breaches Threshold
+Low water tank          # Tank Water level too low
+Low water out           # Tank Output container low
+Low water in            # Tank Input container low
+
+Low co2                 # Chem Co2 low
+Low fert                # Chem Fertz low
+Low tap/s               # Chem Tap/s low
+
+Low flake               # Food low
+Low pellet              # Food low
+
+manual dose             # Manual Dose Needed if chems run out
+manual water change     # Manual Water change Needed tank output full
+
+
+==================================================
+Warning High Temperature
+==================================================
+Current Temperature: {},
+Current High Threshold: {}
+
+please do the following checks:
+- check temperature probe is in tank water,
+- check temperature probe cable
+- check temperature probe connection,
+==================================================
