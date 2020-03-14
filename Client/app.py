@@ -224,8 +224,11 @@ class App(object):
         try:
             email_user = self.form.email_lineEdit.text()
             email_service = self.form.sys_setting_atemail_comboBox.currentText()
+            alert_limit = self.form.alert_limit_spinBox.value()
             logging.info(f"Email: {email_user}{email_service}")
-            requests.get(url=f"{self.server_ip}/saveEmail?email_user={email_user}&email_service={email_service}")
+            logging.info(f"Alerts limited to: {alert_limit} per day")
+            requests.get(url=f"{self.server_ip}/saveEmail?email_user={email_user}&email_service={email_service}\
+            &alert_limit={alert_limit}")
             logging.info(f"SUCCESS: Email Saved")
             r = requests.Response()
             logging.info(f"{r}")

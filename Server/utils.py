@@ -183,7 +183,7 @@ class AquariumController:
             json_file.write(json.dumps(data, indent=4))
         logging.info("Settings Updated")
 
-    def save_email(self, email_user: str, email_service: str, alert_limit: int):
+    def save_email(self, email_user: str, email_service: str, alert_limit: str):
         email_data = {
             "network_config": {
                 "sender_email": "aquariumcontrollerpi@gmail.com",
