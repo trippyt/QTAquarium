@@ -194,6 +194,7 @@ class AquariumController:
         }
         logging.info(f"Email Address Updated")
         logging.info(f"{email_user}{email_service}")
+        logging.info(f"Alert Limit: {alert_limit} Per Day")
         try:
             with open('config.json', 'w') as json_data_file:
                 json_data_file.write(json.dumps(email_data, indent=4))
