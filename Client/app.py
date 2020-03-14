@@ -42,7 +42,7 @@ class App(object):
             "sender_email": {},
             "target_email": {},
             "password_email": {},
-            "Email Service": {},
+            "service_email": {},
             "alert_limit": {}
         }
         self.calibration_mode_on = True
