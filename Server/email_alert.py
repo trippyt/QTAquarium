@@ -8,11 +8,13 @@ class EmailAlerts:
             config = json.load(json_data_file)
         with open('data.txt', 'r') as txt_data_file:
             data = json.load(txt_data_file)
-
-        self.sender = config["network_config"]["sender_email"]
-        self.target = config["network_config"]["target_email"]
-        self.password = config["network_config"]["password_email"]
-        self.high_temp_threshold = data["Setting Data"]["Temperature Alerts"]["High Temp"]
+        try:
+            self.sender = config["network_config"]["sender_email"]
+            self.target = config["network_config"]["target_email"]
+            self.password = config["network_config"]["password_email"]
+            self.high_temp_threshold = data["Setting Data"]["Temperature Alerts"]["High Temp"]
+        except:
+            print("oops")
         #self.msg = config["email_msg"]
 
         self.templates = EmailTemplates()
