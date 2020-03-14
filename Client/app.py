@@ -7,8 +7,7 @@ import logging
 import sys
 import json
 import requests
-import base64
-
+from passlib.hash import pbkdf2_sha256
 
 class InfoHandler(logging.Handler):  # inherit from Handler class
     def __init__(self, textBrowser):
@@ -154,22 +153,27 @@ class App(object):
             self.config_data = json.loads(resp.content)
             email_user = self.config_data["network_config"]["target_email"]
             email_service = self.config_data["network_config"]["service_email"]
-            alert_limit = self.config_data["network_config"]["alert_limit"]
-            self.view_pass()
+            alert_limit = int(self.config_data["network_config"]["alert_limit"])
             self.form.email_lineEdit.setText(email_user)
             self.form.sys_setting_atemail_comboBox.setCurrentText(email_service)
             self.form.alert_limit_spinBox.setValue(alert_limit)
+            #self.view_pass()
         except:
             logging.exception("Couldn't Load 'config.json'")
 
     def view_pass(self):
-        password_email = self.config_data["network_config"]["password_email"]
-        decrypt_email = (base64.b64decode(f"{password_email}".encode("utf-8")))
-        pass_chk = self.form.view_pass_checkBox.checkState()
-        if pass_chk == '2':
-            self.form.email_pass_lineEdit.setText(decrypt_email)
-        else:
-            self.form.email_pass_lineEdit.setText("*"*10)
+        pass_email = self.config_data["network_config"]["pass_email"]
+        if pass_email:
+            try:
+                decrypt_email = pbkdf2_sha256.verify(pass_email, hash)
+                logging.infor(f"Pass Verified: {decrypt_email}")
+                pass_chk = self.form.view_pass_checkBox.checkState()
+                if pass_chk == '2':
+                    self.form.email_pass_lineEdit.setText(decrypt_email)
+                else:
+                    self.form.email_pass_lineEdit.setText("*"*10)
+            except:
+                logging.exception("No Email Password to Load")
 
     def update(self):
         try:
@@ -238,8 +242,9 @@ class App(object):
             email_service = self.form.sys_setting_atemail_comboBox.currentText()
             email_pass = self.form.email_pass_lineEdit.text()
             alert_limit = self.form.alert_limit_spinBox.value()
-            encrypt_pass = (base64.b64encode(f"{email_pass}".encode("utf-8")))
+            encrypt_pass = pbkdf2_sha256.hash(email_pass)
             logging.info(f"Email: {email_user}{email_service}")
+            logging.info(f"Pass: {email_pass}")
             logging.info(f"Encrypted Pass: {encrypt_pass}")
             logging.info(f"Alerts limited to: {alert_limit} per day")
             requests.get(url=f"{self.server_ip}/saveEmail?email_user={email_user}&email_service={email_service}\
