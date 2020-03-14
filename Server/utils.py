@@ -4,6 +4,7 @@ import os
 import json
 import git
 import logging
+import base64
 from AquariumHardware2 import Hardware
 from email_alert import EmailAlerts
 logging.basicConfig(

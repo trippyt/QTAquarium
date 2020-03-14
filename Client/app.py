@@ -7,6 +7,7 @@ import logging
 import sys
 import json
 import requests
+import base64
 
 
 class InfoHandler(logging.Handler):  # inherit from Handler class
@@ -73,6 +74,7 @@ class App(object):
         self.form.lt_alert_doubleSpinBox.valueChanged.connect(self.set_temp_alert)
         self.form.ht_checkBox.stateChanged.connect(self.set_temp_alert)
         self.form.lt_checkBox.stateChanged.connect(self.set_temp_alert)
+        self.form.view_pass_checkBox.stateChanged.connect(self.view_pass)
         self.form.sys_setting_save_pushButton.clicked.connect(self.save_email)
         self.form.sys_setting_test_pushButton.clicked.connect(self.email_test)
         self.form.sys_setting_update_pushButton.clicked.connect(self.update)
@@ -153,11 +155,21 @@ class App(object):
             email_user = self.config_data["network_config"]["target_email"]
             email_service = self.config_data["network_config"]["service_email"]
             alert_limit = self.config_data["network_config"]["alert_limit"]
+            self.view_pass()
             self.form.email_lineEdit.setText(email_user)
             self.form.sys_setting_atemail_comboBox.setCurrentText(email_service)
             self.form.alert_limit_spinBox.setValue(alert_limit)
         except:
             logging.exception("Couldn't Load 'config.json'")
+
+    def view_pass(self):
+        password_email = self.config_data["network_config"]["password_email"]
+        decrypt_email = (base64.b64decode(f"{password_email}".encode("utf-8")))
+        pass_chk = self.form.view_pass_checkBox.checkState()
+        if pass_chk == '2':
+            self.form.email_pass_lineEdit.setText(decrypt_email)
+        else:
+            self.form.email_pass_lineEdit.setText("*"*10)
 
     def update(self):
         try:
@@ -224,11 +236,14 @@ class App(object):
         try:
             email_user = self.form.email_lineEdit.text()
             email_service = self.form.sys_setting_atemail_comboBox.currentText()
+            email_pass = self.form.email_pass_lineEdit.text()
             alert_limit = self.form.alert_limit_spinBox.value()
+            encrypt_pass = (base64.b64encode(f"{email_pass}".encode("utf-8")))
             logging.info(f"Email: {email_user}{email_service}")
+            logging.info(f"Encrypted Pass: {encrypt_pass}")
             logging.info(f"Alerts limited to: {alert_limit} per day")
             requests.get(url=f"{self.server_ip}/saveEmail?email_user={email_user}&email_service={email_service}\
-            &alert_limit={alert_limit}")
+            &alert_limit={alert_limit}&encrypt_pass={encrypt_pass}")
             logging.info(f"SUCCESS: Email Saved")
             r = requests.Response()
             logging.info(f"{r}")
