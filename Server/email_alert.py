@@ -64,7 +64,7 @@ class EmailAlerts:
             l.exception("error sending mail")
             l.exception(e)
             l.info(type(self.config))
-            l.info(f"Config: {self.conig}")
+            l.info(f"Config: {self.config}")
         server.quit()
 
     def alert_email_counter(self, alert_type):
