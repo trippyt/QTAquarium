@@ -122,6 +122,7 @@ async def save_email():
 
 @app.route('/emailTest', methods=['GET', 'POST'])
 async def email_test():
+    print("Requested to send test email")
     emailer.email_test()
 
 
