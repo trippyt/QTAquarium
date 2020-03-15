@@ -10,7 +10,7 @@ class EmailAlerts:
             "target_email": {},
             "password_email": {},
             "service_email": {},
-            "alert_limit_email": {},
+            "alert_limit": {},
             "email_alert_counter": {}
         }
         self.email_msg = None
