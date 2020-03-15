@@ -97,7 +97,6 @@ class App(object):
             for display in self.ratio_displays:
                 display.blockSignals(True)
             try:
-                # print(self.ratio_data)
                 for key in self.ratio_data:
                     ui_obj = getattr(self.form, key)
                     if isinstance(ui_obj, QtWidgets.QDoubleSpinBox):
@@ -198,7 +197,10 @@ class App(object):
         except:
             logging.exception("Couldn't Update")
 
-
+    def temp_alert_test(self):
+        resp = requests.get(url=f"{self.server_ip}/alertTest")
+        logging.info(f"Response: {resp}")
+        logging.info(f"Sending Alert Test")
 
     def save_ratios(self):
         self.log.info("Sending New Ratio Data to Server")

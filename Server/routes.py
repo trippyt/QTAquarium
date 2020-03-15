@@ -120,10 +120,17 @@ async def save_email():
     return f"{resp}"
 
 
+@app.route('/alertTest', methods=['GET', 'POST'])
+async def alert_test():
+    controller.email_ht_alert()
+    resp = "Success"
+    return f"{resp}"
+
+
 @app.route('/emailTest', methods=['GET', 'POST'])
 async def email_test():
     print("Requested to send test email")
-    emailer.email_test()
+    emailer.high_temp_alert()
     resp = "Success"
     return f"{resp}"
 
