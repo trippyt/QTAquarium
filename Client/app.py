@@ -154,6 +154,9 @@ class App(object):
             email_user = self.config_data["network_config"]["target_email"]
             email_service = self.config_data["network_config"]["service_email"]
             alert_limit = int(self.config_data["network_config"]["alert_limit"])
+        except:
+            logging.exception(("Couldn't Load Config.json"))
+        try:
             self.form.email_lineEdit.setText(email_user)
             self.form.sys_setting_atemail_comboBox.setCurrentText(email_service)
             self.form.alert_limit_spinBox.setValue(alert_limit)

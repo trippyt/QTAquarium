@@ -185,22 +185,21 @@ class AquariumController:
         logging.info("Settings Updated")
 
     def save_email(self, email_user: str, email_service: str, alert_limit: str, email_pass):
-        email_data = {
-            "network_config": {
+        self.email_data["network_config"].update(
+            {
                 "sender_email": "aquariumcontrollerpi@gmail.com",
                 "target_email": email_user,
                 "pass_email": email_pass,
                 "service_email": email_service,
                 "alert_limit": alert_limit,
-            }
-        }
+            })
         logging.info(f"Email Address Updated")
         logging.info(f"{email_user}{email_service}")
         logging.info(f"Email Pass: {email_pass}")
         logging.info(f"Alert Limit: {alert_limit} Per Day")
         try:
             with open('config.json', 'w') as json_data_file:
-                json_data_file.write(json.dumps(email_data.update, indent=4))
+                json_data_file.write(json.dumps(email_data, indent=4))
             logging.info(f"Email Details Saved")
         except:
             logging.exception(f" Email Details not Saved")
