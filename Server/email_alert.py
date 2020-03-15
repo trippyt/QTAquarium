@@ -5,7 +5,7 @@ import logging as l
 
 class EmailAlerts:
     def __init__(self):
-        self.network_config = {}
+        self.alert_counter = {}
         self.email_msg = None
         with open('config.json', 'r') as json_data_file:
             self.config = json.load(json_data_file)
@@ -68,16 +68,16 @@ class EmailAlerts:
         server.quit()
 
     def alert_email_counter(self, alert_type):
-        if (alert_type + " counter") in self.network_config:
-            self.network_config[(alert_type + "counter")] += 1
+        if (alert_type + " counter") in self.alert_counter:
+            self.alert_counter[(alert_type + "counter")] += 1
         else:
-            self.network_config[(alert_type + "counter")] = 1
+            self.alert_counter[(alert_type + "counter")] = 1
 
         self.save_config()
 
     def save_config(self):
         email_data = {
-            "network_config": self.network_config,
+            "network_config": self.alert_counter,
         }
         try:
             with open('config.json', 'w') as json_data_file:
