@@ -5,14 +5,7 @@ import logging as l
 
 class EmailAlerts:
     def __init__(self):
-        self.network_config = {
-            "sender_email": {},
-            "target_email": {},
-            "password_email": {},
-            "service_email": {},
-            "alert_limit": {},
-            "email_alert_counter": {}
-        }
+        self.network_config = {}
         self.email_msg = None
         with open('config.json', 'r') as json_data_file:
             self.config = json.load(json_data_file)
