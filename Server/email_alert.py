@@ -34,6 +34,7 @@ class EmailAlerts:
 
     def email_test(self):
         self.msg = self.templates.email_test()
+        self.email_send()
 
     def email_send(self):
         print(f"Email Built: {self.msg}")
