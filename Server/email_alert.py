@@ -5,7 +5,14 @@ import logging as l
 
 class EmailAlerts:
     def __init__(self):
-        self.config = {}
+        self.network_config = {
+            "sender_email": {},
+            "target_email": {},
+            "password_email": {},
+            "service_email": {},
+            "alert_limit_email": {},
+            "email_alert_counter": {}
+        }
         self.email_msg = None
         with open('config.json', 'r') as json_data_file:
             self.config = json.load(json_data_file)
@@ -68,10 +75,8 @@ class EmailAlerts:
         server.quit()
 
     def alert_email_counter(self, alert_type):
-        self.config["network_config"]["Alert counter"].add(
-            {f"{alert_type}": +1
-             }
-        )
+        if (alert_type + "counter") in self.network_config:
+            self.network_config[(alert_type + "counter")] += 1
         try:
             with open('config.json', 'w') as json_data_file:
                 json_data_file.write(json.dumps(self.config, indent=4))
@@ -79,6 +84,17 @@ class EmailAlerts:
         except Exception as e:
             print(f" Email Counter not Updated")
             print(e)
+
+    def save_config(self):
+        email_data = {
+            "network_config": self.network_config,
+        }
+        try:
+            with open('config.json', 'w') as json_data_file:
+                json_data_file.write(json.dumps(email_data, indent=4))
+            l.info(f"Email Details Saved")
+        except:
+            l.exception(f" Email Details not Saved")
 
     def msg_format(self, alert_type, variable_data, custom_msg):
         self.email_msg = '\r\n'.join([' %s Alert' % alert_type,
