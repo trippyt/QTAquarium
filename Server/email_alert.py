@@ -77,6 +77,7 @@ class EmailTemplates:
 - check temperature probe cable
 - check temperature probe connection
 - check heater power"""
+        return m
 
     def high_temp(self):
         m = """==================================================
