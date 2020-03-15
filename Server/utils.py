@@ -199,7 +199,7 @@ class AquariumController:
         logging.info(f"Alert Limit: {alert_limit} Per Day")
         try:
             with open('config.json', 'w') as json_data_file:
-                json_data_file.write(json.dumps(email_data, indent=4))
+                json_data_file.write(json.dumps(self.email_data, indent=4))
             logging.info(f"Email Details Saved")
         except:
             logging.exception(f" Email Details not Saved")
