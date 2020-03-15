@@ -152,13 +152,13 @@ class App(object):
         try:
             self.config_data = json.loads(resp.content)
             email_user = self.config_data["network_config"]["target_email"]
-            email_service = self.config_data["network_config"]["service_email"]
+            service_email = self.config_data["network_config"]["service_email"]
             alert_limit_email = int(self.config_data["network_config"]["alert_limit"])
         except UnboundLocalError:
             logging.exception(("Couldn't Load Config.json"))
         try:
             self.form.email_lineEdit.setText(email_user)
-            self.form.sys_setting_atemail_comboBox.setCurrentText(email_service)
+            self.form.sys_setting_atemail_comboBox.setCurrentText(service_email)
             self.form.alert_limit_spinBox.setValue(alert_limit_email)
             self.view_pass()
         except:
@@ -246,13 +246,13 @@ class App(object):
     def save_email(self):
         try:
             email_user = self.form.email_lineEdit.text()
-            email_service = self.form.sys_setting_atemail_comboBox.currentText()
+            service_email = self.form.sys_setting_atemail_comboBox.currentText()
             email_pass = self.form.email_pass_lineEdit.text()
             alert_limit = self.form.alert_limit_spinBox.value()
-            logging.info(f"Email: {email_user}{email_service}")
+            logging.info(f"Email: {email_user}{service_email}")
             logging.info(f"Pass: {email_pass}")
             logging.info(f"Alerts limited to: {alert_limit} per day")
-            requests.get(url=f"{self.server_ip}/saveEmail?email_user={email_user}&email_service={email_service}\
+            requests.get(url=f"{self.server_ip}/saveEmail?email_user={email_user}&service_email={service_email}\
             &email_pass={email_pass}&alert_limit={alert_limit}")
             logging.info(f"SUCCESS: Email Saved")
             r = requests.Response()

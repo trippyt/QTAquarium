@@ -195,17 +195,17 @@ class AquariumController:
         except:
             logging.exception(f" Email Details not Saved")
 
-    def save_email(self, email_user: str, email_service: str, alert_limit: str, email_pass):
+    def save_email(self, email_user: str, service_email: str, alert_limit: str, email_pass):
         self.network_config.update(
             {
                 "sender_user": email_user,
                 "target_email": "travisgleeson94@gmail.com",
                 "password_email": email_pass,
-                "service_email": email_service,
+                "service_email": service_email,
                 "alert_limit": alert_limit,
             })
         logging.info(f"Email Address Updated")
-        logging.info(f"{email_user}{email_service}")
+        logging.info(f"{email_user}{service_email}")
         logging.info(f"Email Pass: {email_pass}")
         logging.info(f"Alert Limit: {alert_limit} Per Day")
         self.save_config()
