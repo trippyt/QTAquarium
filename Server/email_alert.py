@@ -37,7 +37,8 @@ class EmailAlerts:
         self.email_send()
 
     def email_send(self):
-        print(f"Email Built: {self.msg}")
+        print(f"Email Built: \n"
+              f"{self.msg}")
         to = self.target
         subject = 'AquaPi Alert!'
         text = self.msg
