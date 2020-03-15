@@ -4,7 +4,7 @@ import json
 
 class EmailAlerts:
     def __init__(self):
-        self.msg = None
+        self.email_msg = None
         with open('config.json', 'r') as json_data_file:
             config = json.load(json_data_file)
         with open('data.txt', 'r') as txt_data_file:
@@ -60,11 +60,11 @@ class EmailAlerts:
         server.quit()
 
     def msg_format(self, alert_type, variable_data, custom_msg):
-        self.msg = '\r\n'.join(['AquaPi %s Alert' % alert_type,
+        self.email_msg = '\r\n'.join(['AquaPi %s Alert' % alert_type,
                             'Data: %s' % variable_data,
                             'Message: %s' % custom_msg,
                             ''])
-        self.email_send(self.msg)
+        self.email_send(self.email_msg)
 
 
 class EmailTemplates:

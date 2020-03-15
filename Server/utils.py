@@ -120,7 +120,7 @@ class AquariumController:
             "Current Threshold": self.setting_data["Temperature Alerts"]["High Temp"]
         }
         msg = self.email.templates.temperature_msg()
-        self.email.msg_format(alert_type='High Temperature Alert', variable_data=data, custom_msg=msg)
+        self.email.msg_format(alert_type='High Temperature', variable_data=data, custom_msg=msg)
 
     def calibration_status(self, pump_type, cal_status):
         logging.info(f"pump: {pump_type}, status: {cal_status}")
