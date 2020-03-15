@@ -200,7 +200,7 @@ class AquariumController:
             {
                 "sender_user": "aquariumcontrollerpi@gmail.com",
                 "target_email": email_user,
-                "password_email": email_pass,
+                "password_email": password_email,
                 "service_email": service_email,
                 "alert_limit": alert_limit,
             })
