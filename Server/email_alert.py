@@ -58,8 +58,9 @@ class EmailAlerts:
             server.sendmail(gmail_sender, [to], body)
             print('email sent')
             self.alert_email_counter(alert_type)
-        except:
+        except Exception as e:
             print('error sending mail')
+            print(e)
         server.quit()
 
     def alert_email_counter(self, alert_type):
