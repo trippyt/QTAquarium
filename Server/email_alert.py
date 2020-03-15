@@ -1,5 +1,6 @@
 import smtplib
 import json
+import logging as l
 
 
 class EmailAlerts:
@@ -59,8 +60,8 @@ class EmailAlerts:
             print('email sent')
             self.alert_email_counter(alert_type)
         except Exception as e:
-            print('error sending mail')
-            print(e)
+            l.exception("error sending mail")
+            l.exception(e)
         server.quit()
 
     def alert_email_counter(self, alert_type):
