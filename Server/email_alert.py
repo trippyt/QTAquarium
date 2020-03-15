@@ -77,13 +77,7 @@ class EmailAlerts:
     def alert_email_counter(self, alert_type):
         if (alert_type + "counter") in self.network_config:
             self.network_config[(alert_type + "counter")] += 1
-        try:
-            with open('config.json', 'w') as json_data_file:
-                json_data_file.write(json.dumps(self.network_config, indent=4))
-            print(f"Email Counter Updated")
-        except Exception as e:
-            print(f" Email Counter not Updated")
-            print(e)
+        self.save_config()
 
     def save_config(self):
         email_data = {
