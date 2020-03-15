@@ -34,7 +34,7 @@ class EmailAlerts:
 
     def email_send(self, alert_type):
         print(f"Email Built: \n"
-              f"{self.msg}")
+              f"{self.email_msg}")
         to = self.target
         subject = f"AquaPi {alert_type}"
 
@@ -49,7 +49,7 @@ class EmailAlerts:
         body = '\r\n'.join(['To: %s' % to,
                             'From: %s' % gmail_sender,
                             'Subject: %s' % subject,
-                            '', self.msg])
+                            '', self.email_msg])
         print(body)
 
         try:
