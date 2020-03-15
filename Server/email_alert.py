@@ -71,8 +71,9 @@ class EmailAlerts:
             with open('config.json', 'w') as json_data_file:
                 json_data_file.write(json.dumps(self.config, indent=4))
             print(f"Email Counter Updated")
-        except:
+        except Exception as e:
             print(f" Email Counter not Updated")
+            print(e)
 
     def msg_format(self, alert_type, variable_data, custom_msg):
         self.email_msg = '\r\n'.join([' %s Alert' % alert_type,
