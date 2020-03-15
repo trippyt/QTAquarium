@@ -32,6 +32,9 @@ class EmailAlerts:
         self.msg = self.templates.high_temp().format(cur_temp=cur_temp, high_temp_threshold=high_temp_threshold)
         self.email_send()
 
+    def email_test(self):
+        self.msg = self.templates.email_test()
+
     def email_send(self):
         to = self.target
         subject = 'AquaPi Alert!'
@@ -88,5 +91,13 @@ please do the following checks:
 - check temperature probe cable
 - check temperature probe connection
 - check heater power
+=================================================="""
+        return m
+
+    def email_test(self):
+        m = """==================================================
+Email Test
+==================================================
+Hi from Test
 =================================================="""
         return m

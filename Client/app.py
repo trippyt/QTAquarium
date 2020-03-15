@@ -84,6 +84,8 @@ class App(object):
     def load_server(self):
         resp = requests.get(url=f"{self.server_ip}/getServerData")
         try:
+            logging.info("=" * 125)
+            logging.info("Attempting to Load from Data.txt".center(125))
             self.new_data = json.loads(resp.content)
             logging.info("JSON Data Loaded".center(125))
             print(f"New_Data = {self.new_data}")
@@ -147,40 +149,45 @@ class App(object):
         logging.info("=" * 125)
 
     def load_config(self):
+        logging.info("=" * 125)
         resp = requests.get(url=f"{self.server_ip}/getConfig")
         print(f"Response:{resp.content}")
         try:
+            logging.info("Attempting to Load from Config.json".center(125))
             self.config_data = json.loads(resp.content)
+            logging.info(self.config_data)
             email_user = self.config_data["network_config"]["target_email"]
             service_email = self.config_data["network_config"]["service_email"]
             alert_limit_email = int(self.config_data["network_config"]["alert_limit"])
-        except UnboundLocalError:
-            logging.exception(("Couldn't Load Config.json"))
-        try:
             self.form.email_lineEdit.setText(email_user)
             self.form.sys_setting_atemail_comboBox.setCurrentText(service_email)
             self.form.alert_limit_spinBox.setValue(alert_limit_email)
             self.view_pass()
         except:
             logging.exception("Couldn't Load 'config.json'")
+        logging.info("=" * 125)
 
     def view_pass(self):
+        logging.info("=" * 125)
+        logging.info("Attempting to  Load Password")
         pass_email = self.config_data["network_config"]["password_email"]
-        #key in pass_email value ==
-        #if pass_email:
         if self.config_data["network_config"]["password_email"]:
             logging.info(f"Password found: {pass_email}")
             try:
-                hash = pbkdf2_sha256.hash(pass_email)
-                decrypt_email = pbkdf2_sha256.verify(pass_email, hash)
-                logging.info(f"Pass Verified: {decrypt_email}")
                 pass_chk = self.form.view_pass_checkBox.checkState()
-                if pass_chk == '2':
-                    self.form.email_pass_lineEdit.setText(decrypt_email)
+                logging.info(f"Pass Visible Check: {pass_chk}")
+                i = len(pass_email)
+                logging.info(f"Password Length: {i}")
+                if pass_chk == 2:
+                    self.form.email_pass_lineEdit.setText(pass_email)
+                    logging.info(f"Revealing Pass: {pass_email}")
                 else:
-                    self.form.email_pass_lineEdit.setText("*"*10)
+
+                    self.form.email_pass_lineEdit.setText("*"*i)
+                    logging.info("Pass Hidden")
             except:
                 logging.exception("Couldn't Email Password to Load")
+            logging.info("=" * 125)
 
     def update(self):
         try:
@@ -245,12 +252,19 @@ class App(object):
 
     def save_email(self):
         try:
+            logging.info("=" * 125)
             email_user = self.form.email_lineEdit.text()
             service_email = self.form.sys_setting_atemail_comboBox.currentText()
-            password_email = self.form.email_pass_lineEdit.text()
+            pass_saved = self.config_data["network_config"]["password_email"]
+            if len(pass_saved) == 0:
+                logging.info(f"No Password to load")
+                password_email = self.form.email_pass_lineEdit.text()
+            else:
+                logging.info(f"Loading Saved Password: {pass_saved}")
+                password_email = pass_saved
             alert_limit = self.form.alert_limit_spinBox.value()
             logging.info(f"Email: {email_user}{service_email}")
-            logging.info(f"Pass: {email_pass}")
+            logging.info(f"Pass: {password_email}")
             logging.info(f"Alerts limited to: {alert_limit} per day")
             requests.get(url=f"{self.server_ip}/saveEmail?email_user={email_user}&service_email={service_email}\
             &password_email={password_email}&alert_limit={alert_limit}")
@@ -259,6 +273,7 @@ class App(object):
             logging.info(f"{r}")
         except:
             logging.exception("ERROR: Email not Saved")
+        logging.info("=" * 125)
 
     def email_test(self):
         try:

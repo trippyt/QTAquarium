@@ -4,11 +4,13 @@ from quart import Quart, request, websocket
 from quart.json import jsonify
 import asyncio
 from utils import AquariumController
+from email_alert import EmailAlerts
 
 from time import sleep
 app = Quart(__name__)
 
 controller = AquariumController()
+emailer = EmailAlerts()
 
 @app.route('/setTemperatureAlert', methods=['GET', 'POST'])
 async def set_temperature_alert():
@@ -116,6 +118,11 @@ async def save_email():
     controller.save_email(email_user, service_email, alert_limit, password_email)
     resp = "Success"
     return f"{resp}"
+
+
+@app.route('/emailTest', methods=['GET', 'POST'])
+async def email_test():
+    emailer.email_test()
 
 
 @app.websocket('/temp')
