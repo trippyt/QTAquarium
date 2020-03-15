@@ -16,9 +16,12 @@ class EmailAlerts:
             self.high_temp_threshold = data["Setting Data"]["Temperature Alerts"]["High Temp"]
         except:
             print("oops")
-        #self.msg = config["email_msg"]
-        #self.alert_type = ["Test", ""]
+        # self.msg = config["email_msg"]
+        # self.alert_type = ["Test", ""]
         self.templates = EmailTemplates()
+
+    def low_temp_alert(self):
+        self
 
     def aqua_pi_status_report(self):
         self.msg = self.templates.status_report()
@@ -51,7 +54,6 @@ class EmailAlerts:
                             'Subject: %s' % subject,
                             '', self.email_msg])
 
-
         try:
             server.sendmail(gmail_sender, [to], body)
             print('email sent')
@@ -60,11 +62,11 @@ class EmailAlerts:
         server.quit()
 
     def msg_format(self, alert_type, variable_data, custom_msg):
-        self.email_msg = '\r\n'.join([' %s Alert' % alert_type,
-                            'Data: %s' % variable_data,
-                            'Message: %s' % custom_msg,
-                            ''])
-        self.email_send(self.email_msg)
+        email_msg = '\r\n'.join([' %s Alert' % alert_type,
+                                      'Data: %s' % variable_data,
+                                      'Message: %s' % custom_msg,
+                                      ''])
+        self.email_send(email_msg)
 
 
 class EmailTemplates:
@@ -72,7 +74,7 @@ class EmailTemplates:
         pass
 
     def temperature_msg(self):
-        m ="""please do the following checks:
+        m = """please do the following checks:
 - check temperature probe is in tank water
 - check temperature probe cable
 - check temperature probe connection
@@ -136,6 +138,7 @@ up time graphs: {},
 connectivity graphs: {},
 =================================================="""
 
+
 """
 ==================================================
 Warning Low Temperature                                         # Alert title
@@ -150,6 +153,7 @@ please do the following checks:                                 # Custom message
 - check heater power
 =================================================="""
 
+
 def email_test(self):
     m = """==================================================
 Email Test
@@ -157,4 +161,3 @@ Email Test
 Hi from Test
 =================================================="""
     return m
-
