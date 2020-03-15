@@ -6,13 +6,13 @@ class EmailAlerts:
     def __init__(self):
         self.email_msg = None
         with open('config.json', 'r') as json_data_file:
-            config = json.load(json_data_file)
+            self.config = json.load(json_data_file)
         with open('data.txt', 'r') as txt_data_file:
             data = json.load(txt_data_file)
         try:
-            self.sender = config["network_config"]["sender_email"]
-            self.target = config["network_config"]["target_email"]
-            self.password = config["network_config"]["password_email"]
+            self.sender = self.config["network_config"]["sender_email"]
+            self.target = self.config["network_config"]["target_email"]
+            self.password = self.config["network_config"]["password_email"]
             self.high_temp_threshold = data["Setting Data"]["Temperature Alerts"]["High Temp"]
         except:
             print("oops")
@@ -57,9 +57,16 @@ class EmailAlerts:
         try:
             server.sendmail(gmail_sender, [to], body)
             print('email sent')
+            self.alert_email_counter(alert_type)
         except:
             print('error sending mail')
         server.quit()
+
+    def alert_email_counter(self, alert_type):
+        self.config["network_config"]["Alert counter"].update(
+            {f"{alert_type}": +1
+             }
+        )
 
     def msg_format(self, alert_type, variable_data, custom_msg):
         self.email_msg = '\r\n'.join([' %s Alert' % alert_type,
