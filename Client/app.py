@@ -278,7 +278,7 @@ class App(object):
     def email_test(self):
         try:
             logging.info("Asking Server to Test Email")
-            requests.get(url=f"{self.server_ip}/email_test")
+            requests.get(url=f"{self.server_ip}/emailTest")
         except:
             logging.exception("ERROR: Couldn't Send Test Email")
 
