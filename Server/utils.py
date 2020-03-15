@@ -198,7 +198,7 @@ class AquariumController:
     def save_email(self, email_user: str, service_email: str, alert_limit: str, password_email):
         self.network_config.update(
             {
-                "sender_user": "aquariumcontrollerpi@gmail.com",
+                "sender_email": "aquariumcontrollerpi@gmail.com",
                 "target_email": email_user,
                 "password_email": password_email,
                 "service_email": service_email,
