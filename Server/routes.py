@@ -124,6 +124,8 @@ async def save_email():
 async def email_test():
     print("Requested to send test email")
     emailer.email_test()
+    resp = "Success"
+    return f"{resp}"
 
 
 @app.websocket('/temp')
