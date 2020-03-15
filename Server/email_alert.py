@@ -50,7 +50,7 @@ class EmailAlerts:
                             'From: %s' % gmail_sender,
                             'Subject: %s' % subject,
                             '', self.email_msg])
-        print(body)
+
 
         try:
             server.sendmail(gmail_sender, [to], body)
