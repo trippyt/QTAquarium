@@ -5,6 +5,7 @@ import logging as l
 
 class EmailAlerts:
     def __init__(self):
+        self.config = {}
         self.email_msg = None
         with open('config.json', 'r') as json_data_file:
             self.config = json.load(json_data_file)
@@ -62,10 +63,12 @@ class EmailAlerts:
         except Exception as e:
             l.exception("error sending mail")
             l.exception(e)
+            l.info(type(self.config))
+            l.infor(f"Config: {self.conig}")
         server.quit()
 
     def alert_email_counter(self, alert_type):
-        self.config["network_config"]["Alert counter"].update(
+        self.config["network_config"]["Alert counter"].add(
             {f"{alert_type}": +1
              }
         )
