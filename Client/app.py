@@ -38,7 +38,7 @@ class App(object):
         self.new_data = {
             "Ratio Data": {}
         }
-        self.email_data = {
+        self.network_config = {
             "sender_email": {},
             "target_email": {},
             "password_email": {},
@@ -153,13 +153,13 @@ class App(object):
             self.config_data = json.loads(resp.content)
             email_user = self.config_data["network_config"]["target_email"]
             email_service = self.config_data["network_config"]["service_email"]
-            alert_limit = int(self.config_data["network_config"]["alert_limit"])
+            alert_limit_email = int(self.config_data["network_config"]["alert_limit"])
         except UnboundLocalError:
             logging.exception(("Couldn't Load Config.json"))
         try:
             self.form.email_lineEdit.setText(email_user)
             self.form.sys_setting_atemail_comboBox.setCurrentText(email_service)
-            self.form.alert_limit_spinBox.setValue(alert_limit)
+            self.form.alert_limit_spinBox.setValue(alert_limit_email)
             self.view_pass()
         except:
             logging.exception("Couldn't Load 'config.json'")

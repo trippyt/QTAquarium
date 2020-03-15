@@ -46,8 +46,8 @@ class AquariumController:
             "sender_email": {},
             "target_email": {},
             "password_email": {},
-            "Email Service": {},
-            "alert_limit": {}
+            "service_email": {},
+            "alert_limit_email": {}
         }
 
     async def start_calibration(self, pump_type: str):
@@ -199,7 +199,7 @@ class AquariumController:
         self.network_config.update(
             {
                 "sender_user": email_user,
-                "email_service": email_service,
+                "target_email": "travisgleeson94@gmail.com",
                 "password_email": email_pass,
                 "service_email": email_service,
                 "alert_limit": alert_limit,
