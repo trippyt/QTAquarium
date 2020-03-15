@@ -66,7 +66,7 @@ class EmailAlerts:
                                       'Data: %s' % variable_data,
                                       'Message: %s' % custom_msg,
                                       ''])
-        self.email_send()
+        self.email_send(alert_type)
 
 
 class EmailTemplates:
