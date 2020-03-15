@@ -111,9 +111,9 @@ async def calibration_status():
 async def save_email():
     email_user = request.args.get('email_user')
     service_email = request.args.get('service_email')
-    email_pass = request.args.get('encrypt_pass')
+    password_email = request.args.get('password_email')
     alert_limit = request.args.get('alert_limit')
-    controller.save_email(email_user, service_email, alert_limit, email_pass)
+    controller.save_email(email_user, service_email, alert_limit, password_email)
     resp = "Success"
     return f"{resp}"
 
