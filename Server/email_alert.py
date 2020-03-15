@@ -16,7 +16,7 @@ class EmailAlerts:
         except:
             print("oops")
         #self.msg = config["email_msg"]
-
+        #self.alert_type = ["Test", ""]
         self.templates = EmailTemplates()
 
     def aqua_pi_status_report(self, config):
@@ -34,13 +34,13 @@ class EmailAlerts:
 
     def email_test(self):
         self.msg = self.templates.email_test()
-        self.email_send()
+        self.email_send(alert_type='TEST')
 
-    def email_send(self):
+    def email_send(self, alert_type):
         print(f"Email Built: \n"
               f"{self.msg}")
         to = self.target
-        subject = 'AquaPi Alert!'
+        subject = f"AquaPi {alert_type} Alert!"
         text = self.msg
 
         gmail_sender = self.sender
