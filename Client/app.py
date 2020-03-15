@@ -154,7 +154,7 @@ class App(object):
             email_user = self.config_data["network_config"]["target_email"]
             email_service = self.config_data["network_config"]["service_email"]
             alert_limit = int(self.config_data["network_config"]["alert_limit"])
-        except:
+        except UnboundLocalError:
             logging.exception(("Couldn't Load Config.json"))
         try:
             self.form.email_lineEdit.setText(email_user)
@@ -165,10 +165,10 @@ class App(object):
             logging.exception("Couldn't Load 'config.json'")
 
     def view_pass(self):
-        pass_email = self.config_data["network_config"]["pass_email"]
+        pass_email = self.config_data["network_config"]["password_email"]
         #key in pass_email value ==
         #if pass_email:
-        if self.config_data["network_config"]["pass_email"]:
+        if self.config_data["network_config"]["password_email"]:
             logging.info(f"Password found: {pass_email}")
             try:
                 hash = pbkdf2_sha256.hash(pass_email)

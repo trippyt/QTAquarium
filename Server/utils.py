@@ -42,7 +42,7 @@ class AquariumController:
 
         self.cal_status = ["Success", "Failed", "In Progress", "None"]
 
-        self.email_data = {
+        self.network_config = {
             "sender_email": {},
             "target_email": {},
             "password_email": {},
@@ -184,12 +184,23 @@ class AquariumController:
             json_file.write(json.dumps(data, indent=4))
         logging.info("Settings Updated")
 
+    def save_config(self):
+        email_data = {
+            "network_config": self.network_config,
+        }
+        try:
+            with open('config.json', 'w') as json_data_file:
+                json_data_file.write(json.dumps(email_data, indent=4))
+            logging.info(f"Email Details Saved")
+        except:
+            logging.exception(f" Email Details not Saved")
+
     def save_email(self, email_user: str, email_service: str, alert_limit: str, email_pass):
-        self.email_data["network_config"].update(
+        self.network_config.update(
             {
-                "sender_email": "aquariumcontrollerpi@gmail.com",
-                "target_email": email_user,
-                "pass_email": email_pass,
+                "sender_user": email_user,
+                "email_service": email_service,
+                "password_email": email_pass,
                 "service_email": email_service,
                 "alert_limit": alert_limit,
             })
@@ -197,12 +208,7 @@ class AquariumController:
         logging.info(f"{email_user}{email_service}")
         logging.info(f"Email Pass: {email_pass}")
         logging.info(f"Alert Limit: {alert_limit} Per Day")
-        try:
-            with open('config.json', 'w') as json_data_file:
-                json_data_file.write(json.dumps(self.email_data, indent=4))
-            logging.info(f"Email Details Saved")
-        except:
-            logging.exception(f" Email Details not Saved")
+        self.save_config()
 
     def load(self):
         try:
