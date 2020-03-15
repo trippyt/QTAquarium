@@ -75,9 +75,11 @@ class EmailAlerts:
         server.quit()
 
     def alert_email_counter(self, alert_type):
-        #if (alert_type + "counter") in self.network_config:
-        #    self.network_config[(alert_type + "counter")] += 1
-        self.network_config[(alert_type + "counter")] += 1
+        if (alert_type + " counter") in self.network_config:
+            self.network_config[(alert_type + "counter")] += 1
+        else:
+            self.network_config[(alert_type + "counter")] = 1
+
         self.save_config()
 
     def save_config(self):
