@@ -62,11 +62,11 @@ class EmailAlerts:
         server.quit()
 
     def msg_format(self, alert_type, variable_data, custom_msg):
-        email_msg = '\r\n'.join([' %s Alert' % alert_type,
+        self.email_msg = '\r\n'.join([' %s Alert' % alert_type,
                                       'Data: %s' % variable_data,
                                       'Message: %s' % custom_msg,
                                       ''])
-        self.email_send(email_msg)
+        self.email_send()
 
 
 class EmailTemplates:
