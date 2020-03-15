@@ -157,23 +157,27 @@ class App(object):
             self.form.email_lineEdit.setText(email_user)
             self.form.sys_setting_atemail_comboBox.setCurrentText(email_service)
             self.form.alert_limit_spinBox.setValue(alert_limit)
-            #self.view_pass()
+            self.view_pass()
         except:
             logging.exception("Couldn't Load 'config.json'")
 
     def view_pass(self):
         pass_email = self.config_data["network_config"]["pass_email"]
-        if pass_email:
+        #key in pass_email value ==
+        #if pass_email:
+        if self.config_data["network_config"]["pass_email"]:
+            logging.info(f"Password found: {pass_email}")
             try:
+                hash = pbkdf2_sha256.hash(pass_email)
                 decrypt_email = pbkdf2_sha256.verify(pass_email, hash)
-                logging.infor(f"Pass Verified: {decrypt_email}")
+                logging.info(f"Pass Verified: {decrypt_email}")
                 pass_chk = self.form.view_pass_checkBox.checkState()
                 if pass_chk == '2':
                     self.form.email_pass_lineEdit.setText(decrypt_email)
                 else:
                     self.form.email_pass_lineEdit.setText("*"*10)
             except:
-                logging.exception("No Email Password to Load")
+                logging.exception("Couldn't Email Password to Load")
 
     def update(self):
         try:
