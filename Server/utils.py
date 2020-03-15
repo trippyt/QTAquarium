@@ -234,7 +234,7 @@ class AquariumController:
                     config_data = json.loads(json_data_file.read())
                     print("Loading network_config")
                     print(config_data)
-                    self.config_data = config_data["network_config"]
+                    self.network_config = config_data["network_config"]
             return config_data
         except:
             logging.exception("Couldn't Load config.json")
