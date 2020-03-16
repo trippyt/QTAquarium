@@ -8,13 +8,13 @@ class EmailAlerts:
         self.alert_counter = {}
         self.email_msg = None
         with open('config.json', 'r') as json_data_file:
-            self.config = json.load(json_data_file)
+            self.config_data = json.load(json_data_file)
         with open('data.txt', 'r') as txt_data_file:
             data = json.load(txt_data_file)
         try:
-            self.sender = self.config["network_config"]["sender_email"]
-            self.target = self.config["network_config"]["target_email"]
-            self.password = self.config["network_config"]["password_email"]
+            self.sender = self.config_data["network_config"]["sender_email"]
+            self.target = self.config_data["network_config"]["target_email"]
+            self.password = self.config_data["network_config"]["password_email"]
             self.high_temp_threshold = data["Setting Data"]["Temperature Alerts"]["High Temp"]
         except:
             print("oops")
