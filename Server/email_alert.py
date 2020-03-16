@@ -1,10 +1,12 @@
 import smtplib
 import json
 import logging
+from utils import AquariumController
 
 
 class EmailAlerts:
     def __init__(self):
+        self.utils = AquariumController()
         self.alert_counter = {}
         self.email_msg = None
         with open('config.json', 'r') as json_data_file:
@@ -70,19 +72,7 @@ class EmailAlerts:
             self.alert_counter[(alert_type + "counter")] += 1
         else:
             self.alert_counter[(alert_type + "counter")] = 1
-
-        self.save_config()
-
-    def save_config(self):
-        email_data = {
-            "network_config": self.alert_counter,
-        }
-        try:
-            with open('config.json', 'w') as json_data_file:
-                json_data_file.write(json.dumps(email_data, indent=4))
-            logging.info(f"Email Details Saved")
-        except:
-            logging.exception(f" Email Details not Saved")
+        self.utils.save_config()
 
     def msg_format(self, alert_type, variable_data, custom_msg):
         self.email_msg = '\r\n'.join([' %s Alert' % alert_type,
