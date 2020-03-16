@@ -1,6 +1,6 @@
 import smtplib
 import json
-import logging as l
+import logging
 
 
 class EmailAlerts:
@@ -61,10 +61,8 @@ class EmailAlerts:
             print('email sent')
             self.alert_email_counter(alert_type)
         except Exception as e:
-            l.exception("error sending mail")
-            l.exception(e)
-            l.info(type(self.config))
-            l.info(f"Config: {self.config}")
+            logging.exception("error sending mail")
+            logging.exception(e)
         server.quit()
 
     def alert_email_counter(self, alert_type):
@@ -82,9 +80,9 @@ class EmailAlerts:
         try:
             with open('config.json', 'w') as json_data_file:
                 json_data_file.write(json.dumps(email_data, indent=4))
-            l.info(f"Email Details Saved")
+            logging.info(f"Email Details Saved")
         except:
-            l.exception(f" Email Details not Saved")
+            logging.exception(f" Email Details not Saved")
 
     def msg_format(self, alert_type, variable_data, custom_msg):
         self.email_msg = '\r\n'.join([' %s Alert' % alert_type,
