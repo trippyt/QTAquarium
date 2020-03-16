@@ -98,7 +98,6 @@ class AquariumController:
         self.hw_controller.calibration_status()
 
     def tank_temperature(self):
-        #temp_c, temp_f = self.hw_controller.read_temperature("temp_tank")
         ht = self.setting_data["Temperature Alerts"]["High Temp"]
         lt = self.setting_data["Temperature Alerts"]["Low Temp"]
         ht_checked = self.setting_data["Temperature Alerts"]["High Enabled"]
@@ -110,7 +109,7 @@ class AquariumController:
                 high_temp_threshold = ht
                 self.email.high_temp_alert_example(cur_temp, high_temp_threshold)
         if lt_checked == '2':
-            if temp_c < float(lt):
+            if self.temp_c < float(lt):
                 print("LOW TEMP ALERT!!!")
         return round(self.temp_c, 2)
 
@@ -191,12 +190,12 @@ class AquariumController:
         logging.info("Settings Updated")
 
     def save_config(self):
-        email_data = {
+        config_data = {
             "network_config": self.network_config,
         }
         try:
             with open('config.json', 'w') as json_data_file:
-                json_data_file.write(json.dumps(email_data, indent=4))
+                json_data_file.write(json.dumps(config_data, indent=4))
             logging.info(f"Email Details Saved")
         except:
             logging.exception(f" Email Details not Saved")

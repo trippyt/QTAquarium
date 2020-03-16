@@ -77,7 +77,6 @@ class EmailAlerts:
         except:
             logging.exception(f" Email Details not Saved")
 
-
     def msg_format(self, alert_type, variable_data, custom_msg):
         self.email_msg = '\r\n'.join([' %s Alert' % alert_type,
                                       'Data: %s' % variable_data,

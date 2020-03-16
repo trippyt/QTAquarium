@@ -276,6 +276,7 @@ class App(object):
             logging.info(f"{r}")
         except:
             logging.exception("ERROR: Email not Saved")
+        logging.info(f"Saving self.config_data: {self.config_data}")
         logging.info("=" * 125)
 
     def email_test(self):
