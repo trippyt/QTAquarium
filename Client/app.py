@@ -293,8 +293,7 @@ class App(object):
         logging.info(f"Email Alert Limit Updated".center(125))
         print("=" * 125)
         alert_limit = self.form.alert_limit_spinBox.value()
-        print(alert_limit)
-
+        print(f"Type:{type(alert_limit)} Value: {alert_limit}")
         requests.get(url=f"{self.server_ip}/saveEmail_limit?alert_limit={int(alert_limit)}")
         print("=" * 125)
 
