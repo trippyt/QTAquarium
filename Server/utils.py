@@ -216,14 +216,28 @@ class AquariumController:
                 "target_email": email_user,
                 "password_email": password_email,
                 "service_email": service_email,
-                "alert_limit": alert_limit,
+                #"alert_limit": alert_limit,
             })
 
         print(f"{email_user}{service_email}")
         print(f"Email Pass: {password_email}")
+        #print(f"Alert Limit: {alert_limit} Per Day")
+        self.save_config()
+        print("=" * 125)
+
+    def saveEmail_limit(self, alert_limit):
+        print("=" * 125)
+        logging.info(f"Email Alert Limit Updated".center(125))
+        print("=" * 125)
+        self.network_config.update(
+            {
+                "alert_limit": alert_limit
+            }
+        )
         print(f"Alert Limit: {alert_limit} Per Day")
         self.save_config()
         print("=" * 125)
+
 
     def load(self):
         try:

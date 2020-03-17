@@ -93,7 +93,7 @@ class App(object):
         self.form.sys_setting_test_pushButton.clicked.connect(self.temp_alert_test)
         #self.form.sys_setting_test_pushButton.clicked.connect(self.email_test)
         self.form.sys_setting_update_pushButton.clicked.connect(self.update)
-        self.form.alert_limit_spinBox.valueChanged.connect(self.save_email)
+        self.form.alert_limit_spinBox.valueChanged.connect(self.save_email_alert)
         self.load_config()
         self.load_server()
 
@@ -196,7 +196,6 @@ class App(object):
                     self.form.email_pass_lineEdit.setText(pass_email)
                     logging.info(f"Revealing Pass: {pass_email}")
                 else:
-
                     self.form.email_pass_lineEdit.setText("*"*i)
                     logging.info("Pass Hidden")
             except KeyError:
@@ -282,12 +281,17 @@ class App(object):
         logging.info(f"config middle of email function: {self.config_data}")
         logging.info(f"config password_email: {password_email}")
         service_email = self.form.sys_setting_atemail_comboBox.currentText()
-        alert_limit = self.form.alert_limit_spinBox.value()
+        #alert_limit = self.form.alert_limit_spinBox.value()
         requests.get(url=f"{self.server_ip}/saveEmail?email_user={email_user}&service_email={service_email}\
-                        &password_email={password_email}&alert_limit={alert_limit}")
+                        &password_email={password_email}")
         logging.info(f"config end of email function: {self.config_data}")
         self.load_config()
         logging.info(f"config after reloading email function: {self.config_data}")
+
+    def save_email_alert(self):
+        alert_limit = self.form.alert_limit_spinBox.value()
+        requests.get(url=f"{self.server_ip}/saveEmail_limit?alert_limit={alert_limit}")
+
 
     """
     def save_email(self):
