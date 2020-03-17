@@ -162,6 +162,9 @@ class App(object):
             logging.info("Attempting to Load from Config.json".center(125))
             self.config_data = json.loads(resp.content)
             logging.info(f"Loading Config:{self.config_data}")
+        except Exception:
+            logging.info(f"Couldn't Load Config from the Server")
+        try:
             email_user = self.config_data["network_config"]["target_email"]
             service_email = self.config_data["network_config"]["service_email"]
             alert_limit_email = int(self.config_data["network_config"]["alert_limit"])
@@ -170,7 +173,7 @@ class App(object):
             self.form.alert_limit_spinBox.setValue(alert_limit_email)
             self.view_pass()
         except Exception:
-            logging.exception("Couldn't Load 'config.json'")
+            logging.exception("Couldn't Load data from 'config.json'")
         logging.info("=" * 125)
 
     def view_pass(self):
