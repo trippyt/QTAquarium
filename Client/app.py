@@ -290,7 +290,7 @@ class App(object):
 
     def save_email_alert(self):
         alert_limit = self.form.alert_limit_spinBox.value()
-        requests.get(url=f"{self.server_ip}/saveEmail_limit?alert_limit={alert_limit}")
+        requests.get(url=f"{self.server_ip}/saveEmail_limit?alert_limit={int(alert_limit)}")
 
 
     """
