@@ -44,7 +44,7 @@ class EmailAlerts:
         gmail_passwd = self.password
         print(f"Email Built: \n"
               f"To:{to}\n"
-              f"From: {gmail_sender}"
+              f"From: {gmail_sender}\n"
               f"Subject: {subject}\n"
               f"{self.email_msg}")
 
@@ -68,10 +68,24 @@ class EmailAlerts:
         server.quit()
 
     def alert_email_counter(self, alert_type):
+        name = f"{alert_type}" + " counter"
+        if name in self.alert_counter.keys():
+            for value in name:
+                self.alert_counter[(alert_type + " counter")].update(
+                    {
+                        f"{name}": int(value)+1,
+                    }
+                )
+        """
         if (alert_type + " counter") in self.alert_counter:
-            self.alert_counter[(alert_type + " counter")] += 1
+            self.alert_counter[(alert_type + " counter")].update(
+                {
+                    f"{alert_type}" + " counter": 1,
+                }
+            )
         else:
             self.alert_counter[(alert_type + " counter")] = 1
+        """
         try:
             with open('config.json', 'w') as json_data_file:
                 json_data_file.write(json.dumps(self.alert_counter, indent=4))
