@@ -38,13 +38,15 @@ class EmailAlerts:
         self.email_send(alert_type='TEST Alert!')
 
     def email_send(self, alert_type):
-        print(f"Email Built: \n"
-              f"{self.email_msg}")
         to = self.target
         subject = f"AquaPi {alert_type}"
-
         gmail_sender = self.sender
         gmail_passwd = self.password
+        print(f"Email Built: \n"
+              f"To:{to}\n"
+              f"From: {gmail_sender}"
+              f"Subject: {subject}\n"
+              f"{self.email_msg}")
 
         server = smtplib.SMTP('smtp.gmail.com', 587)
         server.ehlo()

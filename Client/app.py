@@ -278,6 +278,8 @@ class App(object):
             password_email = self.form.email_pass_lineEdit.text()
         else:
             pass
+        if "*" in password_email:
+            password_email = self.config_data["network_config"]["password_email"]
         logging.info(f"config middle of email function: {self.config_data}")
         logging.info(f"config password_email: {password_email}")
         service_email_drop = self.form.sys_setting_atemail_comboBox.currentText()
