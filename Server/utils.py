@@ -236,7 +236,7 @@ class AquariumController:
                     # light_hour_data
                     # dosage_data = data["Dosage Data"]
                     print("=" * 125)
-                    logging.info(f"Data Loaded: {data}")
+                    print(f"Data Loaded: {data}")
                     return data
         except:
             logging.exception("Couldn't Load Data.txt")
