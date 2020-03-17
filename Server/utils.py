@@ -210,10 +210,12 @@ class AquariumController:
         print("=" * 125)
         logging.info(f"Email Address Updated".center(125))
         print("=" * 125)
+        if "@" and ".com" not in email_user.split():
+            email_user = email_user + service_email
         self.network_config.update(
             {
                 "sender_email": "aquariumcontrollerpi@gmail.com",
-                "target_email": email_user + service_email,
+                "target_email": email_user,
                 "password_email": password_email,
                 "service_email": service_email,
                 #"alert_limit": alert_limit,
