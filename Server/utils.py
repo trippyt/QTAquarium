@@ -207,6 +207,9 @@ class AquariumController:
         logging.info(f"After updating config: {self.network_config}")
 
     def save_email(self, email_user: str, service_email: str, alert_limit: str, password_email):
+        print("=" * 125)
+        logging.info(f"Email Address Updated".center(125))
+        print("=" * 125)
         self.network_config.update(
             {
                 "sender_email": "aquariumcontrollerpi@gmail.com",
@@ -215,11 +218,12 @@ class AquariumController:
                 "service_email": service_email,
                 "alert_limit": alert_limit,
             })
-        logging.info(f"Email Address Updated")
-        logging.info(f"{email_user}{service_email}")
-        logging.info(f"Email Pass: {password_email}")
-        logging.info(f"Alert Limit: {alert_limit} Per Day")
+
+        print(f"{email_user}{service_email}")
+        print(f"Email Pass: {password_email}")
+        print(f"Alert Limit: {alert_limit} Per Day")
         self.save_config()
+        print("=" * 125)
 
     def load(self):
         try:
