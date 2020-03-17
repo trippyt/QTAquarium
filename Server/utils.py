@@ -193,18 +193,18 @@ class AquariumController:
         logging.info("Settings Updated")
 
     def save_config(self):
-        logging.info(f"Before updating config: {self.network_config}")
+        print(f"Before updating config: {self.network_config}")
         config_data = {
             "network_config": self.network_config,
         }
         try:
             with open('config.json', 'w') as json_data_file:
                 json_data_file.write(json.dumps(config_data, indent=4))
-            logging.info(f"Email Details Saved")
+            print(f"Email Details Saved")
         except:
             logging.exception(f" Email Details not Saved")
-        logging.info(f"After updating config_data: {config_data}")
-        logging.info(f"After updating config: {self.network_config}")
+        print(f"After updating config_data: {config_data}")
+        print(f"After updating config: {self.network_config}")
 
     def save_email(self, email_user: str, service_email: str, alert_limit: str, password_email):
         print("=" * 125)
