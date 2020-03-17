@@ -123,6 +123,7 @@ async def save_email():
 async def saveEmail_limit():
     alert_limit = request.args.get('saveEmail_limit')
     controller.saveEmail_limit(alert_limit)
+    print(f"Server Received New Alert Limit: {alert_limit}")
     resp = "Success"
     return f"{resp}"
 
