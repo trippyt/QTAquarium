@@ -113,7 +113,7 @@ async def save_email():
     email_user = request.args.get('email_user')
     service_email = request.args.get('service_email')
     password_email = request.args.get('password_email')
-    alert_limit = request.args.get('alert_limit')
+    #alert_limit = request.args.get('alert_limit')
     controller.save_email(email_user, service_email, password_email)
     resp = "Success"
     return f"{resp}"
