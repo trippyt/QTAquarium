@@ -289,8 +289,14 @@ class App(object):
         logging.info(f"config after reloading email function: {self.config_data}")
 
     def save_email_alert(self):
+        print("=" * 125)
+        logging.info(f"Email Alert Limit Updated".center(125))
+        print("=" * 125)
         alert_limit = self.form.alert_limit_spinBox.value()
+        print(alert_limit)
+
         requests.get(url=f"{self.server_ip}/saveEmail_limit?alert_limit={int(alert_limit)}")
+        print("=" * 125)
 
 
     """
