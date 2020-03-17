@@ -235,6 +235,7 @@ class AquariumController:
                     # schedule_data
                     # light_hour_data
                     # dosage_data = data["Dosage Data"]
+                    print("=" * 125)
                     logging.info(f"Data Loaded: {data}")
                     return data
         except:
