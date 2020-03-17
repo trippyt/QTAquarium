@@ -212,15 +212,15 @@ class AquariumController:
         print("=" * 125)
         if "@" and ".com" not in email_user.split():
             print(f"adding {service_email} to {email_user}")
-            email_user = email_user + service_email
+            email_user = email_user.strip() + service_email.strip()
         else:
             print(f"Email already has '@' ")
         self.network_config.update(
             {
                 "sender_email": "aquariumcontrollerpi@gmail.com",
-                "target_email": email_user,
+                "target_email": email_user.strip(),
                 "password_email": password_email,
-                "service_email": service_email,
+                "service_email": service_email.strip(),
                 #"alert_limit": alert_limit,
             }
         )
