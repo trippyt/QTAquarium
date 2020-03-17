@@ -210,7 +210,7 @@ class AquariumController:
         print("=" * 125)
         logging.info(f"Email Address Updated".center(125))
         print("=" * 125)
-        if "@" not in email_user.split():
+        if "@" not in email_user:
             print(f"adding {service_email} to {email_user}")
             email_user = email_user.strip() + service_email.strip()
         else:
