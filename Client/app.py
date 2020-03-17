@@ -185,8 +185,8 @@ class App(object):
     def view_pass(self):
         logging.info("=" * 125)
         logging.info("Attempting to  Load Password")
-        pass_email = self.config_data["network_config"]["password_email"]
         if self.config_data["network_config"]["password_email"]:
+            pass_email = self.config_data["network_config"]["password_email"]
             logging.info(f"Password found: {pass_email}")
             try:
                 pass_chk = self.form.view_pass_checkBox.checkState()

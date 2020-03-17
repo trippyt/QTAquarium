@@ -240,11 +240,12 @@ class AquariumController:
 
     def load_config(self):
         try:
+            logging.info("=" * 125)
+            logging.info("Loading config_data")
             if os.path.isfile('config.json'):
                 with open('config.json', 'r') as json_data_file:
                     config_data = json.loads(json_data_file.read())
-                    print("Loading network_config")
-                    print(config_data)
+
                     self.network_config = config_data["network_config"]
                     logging.info(f"Sending Config to Client: {self.network_config}")
             return config_data
