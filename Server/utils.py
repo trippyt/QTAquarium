@@ -210,7 +210,7 @@ class AquariumController:
         print("=" * 125)
         logging.info(f"Email Address Updated".center(125))
         print("=" * 125)
-        if "@" and ".com" not in email_user.split():
+        if "@" not in email_user.split():
             print(f"adding {service_email} to {email_user}")
             email_user = email_user.strip() + service_email.strip()
         else:
@@ -225,7 +225,7 @@ class AquariumController:
             }
         )
 
-        print(f"{email_user}{service_email}")
+        print(f"{email_user}")
         print(f"Email Pass: {password_email}")
         #print(f"Alert Limit: {alert_limit} Per Day")
         self.save_config()
