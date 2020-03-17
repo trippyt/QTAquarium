@@ -16,7 +16,8 @@ class EmailAlerts:
             self.target = self.config_data["network_config"]["target_email"]
             self.password = self.config_data["network_config"]["password_email"]
             self.high_temp_threshold = data["Setting Data"]["Temperature Alerts"]["High Temp"]
-        except:
+        except KeyError as e:
+            print(e)
             print("oops")
         # self.msg = config["email_msg"]
         # self.alert_type = ["Test", ""]
