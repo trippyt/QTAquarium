@@ -223,6 +223,7 @@ class AquariumController:
 
     def load(self):
         try:
+            logging.info("=" * 125)
             if os.path.isfile('data.txt'):
                 with open('data.txt', 'r') as json_file:
                     data = json.loads(json_file.read())
@@ -237,6 +238,7 @@ class AquariumController:
                     return data
         except:
             logging.exception("Couldn't Load Data.txt")
+        logging.info("=" * 125)
 
     def load_config(self):
         try:
@@ -251,6 +253,7 @@ class AquariumController:
             return config_data
         except:
             logging.exception("Couldn't Load config.json")
+        logging.info("=" * 125)
 
     def update(self):
         g = git.cmd.Git("/home/pi/QTAquarium/")
