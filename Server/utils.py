@@ -249,18 +249,19 @@ class AquariumController:
 
     def load_config(self):
         try:
-            logging.info("=" * 125)
+            print("=" * 125)
             logging.info("Loading config_data")
             if os.path.isfile('config.json'):
                 with open('config.json', 'r') as json_data_file:
                     config_data = json.loads(json_data_file.read())
 
                     self.network_config = config_data["network_config"]
-                    logging.info(f"Sending Config to Client: {self.network_config}")
+                    logging.info(f"Sending Config to Client: {self.network_config}".center(125))
+            print("=" * 125)
             return config_data
         except:
             logging.exception("Couldn't Load config.json")
-        logging.info("=" * 125)
+
 
     def update(self):
         g = git.cmd.Git("/home/pi/QTAquarium/")
