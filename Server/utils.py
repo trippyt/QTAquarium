@@ -250,7 +250,8 @@ class AquariumController:
     def load_config(self):
         try:
             print("=" * 125)
-            logging.info("Loading config_data")
+            logging.info("Loading config_data".center(125))
+            print("=" * 125)
             if os.path.isfile('config.json'):
                 with open('config.json', 'r') as json_data_file:
                     config_data = json.loads(json_data_file.read())
