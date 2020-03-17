@@ -30,6 +30,18 @@ class App(object):
             "Fertilizer Calibration Data": {},
             "Water Conditioner Calibration Data": {},
         }
+        self.ratio_data = {
+            "Tank": {},
+            "Co2_ratio": {},
+            "Co2_Water": {},
+            "Fertilizer_ratio": {},
+            "Fertilizer_water": {},
+            "WaterConditioner_ratio": {},
+            "WaterConditioner_water": {},
+            "Co2_dosage": {},
+            "Fertilizer_dosage": {},
+            "WaterConditioner_dosage": {},
+        }
         self.setting_data = {
             "IP Address": {},
             "Temperature Alerts": {},
@@ -38,12 +50,9 @@ class App(object):
         self.new_data = {
             "Ratio Data": {}
         }
-        self.network_config = {
-            "sender_email": {},
-            "target_email": {},
-            "password_email": {},
-            "service_email": {},
-            "alert_limit": {}
+        self.config_data = {
+            "network_data": {},
+
         }
         self.calibration_mode_on = True
         self.app = QtWidgets.QApplication(sys.argv)
@@ -89,14 +98,14 @@ class App(object):
             logging.info("Attempting to Load from Data.txt".center(125))
             self.new_data = json.loads(resp.content)
             logging.info("JSON Data Loaded".center(125))
-            print(f"New_Data = {self.new_data}")
+            print(f"New JSON Data = {self.new_data}")
         except json.decoder.JSONDecodeError:
             logging.info("Couldn't Load JSON From Server".center(125))
         try:
             self.ratio_data = self.new_data["Ratio Data"]
             logging.info("=" * 125)
-            for display in self.ratio_displays:
-                display.blockSignals(True)
+            #for display in self.ratio_displays:
+            #    display.blockSignals(True)
             try:
                 for key in self.ratio_data:
                     ui_obj = getattr(self.form, key)
@@ -104,14 +113,11 @@ class App(object):
                         ui_obj.setValue(self.ratio_data[key])
                     else:
                         ui_obj.setText(str(self.ratio_data[key]))
-
             except KeyError as e:
                 logging.info("No Ratio Values From The Server to Load".center(125))
                 logging.exception(e)
-
-            for display in self.ratio_displays:
-                display.blockSignals(False)
-
+            #for display in self.ratio_displays:
+            #    display.blockSignals(False)
         except TypeError as e:
             logging.info("Couldn't Load Data from the Server".center(125))
             logging.exception(e)
@@ -155,7 +161,7 @@ class App(object):
         try:
             logging.info("Attempting to Load from Config.json".center(125))
             self.config_data = json.loads(resp.content)
-            logging.info(self.config_data)
+            logging.info(f"Loading Config:{self.config_data}")
             email_user = self.config_data["network_config"]["target_email"]
             service_email = self.config_data["network_config"]["service_email"]
             alert_limit_email = int(self.config_data["network_config"]["alert_limit"])
@@ -163,7 +169,7 @@ class App(object):
             self.form.sys_setting_atemail_comboBox.setCurrentText(service_email)
             self.form.alert_limit_spinBox.setValue(alert_limit_email)
             self.view_pass()
-        except:
+        except Exception:
             logging.exception("Couldn't Load 'config.json'")
         logging.info("=" * 125)
 
@@ -258,19 +264,14 @@ class App(object):
             logging.info("=" * 125)
             email_user = self.form.email_lineEdit.text()
             service_email = self.form.sys_setting_atemail_comboBox.currentText()
-            pass_saved = self.config_data["network_config"]["password_email"]
-            if len(pass_saved) == 0:
-                logging.info(f"No Password to load")
-                password_email = self.form.email_pass_lineEdit.text()
-            else:
-                logging.info(f"Loading Saved Password: {pass_saved}")
-                password_email = pass_saved
+            password_email = self.form.email_pass_lineEdit.text()
             alert_limit = self.form.alert_limit_spinBox.value()
             logging.info(f"Email: {email_user}{service_email}")
             logging.info(f"Pass: {password_email}")
             logging.info(f"Alerts limited to: {alert_limit} per day")
             requests.get(url=f"{self.server_ip}/saveEmail?email_user={email_user}&service_email={service_email}\
             &password_email={password_email}&alert_limit={alert_limit}")
+            logging.info(f"After self.config_data update: {self.config_data}")
             logging.info(f"SUCCESS: Email Saved")
             r = requests.Response()
             logging.info(f"{r}")

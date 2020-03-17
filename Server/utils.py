@@ -21,6 +21,8 @@ class CalibrationCancelled (Exception):
 class AquariumController:
 
     def __init__(self):
+        self.load()
+        self.load_config()
         self.hw_controller = Hardware()
         self.email = EmailAlerts()
         self.temp_c, self.temp_f = self.hw_controller.read_temperature("temp_tank")
