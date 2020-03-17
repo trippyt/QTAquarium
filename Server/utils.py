@@ -223,11 +223,11 @@ class AquariumController:
 
     def load(self):
         try:
-            logging.info("=" * 125)
+            print("=" * 125)
             if os.path.isfile('data.txt'):
                 with open('data.txt', 'r') as json_file:
                     data = json.loads(json_file.read())
-                    print("Loading Saved Data")
+                    logging.info("Loading Saved Data").center(125)
                     self.ratio_data = data["Ratio Data"]
                     self.calibration_data = data["Calibration Data"]
                     #self.setting_data = data["Temperature Alerts"]
@@ -235,10 +235,11 @@ class AquariumController:
                     # schedule_data
                     # light_hour_data
                     # dosage_data = data["Dosage Data"]
+                    logging.info(f"Data Loaded: {data}")
                     return data
         except:
             logging.exception("Couldn't Load Data.txt")
-        logging.info("=" * 125)
+        print("=" * 125)
 
     def load_config(self):
         try:
