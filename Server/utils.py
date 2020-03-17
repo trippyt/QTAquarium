@@ -226,7 +226,7 @@ class AquariumController:
         self.save_config()
         print("=" * 125)
 
-    def saveEmail_limit(self, alert_limit: str):
+    def saveEmail_limit(self, alert_limit: int):
         print("=" * 125)
         logging.info(f"Email Alert Limit Updated".center(125))
         print("=" * 125)
