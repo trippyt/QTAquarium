@@ -138,6 +138,7 @@ class AquariumController:
                         f"{name}": int(value)+1,
                     }
                 )
+            self.save_config()
 
     def calibration_status(self, pump_type, cal_status):
         logging.info(f"pump: {pump_type}, status: {cal_status}")
@@ -259,9 +260,6 @@ class AquariumController:
         print(f"Alert Limit: {alert_limit} Per Day")
         self.save_config()
         print("=" * 125)
-
-    def alert_counter(self, alert_type):
-
 
     def load(self):
         try:
