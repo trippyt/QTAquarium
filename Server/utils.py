@@ -100,6 +100,7 @@ class AquariumController:
         self.hw_controller.calibration_status()
 
     def tank_temperature(self):
+        self.temp_c, self.temp_f = self.hw_controller.read_temperature("temp_tank")
         ht = self.setting_data["Temperature Alerts"]["High Temp"]
         lt = self.setting_data["Temperature Alerts"]["Low Temp"]
         ht_checked = self.setting_data["Temperature Alerts"]["High Enabled"]
