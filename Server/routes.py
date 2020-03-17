@@ -121,7 +121,7 @@ async def save_email():
 
 @app.route('/saveEmail_limit', methods=['GET', 'POST'])
 async def saveEmail_limit():
-    alert_limit = request.args.get('saveEmail_limit')
+    alert_limit = request.args.get('alert_limit')
     controller.saveEmail_limit(alert_limit)
     print(f"Server Received New Alert Limit: {alert_limit}")
     resp = "Success"
