@@ -229,6 +229,8 @@ class AquariumController:
         print("=" * 125)
         logging.info(f"Email Alert Limit Updated".center(125))
         print("=" * 125)
+        if alert_limit is None:
+            alert_limit = "0"
         self.network_config.update(
             {
                 "alert_limit": alert_limit
