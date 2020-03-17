@@ -213,7 +213,7 @@ class AquariumController:
         self.network_config.update(
             {
                 "sender_email": "aquariumcontrollerpi@gmail.com",
-                "target_email": email_user,
+                "target_email": email_user + service_email,
                 "password_email": password_email,
                 "service_email": service_email,
                 #"alert_limit": alert_limit,
