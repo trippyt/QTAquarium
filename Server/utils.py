@@ -53,6 +53,8 @@ class AquariumController:
             "alert_limit_email": {}
         }
 
+        self.alert_counter = {}
+
     async def start_calibration(self, pump_type: str):
         try:
             '''asyncio.create_task(self.hw_controller.notification_led_pulse())
@@ -122,7 +124,20 @@ class AquariumController:
             "Current Threshold": self.setting_data["Temperature Alerts"]["High Temp"]
         }
         msg = self.email.templates.temperature_msg()
-        self.email.msg_format(alert_type='High Temperature', variable_data=data, custom_msg=msg)
+        email = self.email.msg_format(alert_type='High Temperature', variable_data=data, custom_msg=msg)
+        if email == "email sent":
+            self.alert_counters(alert_type='High Temperature')
+
+    def alert_counters(self, alert_type):
+        name = f"{alert_type}" + " counter"
+        #dict = self.alert_counter[""]
+        if name in self.alert_counter.keys():
+            for value in name:
+                self.alert_counter[(alert_type + " counter")].update(
+                    {
+                        f"{name}": int(value)+1,
+                    }
+                )
 
     def calibration_status(self, pump_type, cal_status):
         logging.info(f"pump: {pump_type}, status: {cal_status}")
@@ -196,6 +211,7 @@ class AquariumController:
         print(f"Before updating config: {self.network_config}")
         config_data = {
             "network_config": self.network_config,
+            "alert_counters": self.alert_counter,
         }
         try:
             with open('config.json', 'w') as json_data_file:
@@ -243,6 +259,8 @@ class AquariumController:
         print(f"Alert Limit: {alert_limit} Per Day")
         self.save_config()
         print("=" * 125)
+
+    def alert_counter(self, alert_type):
 
 
     def load(self):

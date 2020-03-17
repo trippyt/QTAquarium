@@ -67,9 +67,12 @@ class EmailAlerts:
             logging.exception("error sending mail")
             logging.exception(e)
         server.quit()
+        return "Email Sent"
 
     def alert_email_counter(self, alert_type):
         name = f"{alert_type}" + " counter"
+        self.alert_counter
+        """
         if name in self.alert_counter.keys():
             for value in name:
                 self.alert_counter[(alert_type + " counter")].update(
@@ -77,7 +80,7 @@ class EmailAlerts:
                         f"{name}": int(value)+1,
                     }
                 )
-        """
+        
         if (alert_type + " counter") in self.alert_counter:
             self.alert_counter[(alert_type + " counter")].update(
                 {
@@ -100,6 +103,7 @@ class EmailAlerts:
                                       'Message: %s' % custom_msg,
                                       ''])
         self.email_send(alert_type)
+        return self.email_send(alert_type)
 
 
 class EmailTemplates:
