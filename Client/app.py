@@ -280,7 +280,8 @@ class App(object):
             pass
         logging.info(f"config middle of email function: {self.config_data}")
         logging.info(f"config password_email: {password_email}")
-        service_email = self.form.sys_setting_atemail_comboBox.currentText()
+        service_email_drop = self.form.sys_setting_atemail_comboBox.currentText()
+        service_email = service_email_drop.strip()
         #alert_limit = self.form.alert_limit_spinBox.value()
         requests.get(url=f"{self.server_ip}/saveEmail?email_user={email_user}&service_email={service_email}\
                         &password_email={password_email}")
