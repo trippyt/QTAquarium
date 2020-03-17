@@ -40,7 +40,6 @@ async def set_temperature_alert():
 async def get_server_data():
     print("Sending Data to Client")
     data = controller.load()
-    print(f'Return data: {data}')
     return jsonify(data)
 
 

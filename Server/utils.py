@@ -107,13 +107,13 @@ class AquariumController:
         lt_checked = self.setting_data["Temperature Alerts"]["Low Enabled"]
         if ht_checked == '2':
             if temp_c > float(ht):
-                print("HIGH TEMP ALERT!!!")
+                logging.warning("HIGH TEMP ALERT!!!".center(125))
                 cur_temp = temp_c
                 high_temp_threshold = ht
                 self.email.high_temp_alert_example(cur_temp, high_temp_threshold)
         if lt_checked == '2':
             if temp_c < float(lt):
-                print("LOW TEMP ALERT!!!")
+                logging.warning("LOW TEMP ALERT!!!".center(125))
         return round(temp_c, 2)
 
     def email_ht_alert(self):
