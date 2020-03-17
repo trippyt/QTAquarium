@@ -227,7 +227,7 @@ class AquariumController:
             if os.path.isfile('data.txt'):
                 with open('data.txt', 'r') as json_file:
                     data = json.loads(json_file.read())
-                    logging.info("Loading Saved Data").center(125)
+                    logging.info("Loading Saved Data".center(125))
                     self.ratio_data = data["Ratio Data"]
                     self.calibration_data = data["Calibration Data"]
                     #self.setting_data = data["Temperature Alerts"]
