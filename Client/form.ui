@@ -71,7 +71,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>5</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="Home_tab">
     <attribute name="title">
@@ -82,7 +82,7 @@
       <rect>
        <x>0</x>
        <y>10</y>
-       <width>131</width>
+       <width>471</width>
        <height>141</height>
       </rect>
      </property>
@@ -139,6 +139,16 @@
       </property>
       <property name="text">
        <string>° C</string>
+      </property>
+     </widget>
+     <widget class="PlotWidget" name="temperatureGraph">
+      <property name="geometry">
+       <rect>
+        <x>140</x>
+        <y>20</y>
+        <width>321</width>
+        <height>111</height>
+       </rect>
       </property>
      </widget>
     </widget>
@@ -2156,6 +2166,13 @@
    </widget>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>PlotWidget</class>
+   <extends>QGraphicsView</extends>
+   <header>pyqtgraph</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

@@ -100,21 +100,21 @@ class AquariumController:
         self.hw_controller.calibration_status()
 
     def tank_temperature(self):
-        self.temp_c, self.temp_f = self.hw_controller.read_temperature("temp_tank")
+        temp_c, temp_f = self.hw_controller.read_temperature("temp_tank")
         ht = self.setting_data["Temperature Alerts"]["High Temp"]
         lt = self.setting_data["Temperature Alerts"]["Low Temp"]
         ht_checked = self.setting_data["Temperature Alerts"]["High Enabled"]
         lt_checked = self.setting_data["Temperature Alerts"]["Low Enabled"]
         if ht_checked == '2':
-            if self.temp_c > float(ht):
+            if temp_c > float(ht):
                 print("HIGH TEMP ALERT!!!")
-                cur_temp = self.temp_c
+                cur_temp = temp_c
                 high_temp_threshold = ht
                 self.email.high_temp_alert_example(cur_temp, high_temp_threshold)
         if lt_checked == '2':
-            if self.temp_c < float(lt):
+            if temp_c < float(lt):
                 print("LOW TEMP ALERT!!!")
-        return round(self.temp_c, 2)
+        return round(temp_c, 2)
 
     def email_ht_alert(self):
         data = {
@@ -243,6 +243,7 @@ class AquariumController:
                     print("Loading network_config")
                     print(config_data)
                     self.network_config = config_data["network_config"]
+                    logging.info(f"Sending Config to Client: {self.network_config}")
             return config_data
         except:
             logging.exception("Couldn't Load config.json")

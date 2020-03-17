@@ -35,7 +35,7 @@ class Ui_Form(object):
         self.Home_tab = QtWidgets.QWidget()
         self.Home_tab.setObjectName("Home_tab")
         self.groupBox_7 = QtWidgets.QGroupBox(self.Home_tab)
-        self.groupBox_7.setGeometry(QtCore.QRect(0, 10, 131, 141))
+        self.groupBox_7.setGeometry(QtCore.QRect(0, 10, 471, 141))
         self.groupBox_7.setObjectName("groupBox_7")
         self.tank_display_c = QtWidgets.QLCDNumber(self.groupBox_7)
         self.tank_display_c.setGeometry(QtCore.QRect(10, 20, 91, 51))
@@ -51,6 +51,9 @@ class Ui_Form(object):
         self.label_20 = QtWidgets.QLabel(self.groupBox_7)
         self.label_20.setGeometry(QtCore.QRect(110, 20, 21, 21))
         self.label_20.setObjectName("label_20")
+        self.temperatureGraph = PlotWidget(self.groupBox_7)
+        self.temperatureGraph.setGeometry(QtCore.QRect(140, 20, 321, 111))
+        self.temperatureGraph.setObjectName("temperatureGraph")
         self.tabWidget.addTab(self.Home_tab, "")
         self.Ratios_tab = QtWidgets.QWidget()
         self.Ratios_tab.setObjectName("Ratios_tab")
@@ -668,7 +671,7 @@ class Ui_Form(object):
         self.tabWidget.addTab(self.tab_4, "")
 
         self.retranslateUi(Form)
-        self.tabWidget.setCurrentIndex(5)
+        self.tabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(Form)
 
     def retranslateUi(self, Form):
@@ -803,3 +806,4 @@ class Ui_Form(object):
         self.lineEdit_4.setText(_translate("Form", "..."))
         self.sys_setting_update_pushButton.setText(_translate("Form", "Check Updates"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_4), _translate("Form", "Sys Settings"))
+from pyqtgraph import PlotWidget

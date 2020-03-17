@@ -7,7 +7,13 @@ import logging
 import sys
 import json
 import requests
-from passlib.hash import pbkdf2_sha256
+import random
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.figure import Figure
+import matplotlib.pyplot as plt
+import numpy as np
+
+
 
 class InfoHandler(logging.Handler):  # inherit from Handler class
     def __init__(self, textBrowser):
@@ -186,7 +192,6 @@ class App(object):
                 pass_chk = self.form.view_pass_checkBox.checkState()
                 logging.info(f"Pass Visible Check: {pass_chk}")
                 i = len(pass_email)
-                logging.info(f"Password Length: {i}")
                 if pass_chk == 2:
                     self.form.email_pass_lineEdit.setText(pass_email)
                     logging.info(f"Revealing Pass: {pass_email}")
@@ -194,9 +199,12 @@ class App(object):
 
                     self.form.email_pass_lineEdit.setText("*"*i)
                     logging.info("Pass Hidden")
-            except:
+            except KeyError:
                 logging.exception("Couldn't Email Password to Load")
-            logging.info("=" * 125)
+        else:
+            logging.exception("Couldn't Email Password to Load")
+            logging.info(f"self.config data: {self.config_data}")
+        logging.info("=" * 125)
 
     def update(self):
         try:
@@ -263,25 +271,49 @@ class App(object):
         self.load_server()
 
     def save_email(self):
+        logging.info("=" * 125)
+        logging.info(f"config start of email function: {self.config_data}")
+        email_user = self.form.email_lineEdit.text()
+        password_email = self.form.email_pass_lineEdit.text()
+        if password_email != 0:
+            password_email = self.form.email_pass_lineEdit.text()
+        else:
+            pass
+        logging.info(f"config middle of email function: {self.config_data}")
+        logging.info(f"config password_email: {password_email}")
+        service_email = self.form.sys_setting_atemail_comboBox.currentText()
+        alert_limit = self.form.alert_limit_spinBox.value()
+        requests.get(url=f"{self.server_ip}/saveEmail?email_user={email_user}&service_email={service_email}\
+                        &password_email={password_email}&alert_limit={alert_limit}")
+        logging.info(f"config end of email function: {self.config_data}")
+        self.load_config()
+        logging.info(f"config after reloading email function: {self.config_data}")
+
+    """
+    def save_email(self):
         try:
             logging.info("=" * 125)
             email_user = self.form.email_lineEdit.text()
             service_email = self.form.sys_setting_atemail_comboBox.currentText()
             password_email = self.form.email_pass_lineEdit.text()
             alert_limit = self.form.alert_limit_spinBox.value()
-            logging.info(f"Email: {email_user}{service_email}")
-            logging.info(f"Pass: {password_email}")
-            logging.info(f"Alerts limited to: {alert_limit} per day")
-            requests.get(url=f"{self.server_ip}/saveEmail?email_user={email_user}&service_email={service_email}\
-            &password_email={password_email}&alert_limit={alert_limit}")
-            logging.info(f"After self.config_data update: {self.config_data}")
-            logging.info(f"SUCCESS: Email Saved")
-            r = requests.Response()
-            logging.info(f"{r}")
+            if password_email != 0:
+                logging.info(f"Email: {email_user}{service_email}")
+                logging.info(f"Pass: {password_email}")
+                logging.info(f"Alerts limited to: {alert_limit} per day")
+                requests.get(url=f"{self.server_ip}/saveEmail?email_user={email_user}&service_email={service_email}\
+                &password_email={password_email}&alert_limit={alert_limit}")
+                logging.info(f"After self.config_data update: {self.config_data}")
+                logging.info(f"SUCCESS: Email Saved")
+                r = requests.Response()
+                logging.info(f"Save Email Response: {r}")
+            else:
+                logging.info(f"No Email to save")
+            self.load_config()
         except:
             logging.exception("ERROR: Email not Saved")
         logging.info(f"Saving self.config_data: {self.config_data}")
-        logging.info("=" * 125)
+        logging.info("=" * 125)"""
 
     def email_test(self):
         try:
@@ -303,12 +335,28 @@ class App(object):
     def set_temp_display_color(self, color):
         return self.form.tank_display_c.setStyleSheet(f"QLCDNumber {{background-color: {color}}}")
 
+    def graphTest(self):
+        graph = self.form.temperatureGraph
+        fig = plt.figure()
+        data = [random.random() for i in range(25)]
+        #data = [self.temp_c]
+        ax = fig.add_subplot(111)
+        #ax = graph
+        ax.plot(data, 'r-')
+        ax.set_title('PyQt Matplotlib Example')
+        self.form.temperatureGraph.addItem(data)
+
     def ws_receive(self, text):
+        self.temp_c = text
         self.form.tank_display_c.display(text)
         ht_chk = self.setting_data["Temperature Alerts"]["High Enabled"]
         lt_chk = self.setting_data["Temperature Alerts"]["Low Enabled"]
         ht_thr = self.setting_data["Temperature Alerts"]["High Temp"]
         lt_thr = self.setting_data["Temperature Alerts"]["Low Temp"]
+        #try:
+        #    self.graphTest()
+        #except Exception as e:
+        #    logging.exception(e)
         try:
             print(f"ht_chk: {ht_chk}")
             print(f"lt_chk: {lt_chk}")
