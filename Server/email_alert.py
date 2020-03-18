@@ -92,7 +92,7 @@ class EmailAlerts:
                                       'Message: %s' % custom_msg,
                                       ''])
         self.email_send(alert_type)
-        return self.email_send(alert_type)
+        #return self.email_send(alert_type)
 
     def load(self):
         print("=" * 125)
