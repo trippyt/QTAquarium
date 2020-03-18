@@ -115,9 +115,7 @@ class EmailAlerts:
                         print(f"{alert_type} Alert counter Reset!!\n"
                               f"Sending Email Alert\n"
                               f"{alert_type} Alert counter: {sent}")
-                        print(f"Config counters before counter function: {self.alert_counter}")
                         self.alert_email_counter(alert_type)
-                        print(f"Config counters after counter function: {self.alert_counter}")
                     elif cur_date == prev_date:
                         print("its the same day")
 
