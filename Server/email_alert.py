@@ -86,7 +86,7 @@ class EmailAlerts:
         print("=" * 125)
         self.load()
         name = f"{alert_type}"
-        print(name)
+        print(f"Alert Type: {name}")
         if name in self.alert_counter.keys():
             for value in name:
                 self.alert_counter[alert_type].update(
@@ -122,7 +122,9 @@ class EmailAlerts:
         logging.info("Loading 'data.txt'")
         print("=" * 125)
         print(f"self.config_data: {self.config_data}")
+        print("=" * 125)
         print(f"Server data: {self.data}")
+        print("=" * 125)
         print(f"Sender: {self.sender}")
         print(f"Target: {self.target}")
         print(f"Password: {self.password}")
