@@ -92,7 +92,7 @@ class EmailAlerts:
         print("=" * 125)
         print(f"Alert Type: {alert_type}")
         print(f"config before counter: {self.alert_counter}")
-        today = datetime.datetime.utcnow().strftime('%Y-%m-%d')
+        today = datetime.datetime.utcnow().strftime('%m-%d-%Y - %H%M')
         try:
             if alert_type in self.alert_counter.keys():
                 print(f"Updating {alert_type} Counter")
