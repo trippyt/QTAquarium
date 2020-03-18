@@ -103,7 +103,7 @@ class EmailAlerts:
 
             else:
                 print(f"{name} not in dict")
-                self.config_data["alert_counters"][f"{name}"] = 1
+                self.alert_counter["alert_counters"][f"{name}"] = 1
         except Exception as e:
             logging.exception(e)
             print("Ooops")
