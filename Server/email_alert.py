@@ -83,8 +83,7 @@ class EmailAlerts:
         print("=" * 125)
         logging.info("Alert Counter Function".center(125))
         print("=" * 125)
-        name = f"{alert_type}"
-        print(f"Alert Type: {name}")
+        print(f"Alert Type: {alert_type}")
         print(f"config before counter: {self.alert_counter}")
         """
         try:
@@ -94,17 +93,17 @@ class EmailAlerts:
             self.alert_counter[f"{alert_type}"] = 1
         """
         try:
-            if name in self.alert_counter.keys():
-                print(f"Updating {name} Counter")
-                self.alert_counter[f"{name}"].update(
+            if alert_type in self.alert_counter.keys():
+                print(f"Updating {alert_type} Counter")
+                self.alert_counter["alert_counters"][f"{alert_type}"].update(
                     {
                         f"{alert_type}": +1,
                     }
                 )
 
             else:
-                print(f"{name} not in dict")
-                self.alert_counter[f"{name}"] = 1
+                print(f"{alert_type} not in dict")
+                self.alert_counter["alert_counters"][f"{alert_type}"] = 1
         except Exception as e:
             logging.exception(e)
             print("Ooops")
