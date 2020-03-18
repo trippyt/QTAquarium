@@ -127,8 +127,8 @@ class AquariumController:
             "Current Threshold": self.setting_data["Temperature Alerts"]["High Temp"]
         }
         msg = self.email.templates.temperature_msg()
-        self.email.msg_format(alert_type='High Temperature', variable_data=data, custom_msg=msg)
-        print(f"Returned: {self.alert_counter}")
+        send = self.email.msg_format(alert_type='High Temperature', variable_data=data, custom_msg=msg)
+        print(f"Returned: {send}")
         print("=" * 125)
     """
     def alert_counters(self, alert_type):
