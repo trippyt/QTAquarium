@@ -129,6 +129,8 @@ class AquariumController:
         msg = self.email.templates.temperature_msg()
         send = self.email.msg_format(alert_type='High Temperature', variable_data=data, custom_msg=msg)
         print(f"Returned: {send}")
+        self.alert_counter = send
+        self.save_config()
         print("=" * 125)
     """
     def alert_counters(self, alert_type):
