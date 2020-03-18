@@ -103,14 +103,6 @@ class EmailAlerts:
         self.send = server.sendmail(gmail_sender, [to], body)
 
         try:
-            #sent = self.alert_counter[f"{alert_type}"]
-            #prev_datetime = self.alert_counter[f"{alert_type} Last on"]
-            #cur_datetime = datetime.datetime.utcnow().strftime('%m-%d-%Y - %H:%M:%S')
-            #prev_date = prev_datetime[:10]
-            #cur_date = cur_datetime[:10]
-            #prev_time = prev_datetime[13:]
-            #cur_time = self.cur_datetime[13:]
-
             if alert_type in self.alert_counter.keys():
                 print(f"Alerts Limited to: {self.alert_limit} per Day\n"
                       f"Alert :'{alert_type}'\n"
@@ -120,7 +112,8 @@ class EmailAlerts:
                 print("_" * 125)
                 if self.alerts_sent >= self.alert_limit:
                     print(f"Too Many {alert_type} Alerts Today\n"
-                          f"Already Sent: {self.alerts_sent} The Limit is: {self.alert_limit}")
+                          f"Already Sent: {self.alerts_sent} The Limit is: {self.alert_limit}\n"
+                          f"Email Alert NOT Sent!")
                     if self.cur_date > self.prev_date:
                         print("Today is a New Day")
                         self.alert_counter[f"{alert_type}"] = 0
@@ -154,6 +147,7 @@ class EmailAlerts:
         #cur_datetime = datetime.datetime.utcnow().strftime('%m-%d-%Y - %H:%M:%S')
         try:
             if alert_type in self.alert_counter.keys():
+                self.refresh_time_var(alert_type)
                 print(f"Updating {alert_type} Counter")
                 self.alert_counter[f"{alert_type}"] += 1
                 self.alert_counter[f"{alert_type}  Last Date Called"] = self.cur_date
