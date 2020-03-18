@@ -73,14 +73,17 @@ class EmailAlerts:
         print("=" * 125)
         logging.info("Alert Counter Function".center(125))
         print("=" * 125)
-        name = f"{alert_type}" + " counter"
+        name = f"{alert_type}"
+        print(name)
         if name in self.alert_counter.keys():
             for value in name:
-                self.alert_counter[(alert_type + " counter")].update(
+                self.alert_counter[alert_type].update(
                     {
                         f"{name}": int(value)+1,
                     }
                 )
+        print(f"self.alert_counter: {self.alert_counter}")
+        """
         try:
             with open('config.json', 'w') as json_data_file:
                 json_data_file.write(json.dumps(self.alert_counter, indent=4))
@@ -88,6 +91,7 @@ class EmailAlerts:
         except Exception as e:
             print(f" Email Details not Saved")
             logging.exception(e)
+        """
         print("=" * 125)
 
     def msg_format(self, alert_type, variable_data, custom_msg):
