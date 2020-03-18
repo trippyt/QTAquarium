@@ -85,12 +85,18 @@ class EmailAlerts:
         print("=" * 125)
         print(f"Alert Type: {alert_type}")
         print(f"config before counter: {self.alert_counter}")
-        """
+
         try:
-            if alert_type in self.alert_counter[f"{alert_type}"]:
+            if alert_type in self.alert_counter.keys():
+                print(f"Updating {alert_type} Counter")
                 self.alert_counter[f"{alert_type}"] += 1
-        except KeyError as e:
-            self.alert_counter[f"{alert_type}"] = 1
+            else:
+                print(f"{alert_type} not in dict")
+                self.alert_counter[f"{alert_type}"] = 1
+        except Exception as e:
+            logging.exception(e)
+            print("Ooops")
+        print(f"config after counter: {self.alert_counter}")
         """
         try:
             if alert_type in self.alert_counter.keys():
@@ -104,10 +110,8 @@ class EmailAlerts:
             else:
                 print(f"{alert_type} not in dict")
                 self.alert_counter[f"{alert_type}"] = 1
-        except Exception as e:
-            logging.exception(e)
-            print("Ooops")
-        print(f"config after counter: {self.alert_counter}")
+        """
+
         """
         try:
             with open('config.json', 'w') as json_data_file:
