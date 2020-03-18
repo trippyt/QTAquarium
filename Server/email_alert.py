@@ -70,9 +70,10 @@ class EmailAlerts:
         return "Email Sent"
 
     def alert_email_counter(self, alert_type):
+        print("=" * 125)
+        logging.info("Alert Counter Function".center(125))
+        print("=" * 125)
         name = f"{alert_type}" + " counter"
-        self.alert_counter
-        """
         if name in self.alert_counter.keys():
             for value in name:
                 self.alert_counter[(alert_type + " counter")].update(
@@ -80,7 +81,8 @@ class EmailAlerts:
                         f"{name}": int(value)+1,
                     }
                 )
-        
+        print(f"alert_counter dict: {self.alert_counter}")
+        """
         if (alert_type + " counter") in self.alert_counter:
             self.alert_counter[(alert_type + " counter")].update(
                 {
@@ -94,8 +96,10 @@ class EmailAlerts:
             with open('config.json', 'w') as json_data_file:
                 json_data_file.write(json.dumps(self.alert_counter, indent=4))
             logging.info(f"Email Details Saved")
-        except:
-            logging.exception(f" Email Details not Saved")
+        except Exception as e:
+            print(f" Email Details not Saved")
+            logging.exception(e)
+        print("=" * 125)
 
     def msg_format(self, alert_type, variable_data, custom_msg):
         self.email_msg = '\r\n'.join([' %s Alert' % alert_type,
