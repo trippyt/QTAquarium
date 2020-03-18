@@ -76,14 +76,16 @@ class EmailAlerts:
             self.alert_email_counter(alert_type)
             sent = self.alert_counter[f"{alert_type}"]
             prev_datetime = self.config_data["alert_counters"][f"{alert_type} Last on"]
+            cur_datetime = datetime.datetime.utcnow().strftime('%m-%d-%Y - %H:%M')
+
             if alert_type in self.alert_counter.keys():
                 if sent > 5:
                     print(f"Too many {alert_type} Alerts Called")
                     print(f"{alert_type} Alert Last Sent: {prev_datetime}")
-                    print(f"Comparing current datetime: {self.cur_datetime} Last Alert datetime: {prev_datetime}")
-                    if self.cur_datetime > prev_datetime:
+                    print(f"Comparing current datetime: {cur_datetime} Last Alert datetime: {prev_datetime}")
+                    if cur_datetime > prev_datetime:
                         print("Today is a New Day")
-                    elif self.cur_datetime == prev_datetime:
+                    elif cur_datetime == prev_datetime:
                         print("its the same day")
 
                 else:
