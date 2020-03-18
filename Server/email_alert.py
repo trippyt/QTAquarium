@@ -86,11 +86,11 @@ class EmailAlerts:
         self.load()
         name = f"{alert_type}"
         print(f"Alert Type: {name}")
-        if alert_type in self.alert_counter[alert_type]:
-            try:
+        try:
+            if alert_type in self.alert_counter[alert_type]:
                 self.alert_counter[alert_type] += 1
-            except KeyError as e:
-                self.alert_counter[alert_type] = 1
+        except KeyError as e:
+            self.alert_counter[alert_type] = 1
         """
         if name in self.alert_counter.keys():
             print(f"Updating {name} Counter")
