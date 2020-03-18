@@ -68,9 +68,11 @@ class EmailAlerts:
         gmail_sender = self.sender
         gmail_passwd = self.password
         print(f"Email Built: \n"
+              F"\n"
               f"To:{to}\n"
               f"From: {gmail_sender}\n"
               f"Subject: {subject}\n"
+              F"\n"
               f"{self.email_msg}")
 
         server = smtplib.SMTP('smtp.gmail.com', 587)
