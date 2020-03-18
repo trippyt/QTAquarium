@@ -133,6 +133,7 @@ class EmailAlerts:
         return self.alert_counter
 
     def alert_email_counter(self, alert_type):
+        self.refresh_data()
         print("=" * 125)
         logging.info("Alert Counter Function".center(125))
         print("=" * 125)
