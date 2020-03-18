@@ -71,13 +71,13 @@ class EmailAlerts:
 
         try:
             # server.sendmail(gmail_sender, [to], body)
-            print('email sent')
             self.alert_email_counter(alert_type)
             sent = self.alert_counter[f"{alert_type}"]
             if alert_type in self.alert_counter.keys():
                 if sent > 5:
                     print(f"Too many {alert_type} Alerts Called")
                 else:
+                    print("Sending Email Alert")
                     print(f"{alert_type} Alerts Sent: {sent}")
         except Exception as e:
             logging.exception("error sending mail")
@@ -97,7 +97,7 @@ class EmailAlerts:
             if alert_type in self.alert_counter.keys():
                 print(f"Updating {alert_type} Counter")
                 self.alert_counter[f"{alert_type}"] += 1
-                self.alert_counter[f"{alert_type} Last on"](today)
+                self.alert_counter[f"{alert_type} Last on"] = today
             else:
                 print(f"{alert_type} not in dict")
                 self.alert_counter[f"{alert_type}"] = 1
