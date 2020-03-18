@@ -105,11 +105,9 @@ class EmailAlerts:
             else:
                 print(f"{name} not in dict")
                 self.config_data["alert_counters"][f"{name}"] = 1
-        except Exception as e:
-            print(e)
+        except:
+            print("Ooops")
         print(f"config after counter: {self.alert_counter}")
-
-        print(f"self.alert_counter: {self.alert_counter}")
         self.load()
         """
         try:
