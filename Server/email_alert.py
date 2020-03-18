@@ -77,7 +77,7 @@ class EmailAlerts:
             logging.exception(e)
         server.quit()
         print("=" * 125)
-        return "Email Sent"
+        return self.alert_counter
 
     def alert_email_counter(self, alert_type):
         print("=" * 125)
@@ -85,7 +85,6 @@ class EmailAlerts:
         print("=" * 125)
         print(f"Alert Type: {alert_type}")
         print(f"config before counter: {self.alert_counter}")
-
         try:
             if alert_type in self.alert_counter.keys():
                 print(f"Updating {alert_type} Counter")
@@ -97,31 +96,8 @@ class EmailAlerts:
             logging.exception(e)
             print("Ooops")
         print(f"config after counter: {self.alert_counter}")
-        """
-        try:
-            if alert_type in self.alert_counter.keys():
-                print(f"Updating {alert_type} Counter")
-                self.config_data["alert_counters"][f"{alert_type}"].update(
-                    {
-                        f"{alert_type}": +1,
-                    }
-                )
-
-            else:
-                print(f"{alert_type} not in dict")
-                self.alert_counter[f"{alert_type}"] = 1
-        """
-
-        """
-        try:
-            with open('config.json', 'w') as json_data_file:
-                json_data_file.write(json.dumps(self.alert_counter, indent=4))
-            logging.info(f"Email Details Saved")
-        except Exception as e:
-            print(f" Email Details not Saved")
-            logging.exception(e)
-        """
         print("=" * 125)
+        return self.alert_counter
 
     def msg_format(self, alert_type, variable_data, custom_msg):
         self.email_msg = '\r\n'.join([' %s Alert' % alert_type,
@@ -130,6 +106,7 @@ class EmailAlerts:
                                       ''])
         self.email_send(alert_type)
         # return self.email_send(alert_type)
+        return self.alert_counter
 
     def load(self):
         print("=" * 125)

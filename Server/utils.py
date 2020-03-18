@@ -119,15 +119,17 @@ class AquariumController:
         return round(temp_c, 2)
 
     def email_ht_alert(self):
+        print("=" * 125)
+        print("HT Alert Email Function".center(125))
+        print("=" * 125)
         data = {
             "Current Temperature": self.temp_c,
             "Current Threshold": self.setting_data["Temperature Alerts"]["High Temp"]
         }
         msg = self.email.templates.temperature_msg()
         self.email.msg_format(alert_type='High Temperature', variable_data=data, custom_msg=msg)
-        #email = self.email.msg_format(alert_type='High Temperature', variable_data=data, custom_msg=msg)
-        #if email == "email sent":
-            #self.alert_counters(alert_type='High Temperature')
+        print(f"Returned: {self.alert_counter}")
+        print("=" * 125)
     """
     def alert_counters(self, alert_type):
         name = f"{alert_type}" + " counter"
