@@ -29,7 +29,6 @@ class EmailAlerts:
         self.email_msg = None
         self.templates = EmailTemplates()
 
-
     def low_temp_alert(self):
         self
 
@@ -70,7 +69,7 @@ class EmailAlerts:
                             '', self.email_msg])
 
         try:
-            #server.sendmail(gmail_sender, [to], body)
+            # server.sendmail(gmail_sender, [to], body)
             print('email sent')
             self.alert_email_counter(alert_type)
         except Exception as e:
@@ -87,7 +86,7 @@ class EmailAlerts:
         self.load()
         name = f"{alert_type}"
         print(f"Alert Type: {name}")
-        if self.alert_counter.has_key(alert_type):
+        if alert_type in self.alert_counter[alert_type]:
             try:
                 self.alert_counter[alert_type] += 1
             except KeyError as e:
@@ -124,7 +123,7 @@ class EmailAlerts:
                                       'Message: %s' % custom_msg,
                                       ''])
         self.email_send(alert_type)
-        #return self.email_send(alert_type)
+        # return self.email_send(alert_type)
 
     def load(self):
         print("=" * 125)
