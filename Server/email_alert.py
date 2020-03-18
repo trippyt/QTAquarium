@@ -83,7 +83,6 @@ class EmailAlerts:
         print("=" * 125)
         logging.info("Alert Counter Function".center(125))
         print("=" * 125)
-        self.load()
         name = f"{alert_type}"
         print(f"Alert Type: {name}")
         """
@@ -105,10 +104,10 @@ class EmailAlerts:
             else:
                 print(f"{name} not in dict")
                 self.config_data["alert_counters"][f"{name}"] = 1
-        except:
+        except Exception as e:
+            logging.exception(e)
             print("Ooops")
         print(f"config after counter: {self.alert_counter}")
-        self.load()
         """
         try:
             with open('config.json', 'w') as json_data_file:
