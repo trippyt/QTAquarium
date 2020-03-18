@@ -96,7 +96,7 @@ class EmailAlerts:
         try:
             if name in self.alert_counter.keys():
                 print(f"Updating {name} Counter")
-                self.alert_counter["alert_counters"].update(
+                self.alert_counter[f"{name}"].update(
                     {
                         f"{alert_type}": +1,
                     }
