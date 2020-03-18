@@ -90,11 +90,7 @@ class EmailAlerts:
         if name in self.alert_counter.keys():
             print(f"Updating {name} Counter")
             for value in name:
-                self.config_data["alert_counters"].update(
-                    {
-                        f"{name}": int(value)+1,
-                    }
-                )
+                self.config_data["alert_counters"][f"{name}"] += 1
         else:
             print(f"{name} not in dict")
             self.config_data["alert_counters"][f"{name}"] = 1
