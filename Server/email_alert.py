@@ -59,7 +59,9 @@ class EmailAlerts:
         self.email_send(alert_type='TEST Alert!')
 
     def email_send(self, alert_type):
+        print(f"Config counters before refresh: {self.alert_counter}")
         self.refresh_data(alert_type)
+        print(f"Config counters after refresh: {self.alert_counter}")
         print("=" * 125)
         logging.info("Email Builder Function".center(125))
         print("=" * 125)

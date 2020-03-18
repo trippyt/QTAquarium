@@ -108,3 +108,18 @@ Comparing current date: 03-18-2020 Last Alert date: 03-18-2020
 its the same day
 =============================================================================================================================
 
+
+
+Alert Type: High Temperature
+config before counter: {'High Temperature': 42, 'High Temperature Last on': '02-18-2020 - 16:10:13'} # this
+Updating High Temperature Counter
+config after counter: {'High Temperature': 43, 'High Temperature Last on': '03-18-2020 - 18:02:27'}
+=============================================================================================================================
+Alerts Limited to: 1 per Day
+Alert :'High Temperature'
+ Last Sent date: 03-18-2020  Last Sent Time: 18:02:27                                      #This should match the above
+   Current date: 03-18-2020     current time: 18:02:26
+Config counters: {'High Temperature': 43, 'High Temperature Last on': '03-18-2020 - 18:02:27'}
+_____________________________________________________________________________________________________________________________
+
+
