@@ -5,6 +5,7 @@ import logging
 
 class EmailAlerts:
     def __init__(self):
+        self.load()
         self.alert_counter = {}
         self.email_msg = None
         self.templates = EmailTemplates()
