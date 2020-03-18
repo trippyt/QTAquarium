@@ -35,7 +35,7 @@ class EmailAlerts:
             logging.info("Server data loaded from 'data.txt'")
         except Exception as e:
             logging.exception(e)
-        self.alert_limit = self.config_data["network_data"]["alert_limit"]
+        self.alert_limit = self.config_data["network_config"]["alert_limit"]
 
     def low_temp_alert(self):
         self
