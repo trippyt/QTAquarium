@@ -16,8 +16,8 @@ class EmailAlerts:
         self.email_msg = None
         self.cur_date = None
         self.cur_time = None
-        self.prev_date = None
-        self.prev_time = None
+        self.prev_date = {}
+        self.prev_time = {}
         self.alerts_sent = None
 
         self.send = None
