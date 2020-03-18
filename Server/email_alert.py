@@ -6,19 +6,16 @@ import datetime
 
 class EmailAlerts:
     def __init__(self):
+        self.sender = None
+        self.target = None
+        self.password = None
+        self.alert_counter = None
+        self.high_temp_threshold = None
+        self.alert_limit = None
         self.refresh_data()
-        try:
-            self.sender = self.config_data["network_config"]["sender_email"]
-            self.target = self.config_data["network_config"]["target_email"]
-            self.password = self.config_data["network_config"]["password_email"]
-            self.alert_counter = self.config_data["alert_counters"]
-            self.high_temp_threshold = self.data["Setting Data"]["Temperature Alerts"]["High Temp"]
-        except Exception as e:
-            logging.exception(e)
-
         self.load()
         self.email_msg = None
-        self.cur_datetime = datetime.datetime.utcnow().strftime('%m-%d-%Y - %H:%M:%S')
+        self.cur_datetime = None
 
         self.templates = EmailTemplates()
 
@@ -35,7 +32,16 @@ class EmailAlerts:
             logging.info("Server data loaded from 'data.txt'")
         except Exception as e:
             logging.exception(e)
-        self.alert_limit = int(self.config_data["network_config"]["alert_limit"])
+        try:
+            self.sender = self.config_data["network_config"]["sender_email"]
+            self.target = self.config_data["network_config"]["target_email"]
+            self.password = self.config_data["network_config"]["password_email"]
+            self.alert_counter = self.config_data["alert_counters"]
+            self.high_temp_threshold = self.data["Setting Data"]["Temperature Alerts"]["High Temp"]
+            self.alert_limit = int(self.config_data["network_config"]["alert_limit"])
+            self.cur_datetime = datetime.datetime.utcnow().strftime('%m-%d-%Y - %H:%M:%S')
+        except Exception as e:
+            logging.exception(e)
 
     def low_temp_alert(self):
         self
