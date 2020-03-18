@@ -41,7 +41,7 @@ class EmailAlerts:
             self.alert_limit = int(self.config_data["network_config"]["alert_limit"])
             self.cur_datetime = datetime.datetime.utcnow().strftime('%m-%d-%Y - %H:%M:%S')
             try:
-                self.sent = self.alert_counter[f"{alert_type}"]
+                self.sent = self.alert_counter[alert_type]
                 self.prev_datetime = self.config_data["alert_counters"][f"{alert_type} Last on"]
             except Exception as e:
                 logging.exception(e)
@@ -126,7 +126,7 @@ class EmailAlerts:
                     print(f"{alert_type} Alerts Sent: {self.sent}")
                     print(f"{alert_type} Alert Last Sent: {self.prev_datetime}")
         except Exception as e:
-            logging.exception("error sending mail")
+            logging.exception("With Building Email")
             logging.exception(e)
         server.quit()
         print("=" * 125)
