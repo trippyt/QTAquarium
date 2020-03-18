@@ -40,12 +40,6 @@ class EmailAlerts:
             self.high_temp_threshold = self.data["Setting Data"]["Temperature Alerts"]["High Temp"]
             self.alert_limit = int(self.config_data["network_config"]["alert_limit"])
             self.cur_datetime = datetime.datetime.utcnow().strftime('%m-%d-%Y - %H:%M:%S')
-            try:
-                self.sent = self.alert_counter[alert_type]
-                self.prev_datetime = self.config_data["alert_counters"][f"{alert_type} Last on"]
-            except Exception as e:
-                logging.exception(e)
-            self.cur_datetime = datetime.datetime.utcnow().strftime('%m-%d-%Y - %H:%M:%S')
         except Exception as e:
             logging.exception(e)
 
@@ -94,37 +88,37 @@ class EmailAlerts:
         try:
             # server.sendmail(gmail_sender, [to], body)
             self.alert_email_counter(alert_type)
-            #sent = self.alert_counter[f"{alert_type}"]
-            #prev_datetime = self.config_data["alert_counters"][f"{alert_type} Last on"]
+            sent = self.alert_counter[f"{alert_type}"]
+            prev_datetime = self.config_data["alert_counters"][f"{alert_type} Last on"]
             cur_datetime = datetime.datetime.utcnow().strftime('%m-%d-%Y - %H:%M:%S')
-            prev_date = self.prev_datetime[:10]
+            prev_date = prev_datetime[:10]
             cur_date = cur_datetime[:10]
-            prev_time = self.prev_datetime[13:]
-            cur_time = cur_datetime[13:]
+            prev_time = prev_datetime[13:]
+            cur_time = self.cur_datetime[13:]
 
             if alert_type in self.alert_counter.keys():
                 print(f"Alerts Limited to: {self.alert_limit} per Day\n"
-                      f"Alert :'{alert_type}' Last Sent: {self.prev_datetime}\n"
+                      f"Alert :'{alert_type}' Last Sent: {prev_datetime}\n"
                       f"Comparing current date: {cur_date}     current time: {cur_time}\n"
                       f"Last Alert date       : {prev_date} Last Alert time: {prev_time}")
                 print("_" * 125)
-                if self.sent > self.alert_limit:
+                if sent > self.alert_limit:
                     print(f"Too Many {alert_type} Alerts\n"
-                          f"Already Sent: {self.sent}")
+                          f"Already Sent: {sent}")
                     if cur_date > prev_date:
                         print("Today is a New Day")
                         self.alert_counter[f"{alert_type}"] = 1
                         self.refresh_data()
                         print(f"{alert_type} Alert counter Reset!!\n"
                               f"Sending Email Alert\n"
-                              f"{alert_type} Alert counter: {self.sent}")
+                              f"{alert_type} Alert counter: {sent}")
                     elif cur_date == prev_date:
                         print("its the same day")
 
                 else:
                     print("Sending Email Alert")
-                    print(f"{alert_type} Alerts Sent: {self.sent}")
-                    print(f"{alert_type} Alert Last Sent: {self.prev_datetime}")
+                    print(f"{alert_type} Alerts Sent: {sent}")
+                    print(f"{alert_type} Alert Last Sent: {prev_datetime}")
         except Exception as e:
             logging.exception("With Building Email")
             logging.exception(e)
