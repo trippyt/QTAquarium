@@ -28,7 +28,7 @@ class EmailAlerts:
             logging.exception(e)
         self.load()
         self.email_msg = None
-        self.cur_datetime = datetime.datetime.utcnow().strftime('%m-%d-%Y - %H:%M :%S')
+        self.cur_datetime = datetime.datetime.utcnow().strftime('%m-%d-%Y - %H:%M:%S')
 
         self.templates = EmailTemplates()
 
@@ -76,15 +76,18 @@ class EmailAlerts:
             self.alert_email_counter(alert_type)
             sent = self.alert_counter[f"{alert_type}"]
             prev_datetime = self.config_data["alert_counters"][f"{alert_type} Last on"]
-            cur_datetime = datetime.datetime.utcnow().strftime('%m-%d-%Y - %H:%M :%S')
+            cur_datetime = datetime.datetime.utcnow().strftime('%m-%d-%Y - %H:%M:%S')
             prev_date = prev_datetime[:10]
             cur_date = cur_datetime[:10]
+            prev_time = prev_datetime[13:]
+            cur_time =cur_datetime[13:]
 
             if alert_type in self.alert_counter.keys():
                 if sent > 5:
-                    print(f"Too many {alert_type} Alerts Called")
-                    print(f"{alert_type} Alert Last Sent: {prev_datetime}")
-                    print(f"Comparing current date: {cur_date} Last Alert date: {prev_date}")
+                    print(f"Too many {alert_type} Alerts Called\n"
+                          f"{alert_type} Alert Last Sent: {prev_datetime}\n"
+                          f"Comparing current date: {cur_date}     current time:{cur_time}\n"
+                          f"       Last Alert date: {prev_date} Last Alert time:{prev_time}")
                     if cur_date > prev_date:
                         print("Today is a New Day")
                     elif cur_date == prev_date:

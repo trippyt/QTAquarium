@@ -77,3 +77,34 @@ please do the following checks:
 - check temperature probe cable
 - check temperature probe connection,
 ==================================================
+
+
+
+=============================================================================================================================
+14:58:48,235 INFO:                                                     Alert Counter Function
+=============================================================================================================================
+Alert Type: High Temperature
+config before counter: {'High Temperature': 21, 'High Temperature Last on': '03-18-2020 - 14:53 :44'}
+Updating High Temperature Counter
+config after counter: {'High Temperature': 22, 'High Temperature Last on': '03-18-2020 - 14:53 :44'}
+=============================================================================================================================
+Too many High Temperature Alerts Called
+High Temperature Alert Last Sent: 03-18-2020 - 14:53 :44
+Comparing current date: 03-18-2020 Last Alert date: 03-18-2020
+its the same day
+=============================================================================================================================
+
+=============================================================================================================================
+15:00:16,228 INFO:                                                     Alert Counter Function
+=============================================================================================================================
+Alert Type: High Temperature
+config before counter: {'High Temperature': 23, 'High Temperature Last on': '03-18-2020 - 14:53 :44'}
+Updating High Temperature Counter
+config after counter: {'High Temperature': 24, 'High Temperature Last on': '03-18-2020 - 14:53 :44'}
+=============================================================================================================================
+Too many High Temperature Alerts Called
+High Temperature Alert Last Sent: 03-18-2020 - 14:53 :44
+Comparing current date: 03-18-2020 Last Alert date: 03-18-2020
+its the same day
+=============================================================================================================================
+
