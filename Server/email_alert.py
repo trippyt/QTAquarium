@@ -89,9 +89,7 @@ class EmailAlerts:
 
         try:
             # server.sendmail(gmail_sender, [to], body)
-            print(f"Config counters before Building Email: {self.alert_counter}")
-            self.alert_email_counter(alert_type)
-            print(f"Config counters after Building Email: {self.alert_counter}")
+
             sent = self.alert_counter[f"{alert_type}"]
             prev_datetime = self.alert_counter[f"{alert_type} Last on"]
             cur_datetime = datetime.datetime.utcnow().strftime('%m-%d-%Y - %H:%M:%S')
@@ -117,6 +115,9 @@ class EmailAlerts:
                         print(f"{alert_type} Alert counter Reset!!\n"
                               f"Sending Email Alert\n"
                               f"{alert_type} Alert counter: {sent}")
+                        print(f"Config counters before counter function: {self.alert_counter}")
+                        self.alert_email_counter(alert_type)
+                        print(f"Config counters after counter function: {self.alert_counter}")
                     elif cur_date == prev_date:
                         print("its the same day")
 
