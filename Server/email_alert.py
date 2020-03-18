@@ -9,10 +9,7 @@ class EmailAlerts:
         self.alert_counter = {}
         self.email_msg = None
         self.templates = EmailTemplates()
-        self.sender = self.config_data["network_config"]["sender_email"]
-        self.target = self.config_data["network_config"]["target_email"]
-        self.password = self.config_data["network_config"]["password_email"]
-        self.high_temp_threshold = self.data["Setting Data"]["Temperature Alerts"]["High Temp"]
+
 
     def low_temp_alert(self):
         self
@@ -118,7 +115,10 @@ class EmailAlerts:
         print(f"self.config_data: {self.config_data}")
         print(f"Server data: {self.data}")
         try:
-
+            self.sender = self.config_data["network_config"]["sender_email"]
+            self.target = self.config_data["network_config"]["target_email"]
+            self.password = self.config_data["network_config"]["password_email"]
+            self.high_temp_threshold = self.data["Setting Data"]["Temperature Alerts"]["High Temp"]
             print(f"Sender: {self.sender}")
             print(f"Target: {self.target}")
             print(f"Password: {self.password}")
