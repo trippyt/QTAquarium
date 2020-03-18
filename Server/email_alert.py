@@ -21,11 +21,11 @@ class EmailAlerts:
             self.sender = self.config_data["network_config"]["sender_email"]
             self.target = self.config_data["network_config"]["target_email"]
             self.password = self.config_data["network_config"]["password_email"]
+            self.alert_counter = self.config_data["alert_counters"]
             self.high_temp_threshold = self.data["Setting Data"]["Temperature Alerts"]["High Temp"]
         except Exception as e:
             logging.exception(e)
         self.load()
-        self.alert_counter = {}
         self.email_msg = None
         self.templates = EmailTemplates()
 
@@ -89,7 +89,7 @@ class EmailAlerts:
         print(f"Alert Type: {name}")
         if name in self.alert_counter.keys():
             for value in name:
-                self.alert_counter[alert_type].update(
+                self.config_data["alert_counters"].update(
                     {
                         f"{name}": int(value)+1,
                     }
