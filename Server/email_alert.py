@@ -85,6 +85,7 @@ class EmailAlerts:
         print("=" * 125)
         name = f"{alert_type}"
         print(f"Alert Type: {name}")
+        print(f"config before counter: {self.alert_counter}")
         """
         try:
             if alert_type in self.alert_counter[f"{alert_type}"]:
@@ -103,7 +104,7 @@ class EmailAlerts:
 
             else:
                 print(f"{name} not in dict")
-                self.alert_counter["alert_counters"][f"{name}"] = 1
+                self.alert_counter[f"{name}"] = 1
         except Exception as e:
             logging.exception(e)
             print("Ooops")
