@@ -1,6 +1,7 @@
 import smtplib
 import json
 import logging
+import datetime
 
 
 class EmailAlerts:
@@ -72,6 +73,12 @@ class EmailAlerts:
             # server.sendmail(gmail_sender, [to], body)
             print('email sent')
             self.alert_email_counter(alert_type)
+            sent = self.alert_counter[f"{alert_type}"]
+            if alert_type in self.alert_counter.keys():
+                if sent > 5:
+                    print(f"Too many {alert_type} Alerts Called")
+                else:
+                    print(f"{alert_type} Alerts Sent: {sent}")
         except Exception as e:
             logging.exception("error sending mail")
             logging.exception(e)
@@ -85,10 +92,12 @@ class EmailAlerts:
         print("=" * 125)
         print(f"Alert Type: {alert_type}")
         print(f"config before counter: {self.alert_counter}")
+        today = datetime.datetime.utcnow().strftime('%Y-%m-%d')
         try:
             if alert_type in self.alert_counter.keys():
                 print(f"Updating {alert_type} Counter")
                 self.alert_counter[f"{alert_type}"] += 1
+                self.alert_counter[f"{alert_type} Last on"](today)
             else:
                 print(f"{alert_type} not in dict")
                 self.alert_counter[f"{alert_type}"] = 1
