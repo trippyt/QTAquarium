@@ -28,6 +28,8 @@ class EmailAlerts:
             logging.exception(e)
         self.load()
         self.email_msg = None
+        self.cur_datetime = datetime.datetime.utcnow().strftime('%m-%d-%Y - %H:%M')
+
         self.templates = EmailTemplates()
 
     def low_temp_alert(self):
@@ -73,12 +75,20 @@ class EmailAlerts:
             # server.sendmail(gmail_sender, [to], body)
             self.alert_email_counter(alert_type)
             sent = self.alert_counter[f"{alert_type}"]
+            prev_datetime = self.config_data["alert_counters"][f"{alert_type} Last on"]
             if alert_type in self.alert_counter.keys():
                 if sent > 5:
                     print(f"Too many {alert_type} Alerts Called")
+                    print(f"{alert_type} Alert Last Sent: {prev_datetime}")
+                    if self.cur_datetime > prev_datetime:
+                        print("Today is a New Day")
+                    elif self.cur_datetime == prev_datetime:
+                        print("its the same day")
+
                 else:
                     print("Sending Email Alert")
                     print(f"{alert_type} Alerts Sent: {sent}")
+                    print(f"{alert_type} Alert Last Sent: {prev_datetime}")
         except Exception as e:
             logging.exception("error sending mail")
             logging.exception(e)
@@ -92,12 +102,12 @@ class EmailAlerts:
         print("=" * 125)
         print(f"Alert Type: {alert_type}")
         print(f"config before counter: {self.alert_counter}")
-        today = datetime.datetime.utcnow().strftime('%m-%d-%Y - %H%M')
+
         try:
             if alert_type in self.alert_counter.keys():
                 print(f"Updating {alert_type} Counter")
                 self.alert_counter[f"{alert_type}"] += 1
-                self.alert_counter[f"{alert_type} Last on"] = today
+                self.alert_counter[f"{alert_type} Last on"] = self.cur_datetime
             else:
                 print(f"{alert_type} not in dict")
                 self.alert_counter[f"{alert_type}"] = 1
