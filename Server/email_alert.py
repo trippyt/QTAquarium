@@ -25,7 +25,7 @@ class EmailAlerts:
         self.load()
         self.templates = EmailTemplates()
 
-    def refresh_data(self, *alert_type):
+    def refresh_data(self, alert_type):
         try:
             with open('config.json', 'r') as json_data_file:
                 self.config_data = json.load(json_data_file)
