@@ -86,7 +86,7 @@ class EmailAlerts:
                     print(f"{alert_type} Alert Last Sent: {prev_datetime}")
                     print(f"Comparing current datetime: {cur_datetime} Last Alert datetime: {prev_datetime}")
                     print(f"Comparing current date: {cur_date} Last Alert date: {prev_date}")
-                    if cur_datetime > prev_datetime:
+                    if cur_date > prev_date:
                         print("Today is a New Day")
                     elif cur_datetime == prev_datetime:
                         print("its the same day")
