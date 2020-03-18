@@ -89,14 +89,16 @@ class EmailAlerts:
             cur_time = cur_datetime[13:]
 
             if alert_type in self.alert_counter.keys():
+                print(f"Alerts Limited to: {self.alert_limit} per Day\n"
+                      f"{alert_type} Alert Last Sent: {prev_datetime}\n"
+                f"      Comparing current date: {cur_date}     current time:{cur_time}\n"
+                f"             Last Alert date: {prev_date} Last Alert time:{prev_time}")
                 if sent > self.alert_limit:
-                    print(f"Too many {alert_type} Alerts Called\n"
-                          f"Alerts Limited to: {self.alert_limit} per Day\n"
-                          f"{alert_type} Alert Last Sent: {prev_datetime}\n"
-                          f"      Comparing current date: {cur_date}     current time:{cur_time}\n"
-                          f"             Last Alert date: {prev_date} Last Alert time:{prev_time}")
+                    print(f"Too many {alert_type} Alerts Called")
                     if cur_date > prev_date:
                         print("Today is a New Day")
+                        self.alert_counter[f"{alert_type}"] = 1
+                        print(f"{alert_type} Alert counter Reset!!")
                     elif cur_date == prev_date:
                         print("its the same day")
 
