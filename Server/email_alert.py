@@ -88,12 +88,16 @@ class EmailAlerts:
         name = f"{alert_type}"
         print(f"Alert Type: {name}")
         if name in self.alert_counter.keys():
+            print(f"Updating {name} Counter")
             for value in name:
                 self.config_data["alert_counters"].update(
                     {
                         f"{name}": int(value)+1,
                     }
                 )
+        else:
+            print("Alert Type Not in Config")
+
         print(f"self.alert_counter: {self.alert_counter}")
         self.load()
         """
