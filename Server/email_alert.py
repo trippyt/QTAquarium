@@ -13,10 +13,10 @@ class EmailAlerts:
         self.high_temp_threshold = None
         self.alert_limit = None
         self.refresh_data()
-        self.load()
         self.email_msg = None
         self.cur_datetime = None
 
+        self.load()
         self.templates = EmailTemplates()
 
     def refresh_data(self):
