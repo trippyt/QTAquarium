@@ -123,7 +123,7 @@ class EmailAlerts:
                 else:
                     print(f"{alert_type} Alert\n"
                           f"Sending Email\n"
-                          f"Last Sent: {prev_datetime}"
+                          f"Last Sent: {prev_datetime}\n"
                           f"Times Sent Today: {sent}")
         except Exception as e:
             logging.exception("With Building Email")
