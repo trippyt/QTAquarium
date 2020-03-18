@@ -100,7 +100,9 @@ class EmailAlerts:
                     if cur_date > prev_date:
                         print("Today is a New Day")
                         self.alert_counter[f"{alert_type}"] = 1
-                        print(f"{alert_type} Alert counter Reset!!")
+                        print(f"{alert_type} Alert counter Reset!!\n"
+                              f"Sending Email Alert\n"
+                              f"{alert_type} Alert counter: {sent}")
                     elif cur_date == prev_date:
                         print("its the same day")
 
