@@ -96,7 +96,8 @@ class EmailAlerts:
                     }
                 )
         else:
-            print("Alert Type Not in Config")
+            print(f"{name} not in dict")
+            self.config_data["alert_counters"][f"{name}"] = 1
 
         print(f"self.alert_counter: {self.alert_counter}")
         self.load()
