@@ -99,7 +99,7 @@ class EmailAlerts:
                 for value in name:
                     self.config_data["alert_counters"].update(
                         {
-                            f"{name}": int(value) + 1,
+                            f"{name}": int(value) + int(1),
                         }
                     )
             else:
