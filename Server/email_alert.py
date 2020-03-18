@@ -5,6 +5,25 @@ import logging
 
 class EmailAlerts:
     def __init__(self):
+        try:
+            with open('config.json', 'r') as json_data_file:
+                self.config_data = json.load(json_data_file)
+            logging.info("Config data loaded from 'config.json'")
+        except Exception as e:
+            logging.exception(e)
+        try:
+            with open('data.txt', 'r') as txt_data_file:
+                self.data = json.load(txt_data_file)
+            logging.info("Server data loaded from 'data.txt'")
+        except Exception as e:
+            logging.exception(e)
+        try:
+            self.sender = self.config_data["network_config"]["sender_email"]
+            self.target = self.config_data["network_config"]["target_email"]
+            self.password = self.config_data["network_config"]["password_email"]
+            self.high_temp_threshold = self.data["Setting Data"]["Temperature Alerts"]["High Temp"]
+        except Exception as e:
+            logging.exception(e)
         self.load()
         self.alert_counter = {}
         self.email_msg = None
@@ -65,6 +84,7 @@ class EmailAlerts:
         print("=" * 125)
         logging.info("Alert Counter Function".center(125))
         print("=" * 125)
+        self.load()
         name = f"{alert_type}"
         print(name)
         if name in self.alert_counter.keys():
@@ -75,6 +95,7 @@ class EmailAlerts:
                     }
                 )
         print(f"self.alert_counter: {self.alert_counter}")
+        self.load()
         """
         try:
             with open('config.json', 'w') as json_data_file:
@@ -97,35 +118,15 @@ class EmailAlerts:
     def load(self):
         print("=" * 125)
         logging.info("Loading 'config.json'")
-        try:
-            with open('config.json', 'r') as json_data_file:
-                self.config_data = json.load(json_data_file)
-            logging.info("Config data loaded from 'config.json'")
-        except Exception as e:
-            logging.exception(e)
         print("=" * 125)
         logging.info("Loading 'data.txt'")
-        try:
-            with open('data.txt', 'r') as txt_data_file:
-                self.data = json.load(txt_data_file)
-            logging.info("Server data loaded from 'data.txt'")
-        except Exception as e:
-            logging.exception(e)
         print("=" * 125)
         print(f"self.config_data: {self.config_data}")
         print(f"Server data: {self.data}")
-        try:
-            self.sender = self.config_data["network_config"]["sender_email"]
-            self.target = self.config_data["network_config"]["target_email"]
-            self.password = self.config_data["network_config"]["password_email"]
-            self.high_temp_threshold = self.data["Setting Data"]["Temperature Alerts"]["High Temp"]
-            print(f"Sender: {self.sender}")
-            print(f"Target: {self.target}")
-            print(f"Password: {self.password}")
-            print(f"High Temp Threshold: {self.high_temp_threshold}")
-        except KeyError as e:
-            print(e)
-            print("oops")
+        print(f"Sender: {self.sender}")
+        print(f"Target: {self.target}")
+        print(f"Password: {self.password}")
+        print(f"High Temp Threshold: {self.high_temp_threshold}")
         print("=" * 125)
 
 
