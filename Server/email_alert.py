@@ -86,24 +86,28 @@ class EmailAlerts:
         self.load()
         name = f"{alert_type}"
         print(f"Alert Type: {name}")
+        """
         try:
             if alert_type in self.alert_counter[f"{alert_type}"]:
                 self.alert_counter[f"{alert_type}"] += 1
         except KeyError as e:
             self.alert_counter[f"{alert_type}"] = 1
         """
-        if name in self.alert_counter.keys():
-            print(f"Updating {name} Counter")
-            for value in name:
-                self.config_data["alert_counters"].update(
-                    {
-                        f"{name}": int(value) + 1,
-                    }
-                )
-        else:
-            print(f"{name} not in dict")
-            self.config_data["alert_counters"][f"{name}"] = 1
-        """
+        try:
+            if name in self.alert_counter.keys():
+                print(f"Updating {name} Counter")
+                for value in name:
+                    self.config_data["alert_counters"].update(
+                        {
+                            f"{name}": int(value) + 1,
+                        }
+                    )
+            else:
+                print(f"{name} not in dict")
+                self.config_data["alert_counters"][f"{name}"] = 1
+        except Exception as e:
+            print(e)
+
         print(f"self.alert_counter: {self.alert_counter}")
         self.load()
         """
