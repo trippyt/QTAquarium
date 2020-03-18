@@ -115,12 +115,12 @@ class EmailAlerts:
         print("=" * 125)
         print(f"Alert Type: {alert_type}")
         print(f"config before counter: {self.alert_counter}")
-
+        cur_datetime = datetime.datetime.utcnow().strftime('%m-%d-%Y - %H:%M:%S')
         try:
             if alert_type in self.alert_counter.keys():
                 print(f"Updating {alert_type} Counter")
                 self.alert_counter[f"{alert_type}"] += 1
-                self.alert_counter[f"{alert_type} Last on"] = self.cur_datetime
+                self.alert_counter[f"{alert_type} Last on"] = cur_datetime
             else:
                 print(f"{alert_type} not in dict")
                 self.alert_counter[f"{alert_type}"] = 1
