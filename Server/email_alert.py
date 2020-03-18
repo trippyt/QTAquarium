@@ -29,6 +29,9 @@ class EmailAlerts:
         self.email_send(alert_type='TEST Alert!')
 
     def email_send(self, alert_type):
+        print("=" * 125)
+        logging.info("Email Builder Function".center(125))
+        print("=" * 125)
         to = self.target
         subject = f"AquaPi {alert_type}"
         gmail_sender = self.sender
@@ -50,13 +53,14 @@ class EmailAlerts:
                             '', self.email_msg])
 
         try:
-            server.sendmail(gmail_sender, [to], body)
+            #server.sendmail(gmail_sender, [to], body)
             print('email sent')
             self.alert_email_counter(alert_type)
         except Exception as e:
             logging.exception("error sending mail")
             logging.exception(e)
         server.quit()
+        print("=" * 125)
         return "Email Sent"
 
     def alert_email_counter(self, alert_type):
