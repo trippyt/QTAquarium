@@ -269,6 +269,11 @@ class App(object):
                          f"&lt_enabled={lt_enabled}")
         self.load_server()
 
+    def ip_update(self):
+        LAN_host = self.form.ip_spinBox.value()
+        LAN_id = "192.168.1."
+        print(f"Ip Address Updated")
+
     def save_email(self):
         logging.info("=" * 125)
         logging.info(f"config start of email function: {self.config_data}")

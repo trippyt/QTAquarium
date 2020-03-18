@@ -16,6 +16,8 @@ class EmailAlerts:
         self.email_msg = None
         self.cur_datetime = None
 
+        self.send = None
+
         self.load()
         self.templates = EmailTemplates()
 
@@ -86,10 +88,9 @@ class EmailAlerts:
                             'From: %s' % gmail_sender,
                             'Subject: %s' % subject,
                             '', self.email_msg])
+        self.send = server.sendmail(gmail_sender, [to], body)
 
         try:
-            # server.sendmail(gmail_sender, [to], body)
-
             sent = self.alert_counter[f"{alert_type}"]
             prev_datetime = self.alert_counter[f"{alert_type} Last on"]
             cur_datetime = datetime.datetime.utcnow().strftime('%m-%d-%Y - %H:%M:%S')
@@ -112,16 +113,18 @@ class EmailAlerts:
                         print("Today is a New Day")
                         self.alert_counter[f"{alert_type}"] = 0
                         print(f"{alert_type} Alert counter Reset!!\n"
-                              f"Sending Email Alert\n"
-                              f"{alert_type} Alert counter: {sent}")
+                              f"Sending Email Alert")
+                        self.send()
+                        print(f"{alert_type} Alert counter: 0")
                         self.alert_email_counter(alert_type)
                     elif cur_date == prev_date:
                         print("its the same day")
 
                 else:
-                    print("Sending Email Alert")
-                    print(f"{alert_type} Alerts Sent: {sent}")
-                    print(f"{alert_type} Alert Last Sent: {prev_datetime}")
+                    print(f"{alert_type} Alert\n"
+                          f"Sending Email\n"
+                          f"Last Sent: {prev_datetime}"
+                          f"Times Sent Today: {sent}")
         except Exception as e:
             logging.exception("With Building Email")
             logging.exception(e)
