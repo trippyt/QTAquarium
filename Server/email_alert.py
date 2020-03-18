@@ -94,7 +94,8 @@ class EmailAlerts:
                 f"      Comparing current date: {cur_date}     current time:{cur_time}\n"
                 f"             Last Alert date: {prev_date} Last Alert time:{prev_time}")
                 if sent > self.alert_limit:
-                    print(f"{alert_type} Alerts Already Sent {sent}")
+                    print(f"Too Many {alert_type} Alerts\n"
+                          f"Already Sent: {sent}")
                     if cur_date > prev_date:
                         print("Today is a New Day")
                         self.alert_counter[f"{alert_type}"] = 1
