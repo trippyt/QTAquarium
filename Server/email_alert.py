@@ -89,7 +89,9 @@ class EmailAlerts:
 
         try:
             # server.sendmail(gmail_sender, [to], body)
+            print(f"Config counters before Building Email: {self.alert_counter}")
             self.alert_email_counter(alert_type)
+            print(f"Config counters after Building Email: {self.alert_counter}")
             sent = self.alert_counter[f"{alert_type}"]
             prev_datetime = self.alert_counter[f"{alert_type} Last on"]
             cur_datetime = datetime.datetime.utcnow().strftime('%m-%d-%Y - %H:%M:%S')
