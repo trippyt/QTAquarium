@@ -7,39 +7,11 @@ class EmailAlerts:
     def __init__(self):
         self.alert_counter = {}
         self.email_msg = None
-        print("=" * 125)
-        logging.info("Loading 'config.json'")
-        try:
-            with open('config.json', 'r') as json_data_file:
-                self.config_data = json.load(json_data_file)
-            logging.info("Config data loaded from 'config.json'")
-        except Exception as e:
-            logging.exception(e)
-        print("=" * 125)
-        logging.info("Loading 'data.txt'")
-        try:
-            with open('data.txt', 'r') as txt_data_file:
-                data = json.load(txt_data_file)
-            logging.info("Server data loaded from 'data.txt'")
-        except Exception as e:
-            logging.exception(e)
-        print("=" * 125)
-        print(f"self.config_data: {self.config_data}")
-        print(f"Server data: {data}")
-        try:
-            self.sender = self.config_data["network_config"]["sender_email"]
-            self.target = self.config_data["network_config"]["target_email"]
-            self.password = self.config_data["network_config"]["password_email"]
-            self.high_temp_threshold = data["Setting Data"]["Temperature Alerts"]["High Temp"]
-            print(f"Sender: {self.sender}")
-            print(f"Target: {self.target}")
-            print(f"Password: {self.password}")
-            print(f"High Temp Threshold: {self.high_temp_threshold}")
-        except KeyError as e:
-            print(e)
-            print("oops")
-        print("=" * 125)
         self.templates = EmailTemplates()
+        self.sender = self.config_data["network_config"]["sender_email"]
+        self.target = self.config_data["network_config"]["target_email"]
+        self.password = self.config_data["network_config"]["password_email"]
+        self.high_temp_threshold = self.data["Setting Data"]["Temperature Alerts"]["High Temp"]
 
     def low_temp_alert(self):
         self
@@ -119,6 +91,37 @@ class EmailAlerts:
                                       ''])
         self.email_send(alert_type)
         return self.email_send(alert_type)
+
+    def load(self):
+        print("=" * 125)
+        logging.info("Loading 'config.json'")
+        try:
+            with open('config.json', 'r') as json_data_file:
+                self.config_data = json.load(json_data_file)
+            logging.info("Config data loaded from 'config.json'")
+        except Exception as e:
+            logging.exception(e)
+        print("=" * 125)
+        logging.info("Loading 'data.txt'")
+        try:
+            with open('data.txt', 'r') as txt_data_file:
+                self.data = json.load(txt_data_file)
+            logging.info("Server data loaded from 'data.txt'")
+        except Exception as e:
+            logging.exception(e)
+        print("=" * 125)
+        print(f"self.config_data: {self.config_data}")
+        print(f"Server data: {self.data}")
+        try:
+
+            print(f"Sender: {self.sender}")
+            print(f"Target: {self.target}")
+            print(f"Password: {self.password}")
+            print(f"High Temp Threshold: {self.high_temp_threshold}")
+        except KeyError as e:
+            print(e)
+            print("oops")
+        print("=" * 125)
 
 
 class EmailTemplates:
