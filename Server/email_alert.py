@@ -25,7 +25,7 @@ class EmailAlerts:
         self.load()
         self.templates = EmailTemplates()
 
-    def refresh_data(self, alert_type):
+    def refresh_data(self):
         try:
             with open('config.json', 'r') as json_data_file:
                 self.config_data = json.load(json_data_file)
@@ -47,12 +47,14 @@ class EmailAlerts:
             self.alert_limit = int(self.config_data["network_config"]["alert_limit"])
             self.cur_date = datetime.datetime.utcnow().strftime('%m-%d-%Y')
             self.cur_time = datetime.datetime.utcnow().strftime('%H:%M:%S')
-            print(f"alert_type TYPE:{(type(alert_type))}")
-            self.prev_date = self.alert_counter["{} Last Date Called".format(alert_type)]
-            self.prev_time = self.alert_counter[f"{alert_type} Last Time Called"]
-            self.alerts_sent = self.alert_counter[f"{alert_type}"]
         except Exception as e:
             logging.exception(e)
+
+    def refresh_time_var(self, alert_type):
+        self.prev_date = self.alert_counter[f"{alert_type} Last Date Called"]
+        self.prev_time = self.alert_counter[f"{alert_type} Last Time Called"]
+        self.alerts_sent = self.alert_counter[f"{alert_type}"]
+
 
     def low_temp_alert(self):
         self
@@ -71,7 +73,8 @@ class EmailAlerts:
 
     def email_send(self, alert_type):
         print(f"Config counters before refresh: {self.alert_counter}")
-        self.refresh_data(alert_type)
+        self.refresh_data()
+        self.refresh_time_var(alert_type)
         print(f"Config counters after refresh: {self.alert_counter}")
         print("=" * 125)
         logging.info("Email Builder Function".center(125))
