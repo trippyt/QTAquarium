@@ -106,7 +106,7 @@ class EmailAlerts:
                       f"   Current date: {cur_date}     current time: {cur_time}\n"
                       f"Config counters: {self.alert_counter}")
                 print("_" * 125)
-                if sent > self.alert_limit:
+                if sent >= self.alert_limit:
                     print(f"Too Many {alert_type} Alerts\n"
                           f"Already Sent: {sent}")
                     if cur_date > prev_date:
@@ -114,7 +114,7 @@ class EmailAlerts:
                         self.alert_counter[f"{alert_type}"] = 0
                         print(f"{alert_type} Alert counter Reset!!\n"
                               f"Sending Email Alert")
-                        self.send()
+                        #self.send()
                         print(f"{alert_type} Alert counter: 0")
                         self.alert_email_counter(alert_type)
                     elif cur_date == prev_date:
