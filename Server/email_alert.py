@@ -87,7 +87,7 @@ class EmailAlerts:
         name = f"{alert_type}"
         print(f"Alert Type: {name}")
         try:
-            if alert_type in self.alert_counter[alert_type]:
+            if alert_type in self.alert_counter[f"{alert_type}"]:
                 self.alert_counter[alert_type] += 1
         except KeyError as e:
             self.alert_counter[alert_type] = 1
