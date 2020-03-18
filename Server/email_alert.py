@@ -80,6 +80,7 @@ class EmailAlerts:
                 if sent > 5:
                     print(f"Too many {alert_type} Alerts Called")
                     print(f"{alert_type} Alert Last Sent: {prev_datetime}")
+                    print(f"Comparing current datetime: {self.cur_datetime} Last Alert datetime: {prev_datetime}")
                     if self.cur_datetime > prev_datetime:
                         print("Today is a New Day")
                     elif self.cur_datetime == prev_datetime:
