@@ -299,7 +299,9 @@ class AquariumController:
                     config_data = json.loads(json_data_file.read())
 
                     self.network_config = config_data["network_config"]
-                    logging.info(f"Sending Config to Client: {self.network_config}".center(125))
+                    self.alert_counter = config_data["alert_counters"]
+                    print(f"Sending Config to Client: {self.network_config}")
+                    print(f"Loaded Alert Counters: {self.alert_counter}")
             print("=" * 125)
             return config_data
         except:
