@@ -6,6 +6,7 @@ import datetime
 
 class EmailAlerts:
     def __init__(self):
+        self.refresh_data()
         try:
             self.sender = self.config_data["network_config"]["sender_email"]
             self.target = self.config_data["network_config"]["target_email"]
@@ -14,7 +15,7 @@ class EmailAlerts:
             self.high_temp_threshold = self.data["Setting Data"]["Temperature Alerts"]["High Temp"]
         except Exception as e:
             logging.exception(e)
-        self.refresh_data()
+
         self.load()
         self.email_msg = None
         self.cur_datetime = datetime.datetime.utcnow().strftime('%m-%d-%Y - %H:%M:%S')
