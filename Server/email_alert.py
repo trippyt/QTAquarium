@@ -90,9 +90,10 @@ class EmailAlerts:
 
             if alert_type in self.alert_counter.keys():
                 print(f"Alerts Limited to: {self.alert_limit} per Day\n"
-                      f"{alert_type} Alert Last Sent: {prev_datetime}\n"
-                f"      Comparing current date: {cur_date}     current time:{cur_time}\n"
-                f"             Last Alert date: {prev_date} Last Alert time:{prev_time}")
+                      f"Alert :'{alert_type}' Last Sent: {prev_datetime}\n"
+                      f"Comparing current date: {cur_date}     current time: {cur_time}\n"
+                      f"Last Alert date       : {prev_date} Last Alert time: {prev_time}")
+                print("_" * 125)
                 if sent > self.alert_limit:
                     print(f"Too Many {alert_type} Alerts\n"
                           f"Already Sent: {sent}")
