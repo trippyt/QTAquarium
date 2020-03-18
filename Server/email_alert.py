@@ -7,6 +7,22 @@ import datetime
 class EmailAlerts:
     def __init__(self):
         try:
+            self.sender = self.config_data["network_config"]["sender_email"]
+            self.target = self.config_data["network_config"]["target_email"]
+            self.password = self.config_data["network_config"]["password_email"]
+            self.alert_counter = self.config_data["alert_counters"]
+            self.high_temp_threshold = self.data["Setting Data"]["Temperature Alerts"]["High Temp"]
+        except Exception as e:
+            logging.exception(e)
+        self.refresh_data()
+        self.load()
+        self.email_msg = None
+        self.cur_datetime = datetime.datetime.utcnow().strftime('%m-%d-%Y - %H:%M:%S')
+
+        self.templates = EmailTemplates()
+
+    def refresh_data(self):
+        try:
             with open('config.json', 'r') as json_data_file:
                 self.config_data = json.load(json_data_file)
             logging.info("Config data loaded from 'config.json'")
@@ -18,19 +34,6 @@ class EmailAlerts:
             logging.info("Server data loaded from 'data.txt'")
         except Exception as e:
             logging.exception(e)
-        try:
-            self.sender = self.config_data["network_config"]["sender_email"]
-            self.target = self.config_data["network_config"]["target_email"]
-            self.password = self.config_data["network_config"]["password_email"]
-            self.alert_counter = self.config_data["alert_counters"]
-            self.high_temp_threshold = self.data["Setting Data"]["Temperature Alerts"]["High Temp"]
-        except Exception as e:
-            logging.exception(e)
-        self.load()
-        self.email_msg = None
-        self.cur_datetime = datetime.datetime.utcnow().strftime('%m-%d-%Y - %H:%M:%S')
-
-        self.templates = EmailTemplates()
 
     def low_temp_alert(self):
         self
@@ -48,6 +51,7 @@ class EmailAlerts:
         self.email_send(alert_type='TEST Alert!')
 
     def email_send(self, alert_type):
+        self.refresh_data()
         print("=" * 125)
         logging.info("Email Builder Function".center(125))
         print("=" * 125)
@@ -80,14 +84,14 @@ class EmailAlerts:
             prev_date = prev_datetime[:10]
             cur_date = cur_datetime[:10]
             prev_time = prev_datetime[13:]
-            cur_time =cur_datetime[13:]
+            cur_time = cur_datetime[13:]
 
             if alert_type in self.alert_counter.keys():
                 if sent > 5:
                     print(f"Too many {alert_type} Alerts Called\n"
                           f"{alert_type} Alert Last Sent: {prev_datetime}\n"
-                          f"Comparing current date: {cur_date}     current time:{cur_time}\n"
-                          f"       Last Alert date: {prev_date} Last Alert time:{prev_time}")
+                          f"      Comparing current date: {cur_date}     current time:{cur_time}\n"
+                          f"             Last Alert date: {prev_date} Last Alert time:{prev_time}")
                     if cur_date > prev_date:
                         print("Today is a New Day")
                     elif cur_date == prev_date:
