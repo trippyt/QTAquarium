@@ -95,7 +95,7 @@ class EmailAlerts:
         try:
             if alert_type in self.alert_counter.keys():
                 print(f"Updating {alert_type} Counter")
-                self.alert_counter["alert_counters"][f"{alert_type}"].update(
+                self.alert_counter[f"{alert_type}"].update(
                     {
                         f"{alert_type}": +1,
                     }
@@ -103,7 +103,7 @@ class EmailAlerts:
 
             else:
                 print(f"{alert_type} not in dict")
-                self.alert_counter["alert_counters"][f"{alert_type}"] = 1
+                self.alert_counter[f"{alert_type}"] = 1
         except Exception as e:
             logging.exception(e)
             print("Ooops")
