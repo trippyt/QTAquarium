@@ -47,7 +47,8 @@ class EmailAlerts:
             self.alert_limit = int(self.config_data["network_config"]["alert_limit"])
             self.cur_date = datetime.datetime.utcnow().strftime('%m-%d-%Y')
             self.cur_time = datetime.datetime.utcnow().strftime('%H:%M:%S')
-            self.prev_date = self.alert_counter["{} Last Date Called".format(str(alert_type))]
+            print(f"alert_type TYPE:{(type(alert_type))}")
+            self.prev_date = self.alert_counter["{} Last Date Called".format(alert_type)]
             self.prev_time = self.alert_counter[f"{alert_type} Last Time Called"]
             self.alerts_sent = self.alert_counter[f"{alert_type}"]
         except Exception as e:
