@@ -81,17 +81,6 @@ class EmailAlerts:
                         f"{name}": int(value)+1,
                     }
                 )
-        print(f"alert_counter dict: {self.alert_counter}")
-        """
-        if (alert_type + " counter") in self.alert_counter:
-            self.alert_counter[(alert_type + " counter")].update(
-                {
-                    f"{alert_type}" + " counter": 1,
-                }
-            )
-        else:
-            self.alert_counter[(alert_type + " counter")] = 1
-        """
         try:
             with open('config.json', 'w') as json_data_file:
                 json_data_file.write(json.dumps(self.alert_counter, indent=4))
