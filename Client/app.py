@@ -375,10 +375,10 @@ class App(object):
         #except Exception as e:
         #    logging.exception(e)
         try:
-            print(f"ht_chk: {ht_chk}")
-            print(f"lt_chk: {lt_chk}")
-            print(f"ht_thr: {ht_thr}")
-            print(f"lt_thr: {lt_thr}")
+            #print(f"ht_chk: {ht_chk}")
+            #print(f"lt_chk: {lt_chk}")
+            #print(f"ht_thr: {ht_thr}")
+            #print(f"lt_thr: {lt_thr}")
             if ht_thr < lt_thr:
                 logging.warning("High Temp Cannot Be Lower Than low Temp")
                 return
