@@ -130,11 +130,11 @@ class EmailAlerts:
 
                 else:
                     self.alert_email_counter(alert_type)
-                    print(f"{alert_type} Alert\n"
-                          f"Sending Email\n"
-                          f"Last Date Sent: {self.prev_date}\n"
-                          f"Last Time Sent: {self.prev_time}\n"
-                          f"Times Sent Today: {self.alerts_sent}")
+                    logging.error(f"{alert_type} Alert\n"
+                                  f"Error\n"
+                                  f"Last Date Sent: {self.prev_date}\n"
+                                  f"Last Time Sent: {self.prev_time}\n"
+                                  f"Times Sent Today: {self.alerts_sent}")
         except Exception as e:
             logging.exception("With Building Email")
             logging.exception(e)
