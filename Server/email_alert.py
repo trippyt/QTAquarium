@@ -123,14 +123,18 @@ class EmailAlerts:
                         self.alert_email_counter(alert_type)
                     elif self.cur_date == self.prev_date:
                         print("its the same day")
-
                     else:
                         print(f"Too Many {alert_type} Alerts Today\n"
                               f"Already Sent: {self.alerts_sent} The Limit is: {self.alert_limit}\n"
                               f"Email Alert NOT Sent!")
-
-                else:
+                elif self.alerts_sent < self.alert_limit:
                     self.alert_email_counter(alert_type)
+                    self.refresh_time_var(alert_type)
+                    print(f"Alerts under the Limit")
+                    print(f"Last Date Sent: {self.prev_date}\n"
+                          f"Last Time Sent: {self.prev_time}\n"
+                          f"Times Sent Today: {self.alerts_sent}")
+                else:
                     self.refresh_time_var(alert_type)
                     logging.error(f"{alert_type} Alert)".center(125))
                     print(f"Last Date Sent: {self.prev_date}\n"
