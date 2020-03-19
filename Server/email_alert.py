@@ -111,9 +111,7 @@ class EmailAlerts:
                       f"Config counters: {self.alert_counter}")
                 print("_" * 125)
                 if self.alerts_sent >= self.alert_limit:
-                    print(f"Too Many {alert_type} Alerts Today\n"
-                          f"Already Sent: {self.alerts_sent} The Limit is: {self.alert_limit}\n"
-                          f"Email Alert NOT Sent!")
+                    print(f"Email Alert Limit Reached!")
                     if self.cur_date > self.prev_date:
                         print("Today is a New Day")
                         self.alert_counter[f"{alert_type}"] = 0
@@ -124,6 +122,11 @@ class EmailAlerts:
                         self.alert_email_counter(alert_type)
                     elif self.cur_date == self.prev_date:
                         print("its the same day")
+
+                    else:
+                        print(f"Too Many {alert_type} Alerts Today\n"
+                              f"Already Sent: {self.alerts_sent} The Limit is: {self.alert_limit}\n"
+                              f"Email Alert NOT Sent!")
 
                 else:
                     self.alert_email_counter(alert_type)
