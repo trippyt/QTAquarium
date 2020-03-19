@@ -110,6 +110,7 @@ class EmailAlerts:
                       f"   Current date: {self.cur_date}     current time: {self.cur_time}\n"
                       f"Config counters: {self.alert_counter}")
                 print("_" * 125)
+                print(f"alerts_sent: {self.alerts_sent} >= alert_limit: {self.alert_limit}")
                 if self.alerts_sent >= self.alert_limit:
                     print(f"Email Alert Limit Reached!")
                     if self.cur_date > self.prev_date:
@@ -131,11 +132,10 @@ class EmailAlerts:
                 else:
                     self.alert_email_counter(alert_type)
                     self.refresh_time_var(alert_type)
-                    logging.error(f"{alert_type} Alert\n"
-                                  f"Error\n"
-                                  f"Last Date Sent: {self.prev_date}\n"
-                                  f"Last Time Sent: {self.prev_time}\n"
-                                  f"Times Sent Today: {self.alerts_sent}")
+                    logging.error(f"{alert_type} Alert)".center(125))
+                    print(f"Last Date Sent: {self.prev_date}\n"
+                          f"Last Time Sent: {self.prev_time}\n"
+                          f"Times Sent Today: {self.alerts_sent}")
         except Exception as e:
             logging.exception("With Building Email")
             logging.exception(e)
