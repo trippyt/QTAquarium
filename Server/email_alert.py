@@ -130,6 +130,7 @@ class EmailAlerts:
 
                 else:
                     self.alert_email_counter(alert_type)
+                    self.refresh_time_var()
                     logging.error(f"{alert_type} Alert\n"
                                   f"Error\n"
                                   f"Last Date Sent: {self.prev_date}\n"
