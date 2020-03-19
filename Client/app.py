@@ -394,7 +394,7 @@ class App(object):
                     self.set_temp_display_color("cyan")
             else:
                 self.set_temp_display_color("white")
-            print(f"ws_receive: {text}")
+            #print(f"ws_receive: {text}")
         except:
             logging.exception("Alert :ERROR")
 

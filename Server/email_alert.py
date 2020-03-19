@@ -126,6 +126,7 @@ class EmailAlerts:
                         print("its the same day")
 
                 else:
+                    self.alert_counter(alert_type)
                     print(f"{alert_type} Alert\n"
                           f"Sending Email\n"
                           f"Last Date Sent: {self.prev_date}\n"
@@ -150,7 +151,7 @@ class EmailAlerts:
                 self.refresh_time_var(alert_type)
                 print(f"Updating {alert_type} Counter")
                 self.alert_counter[f"{alert_type}"] += 1
-                self.alert_counter[f"{alert_type}  Last Date Called"] = self.cur_date
+                self.alert_counter[f"{alert_type} Last Date Called"] = self.cur_date
                 self.alert_counter[f"{alert_type} Last Time Called"] = self.cur_time
             else:
                 print(f"{alert_type} not in dict")
@@ -165,7 +166,8 @@ class EmailAlerts:
     def msg_format(self, alert_type, variable_data, custom_msg):
         self.email_msg = '\r\n'.join([' %s Alert' % alert_type,
                                       'Data: %s' % variable_data,
-                                      'Message: %s' % custom_msg,
+                                      'Message:',
+                                      '%s' % custom_msg,
                                       ''])
         self.email_send(alert_type)
         # return self.email_send(alert_type)

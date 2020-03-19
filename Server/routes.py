@@ -147,7 +147,7 @@ async def email_test():
 async def temp():
     while True:
         temp = controller.tank_temperature()
-        print(temp)
+        #print(temp)
         await asyncio.sleep(2)
         await websocket.send(str(temp))
 
