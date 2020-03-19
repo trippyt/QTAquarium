@@ -126,7 +126,7 @@ class EmailAlerts:
                         print("its the same day")
 
                 else:
-                    self.refresh_time_var(alert_type)
+                    self.alert_email_counter(alert_type)
                     print(f"{alert_type} Alert\n"
                           f"Sending Email\n"
                           f"Last Date Sent: {self.prev_date}\n"
