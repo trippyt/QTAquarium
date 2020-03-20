@@ -15,41 +15,44 @@ class EmailAlerts:
         self.alert_limit = None
         self.refresh_data()
         self.email_msg = None
-        self.cur_date = None
-        self.cur_time = None
+        self.cur_date = datetime.datetime.utcnow().strftime('%m-%d-%Y')
+        self.cur_time = datetime.datetime.utcnow().strftime('%H:%M:%S')
         self.prev_date = {}
         self.prev_time = {}
         self.alerts_sent = None
-
         self.send = None
 
-        self.load()
         self.templates = EmailTemplates()
 
     def refresh_data(self):
+        logger.info("=" * 125)
+        logger.info("Refreshing Email Data".center(125))
+        logger.info("=" * 125)
         try:
+            logger.debug("Loading Email Data from 'config.json'")
             with open('config.json', 'r') as json_data_file:
                 self.config_data = json.load(json_data_file)
-            logger.info("Config data loaded from 'config.json'")
-        except Exception as e:
-            logging.exception(e)
+                self.sender = self.config_data["network_config"]["sender_email"]
+                self.target = self.config_data["network_config"]["target_email"]
+                self.password = self.config_data["network_config"]["password_email"]
+                self.alert_counter = self.config_data["alert_counters"]
+                self.alert_limit = int(self.config_data["network_config"]["alert_limit"])
+            logger.debug("Email Data Loaded from 'config.json'")
+            logger.debug(f"Sender: {self.sender}")
+            logger.debug(f"Target: {self.target}")
+            logger.debug(f"Password: {self.password}")
+            logger.debug(f"Max Daily Alert Limit: {self.alert_limit}")
+        except (KeyError, ValueError, TypeError):
+            logging.exception("Couldn't Load Email Data from 'config.json'")
         try:
+            logger.info("Loading Alert Values from 'data.txt'")
             with open('data.txt', 'r') as txt_data_file:
                 self.data = json.load(txt_data_file)
-            logging.info("Server data loaded from 'data.txt'")
-        except Exception as e:
-            logging.exception(e)
-        try:
-            self.sender = self.config_data["network_config"]["sender_email"]
-            self.target = self.config_data["network_config"]["target_email"]
-            self.password = self.config_data["network_config"]["password_email"]
-            self.alert_counter = self.config_data["alert_counters"]
-            self.high_temp_threshold = self.data["Setting Data"]["Temperature Alerts"]["High Temp"]
-            self.alert_limit = int(self.config_data["network_config"]["alert_limit"])
-            self.cur_date = datetime.datetime.utcnow().strftime('%m-%d-%Y')
-            self.cur_time = datetime.datetime.utcnow().strftime('%H:%M:%S')
-        except Exception as e:
-            logging.exception(e)
+                self.high_temp_threshold = self.data["Setting Data"]["Temperature Alerts"]["High Temp"]
+            logging.debug("Alert Values Loaded from 'data.txt'")
+        except (KeyError, ValueError, TypeError):
+            logging.exception("Couldn't Load Email Data from 'config.json'")
+        logger.info("=" * 125)
 
     def refresh_time_var(self, alert_type):
         self.prev_date = self.alert_counter[f"{alert_type} Last Date Called"]
