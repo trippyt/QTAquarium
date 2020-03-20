@@ -1,6 +1,5 @@
 import smtplib
 import json
-import logging
 import datetime
 from loguru import logger
 
@@ -29,7 +28,7 @@ class EmailAlerts:
         logger.info("Refreshing Email Data".center(125))
         logger.info("=" * 125)
         try:
-            logger.debug("Loading Email Data from 'config.json'")
+            logger.info("Loading Email Data from 'config.json'")
             with open('config.json', 'r') as json_data_file:
                 self.config_data = json.load(json_data_file)
                 self.sender = self.config_data["network_config"]["sender_email"]
@@ -37,21 +36,22 @@ class EmailAlerts:
                 self.password = self.config_data["network_config"]["password_email"]
                 self.alert_counter = self.config_data["alert_counters"]
                 self.alert_limit = int(self.config_data["network_config"]["alert_limit"])
-            logger.debug("Email Data Loaded from 'config.json'")
+            logger.success("Email Data Loaded from 'config.json'")
             logger.debug(f"Sender: {self.sender}")
             logger.debug(f"Target: {self.target}")
             logger.debug(f"Password: {self.password}")
             logger.debug(f"Max Daily Alert Limit: {self.alert_limit}")
         except (KeyError, ValueError, TypeError):
-            logging.exception("Couldn't Load Email Data from 'config.json'")
+            logger.warning("Couldn't Load Email Data from 'config.json'")
         try:
             logger.info("Loading Alert Values from 'data.txt'")
             with open('data.txt', 'r') as txt_data_file:
                 self.data = json.load(txt_data_file)
                 self.high_temp_threshold = self.data["Setting Data"]["Temperature Alerts"]["High Temp"]
-            logging.debug("Alert Values Loaded from 'data.txt'")
+            logger.success("Alert Values Loaded from 'data.txt'")
+            logger.debug(f"High Temp Threshold: {self.high_temp_threshold}")
         except (KeyError, ValueError, TypeError):
-            logging.exception("Couldn't Load Email Data from 'config.json'")
+            logger.warning("Couldn't Load Email Data from 'config.json'")
         logger.info("=" * 125)
 
     def refresh_time_var(self, alert_type):
@@ -80,7 +80,7 @@ class EmailAlerts:
         self.refresh_time_var(alert_type)
         print(f"Config counters after refresh: {self.alert_counter}")
         print("=" * 125)
-        logging.info("Email Builder Function".center(125))
+        logger.info("Email Builder Function".center(125))
         print("=" * 125)
         to = self.target
         subject = f"AquaPi {alert_type}"
@@ -139,20 +139,20 @@ class EmailAlerts:
                           f"Times Sent Today: {self.alerts_sent}")
                 else:
                     self.refresh_time_var(alert_type)
-                    logging.error(f"{alert_type} Alert)".center(125))
+                    logger.error(f"{alert_type} Alert)".center(125))
                     print(f"Last Date Sent: {self.prev_date}\n"
                           f"Last Time Sent: {self.prev_time}\n"
                           f"Times Sent Today: {self.alerts_sent}")
         except Exception as e:
-            logging.exception("With Building Email")
-            logging.exception(e)
+            logger.exception("With Building Email")
+            logger.exception(e)
         server.quit()
         print("=" * 125)
         return self.alert_counter
 
     def alert_email_counter(self, alert_type):
         print("=" * 125)
-        logging.info("Alert Counter Function".center(125))
+        logger.info("Alert Counter Function".center(125))
         print("=" * 125)
         print(f"Alert Type: {alert_type}")
         print(f"config before counter: {self.alert_counter}")
@@ -168,7 +168,7 @@ class EmailAlerts:
                 print(f"{alert_type} not in dict")
                 self.alert_counter[f"{alert_type}"] = 1
         except Exception as e:
-            logging.exception(e)
+            logger.exception(e)
             print("Ooops")
         print(f"config after counter: {self.alert_counter}")
         print("=" * 125)
@@ -183,16 +183,6 @@ class EmailAlerts:
         self.email_send(alert_type)
         # return self.email_send(alert_type)
         return self.alert_counter
-
-    def load(self):
-        logger.info("=" * 125)
-        logger.info("Loading Email Data from 'config.json'")
-        logger.debug(f"Sender: {self.sender}")
-        logger.debug(f"Target: {self.target}")
-        logger.debug(f"Password: {self.password}")
-        logger.info("Loading Alert Data from 'config.json'")
-        logger.debug(f"High Temp Threshold: {self.high_temp_threshold}")
-        logger.info("=" * 125)
 
 
 class EmailTemplates:
