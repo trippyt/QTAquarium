@@ -4,19 +4,12 @@ import os
 import json
 import csv
 import git
-import logging
 import loguru
 import pandas
-import base64
+
 from time import gmtime, strftime
 from AquariumHardware2 import Hardware
 from email_alert import EmailAlerts
-
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s,%(msecs)d %(levelname)s: %(message)s",
-    datefmt="%H:%M:%S",
-)
 
 
 class CalibrationCancelled (Exception):
@@ -26,6 +19,9 @@ class CalibrationCancelled (Exception):
 class AquariumController:
 
     def __init__(self):
+        print("=" * 125)
+        logger.info("Initializing".center(125))
+        print("=" * 125)
         self.csv = RotatingCsvData
         self.load()
         self.load_config()
@@ -59,13 +55,13 @@ class AquariumController:
             "service_email": {},
             "alert_limit_email": {}
         }
-
+        """
         self.alert_counter = {}
         self.temperature_csv_timer = QtCore.QTimer()
         self.temperature_csv_timer.setInterval(2000)
         self.temperature_csv_timer.timeout.connect(self.temperature_csv())
         self.temperature_csv_timer.start()
-
+        """
     async def start_calibration(self, pump_type: str):
         try:
             '''asyncio.create_task(self.hw_controller.notification_led_pulse())
@@ -83,21 +79,21 @@ class AquariumController:
             print("!Calibration was Cancelled!")
 
     def calibrate_pump(self, pump_type):
-        logging.info(f"Running {pump_type} Pump")
-        logging.info(f"{pump_type}                      Calibration started.")
+        logger.info(f"Running {pump_type} Pump\n"
+                    f"{pump_type}", "Calibration started".center(125))
         self.calibration_status(pump_type, self.cal_status[2])
         start = time.time()
         self.hw_controller.pump_on(pump_type)
         self.hw_controller.button_state()
-        logging.info(f"Stopping {pump_type}")
-        logging.info(f"{pump_type}                      Calibration finished.")
+        logger.info(f"Stopping {pump_type}\n"
+                    f"{pump_type}", "Calibration finished.".center(125))
         self.calibration_status(pump_type, self.cal_status[0])
         end = time.time()
         self.hw_controller.pump_off(pump_type)
         cal_time = round(end - start, 2)
         per_ml = round(cal_time / 10, 2)
         print(type(cal_time))
-        logging.info(f"{pump_type} Runtime: {cal_time}")
+        logger.info(f"{pump_type} Runtime: {cal_time}")
         self.calibration_data[f"{pump_type} Calibration Data"].update(
             {
                 "Time per 10mL": cal_time,
@@ -109,7 +105,7 @@ class AquariumController:
     def stop_calibration(self, pump_type: str):
         self.hw_controller.stop_calibration()
 
-    def cal_status(self,pump_type: str):
+    def cal_status(self, pump_type: str):
         self.hw_controller.calibration_status()
 
     def tank_temperature(self):
@@ -120,18 +116,18 @@ class AquariumController:
         lt_checked = self.setting_data["Temperature Alerts"]["Low Enabled"]
         if ht_checked == '2':
             if temp_c > float(ht):
-                logging.warning("HIGH TEMP ALERT!!!".center(125))
+                logger.warning("HIGH TEMP ALERT!!!".center(125))
                 cur_temp = temp_c
                 high_temp_threshold = ht
                 self.email.high_temp_alert_example(cur_temp, high_temp_threshold)
         if lt_checked == '2':
             if temp_c < float(lt):
-                logging.warning("LOW TEMP ALERT!!!".center(125))
+                logger.warning("LOW TEMP ALERT!!!".center(125))
         return round(temp_c, 2)
 
     def email_ht_alert(self):
         print("=" * 125)
-        print("HT Alert Email Function".center(125))
+        logger.info("HT Alert Email Function".center(125))
         print("=" * 125)
         data = {
             "Current Temperature": self.temp_c,
@@ -139,7 +135,7 @@ class AquariumController:
         }
         msg = self.email.templates.temperature_msg()
         send = self.email.msg_format(alert_type='High Temperature', variable_data=data, custom_msg=msg)
-        print(f"Returned: {send}")
+        logger.info(f"Returned: {send}")
         self.alert_counter = send
         self.save_config()
         print("=" * 125)
@@ -158,7 +154,7 @@ class AquariumController:
     """
 
     def calibration_status(self, pump_type, cal_status):
-        logging.info(f"pump: {pump_type}, status: {cal_status}")
+        logger.info(f"pump: {pump_type}, status: {cal_status}")
         return pump_type, cal_status
 
     def ratioequals(self, ratio_results):
@@ -190,8 +186,8 @@ class AquariumController:
         #    )
 
     def ratios(self, ratio_results):
-        logging.info(f"Ratio: {ratio_results}")
-        logging.info('Tank Size: {} Litres,\n'
+        logger.info(f"Ratio: {ratio_results}")
+        logger.info('Tank Size: {} Litres,\n'
          'Co2 Concentrate: {} mL, Co2 to Water: {} Litres,\n'
          'Fertilizer Concentrate: {} mL, Fertilizer to Water: {} Litres,\n'
          'WaterConditioner Concentrate: {} mL, WaterConditioner to Water: {} Litres'.format(
@@ -199,9 +195,9 @@ class AquariumController:
         self.ratioequals(ratio_results)
 
     def alert_data(self, ht: int, lt: int, ht_enabled, lt_enabled):
-        logging.info("New Alert Set")
-        logging.info(f"High Temperature: {ht} Enabled:{ht_enabled}")
-        logging.info(f"Low Temperature: {lt} Enabled:{lt_enabled}")
+        logger.info("New Alert Set")
+        logger.info(f"High Temperature: {ht} Enabled:{ht_enabled}")
+        logger.info(f"Low Temperature: {lt} Enabled:{lt_enabled}")
         self.setting_data["Temperature Alerts"].update(
             {
                 "High Temp": ht,
@@ -223,7 +219,7 @@ class AquariumController:
         }
         with open('data.txt', 'w') as json_file:
             json_file.write(json.dumps(data, indent=4))
-        logging.info("Settings Updated")
+        logger.info("Settings Updated")
 
     def save_config(self):
         print(f"Before updating config: {self.network_config}")
@@ -236,13 +232,13 @@ class AquariumController:
                 json_data_file.write(json.dumps(config_data, indent=4))
             print(f"Email Details Saved")
         except:
-            logging.exception(f" Email Details not Saved")
+            logger.exception(f" Email Details not Saved")
         print(f"After updating config_data: {config_data}")
         print(f"After updating config: {self.network_config}")
 
     def save_email(self, email_user: str, service_email: str, password_email):
         print("=" * 125)
-        logging.info(f"Email Address Updated".center(125))
+        logger.info(f"Email Address Updated".center(125))
         print("=" * 125)
         if "@" not in email_user:
             print(f"adding {service_email} to {email_user}")
@@ -267,7 +263,7 @@ class AquariumController:
 
     def saveEmail_limit(self, alert_limit: int):
         print("=" * 125)
-        logging.info(f"Email Alert Limit Updated".center(125))
+        logger.info(f"Email Alert Limit Updated".center(125))
         print("=" * 125)
         self.network_config.update(
             {
@@ -284,7 +280,7 @@ class AquariumController:
             if os.path.isfile('data.txt'):
                 with open('data.txt', 'r') as json_file:
                     data = json.loads(json_file.read())
-                    logging.info("Loading Saved Data".center(125))
+                    logger.info("Loading Saved Data".center(125))
                     self.ratio_data = data["Ratio Data"]
                     self.calibration_data = data["Calibration Data"]
                     #self.setting_data = data["Temperature Alerts"]
@@ -297,13 +293,13 @@ class AquariumController:
                     print("=" * 125)
                     return data
         except:
-            logging.exception("Couldn't Load Data.txt")
+            logger.exception("Couldn't Load Data.txt")
         print("=" * 125)
 
     def load_config(self):
         try:
             print("=" * 125)
-            logging.info("Loading config_data".center(125))
+            logger.info("Loading config_data".center(125))
             print("=" * 125)
             if os.path.isfile('config.json'):
                 with open('config.json', 'r') as json_data_file:
@@ -316,7 +312,7 @@ class AquariumController:
             print("=" * 125)
             return config_data
         except:
-            logging.exception("Couldn't Load config.json")
+            logger.exception("Couldn't Load config.json")
 
 
     def update(self):
