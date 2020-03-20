@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-
+"""
 class InfoHandler(logging.Handler):  # inherit from Handler class
     def __init__(self, textBrowser):
         super().__init__()
@@ -22,9 +22,14 @@ class InfoHandler(logging.Handler):  # inherit from Handler class
 
     def emit(self, record):  # override Handler's `emit` method
         self.textBrowser.append(self.format(record))
+"""
 class PropagateHandler(logging.Handler):
+    def __init__(self, textBrowser):
+        super().__init__()
+        self.textBrowser = textBrowser
     def emit(self, record):
         logging.getLogger(record.name).handle(record)
+        self.textBrowser.append(record.name).handle(record)
 
 
 
@@ -77,9 +82,12 @@ class App(object):
                                self.form.WaterConditioner_water, self.form.Co2_dosage,
                                self.form.Fertilizer_dosage, self.form.WaterConditioner_dosage]
         #logger.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
-        logger.add(PropagateHandler(), format="{message}")
         self.log = logging.getLogger('AquariumQT')
-        self.log.handlers = [InfoHandler(self.form.textBrowser)]
+        #self.log.handlers = [InfoHandler(self.form.textBrowser)]
+        #logger. = [PropagateHandler(self.form.textBrowser)]
+        #logger.add(PropagateHandler(), format="{message}")
+        #logger.add(sys.stdout, colorize=True, format="<green>{time}</green> <level>{message}</level>")
+        #log_decorate = logger.level("Decorator", no=38, color="<yellow>", icon="🐍")
 
         self.client = QtWebSockets.QWebSocket("", QtWebSockets.QWebSocketProtocol.Version13, None)
         self.client.error.connect(self.on_error)
@@ -130,11 +138,13 @@ class App(object):
 
     def update_plot_data(self):
         pass
+        """
         try:
-            print("hi")
+            logger.info("hi")
 
         except Exception as e:
             logger.exception(e)
+        """
         """
         try:
             self.x = self.x[1:]  # Remove the first y element.
@@ -147,126 +157,118 @@ class App(object):
             self.data_line.setData(self.x, self.y)  # Update the data.
         """
     def load_server(self):
+        logger.info("=" * 125)
         resp = requests.get(url=f"{self.server_ip}/getServerData")
+        self.new_data = json.loads(resp.content)
         try:
-            logging.info("=" * 125)
-            logging.info("Attempting to Load from Data.txt".center(125))
-            self.new_data = json.loads(resp.content)
-            logging.info("JSON Data Loaded".center(125))
-            print(f"New JSON Data = {self.new_data}")
-        except json.decoder.JSONDecodeError:
-            logging.info("Couldn't Load JSON From Server".center(125))
-        try:
-            self.ratio_data = self.new_data["Ratio Data"]
-            logging.info("=" * 125)
-            #for display in self.ratio_displays:
-            #    display.blockSignals(True)
-            try:
-                for key in self.ratio_data:
-                    ui_obj = getattr(self.form, key)
-                    if isinstance(ui_obj, QtWidgets.QDoubleSpinBox):
-                        ui_obj.setValue(self.ratio_data[key])
-                    else:
-                        ui_obj.setText(str(self.ratio_data[key]))
-            except KeyError as e:
-                logging.info("No Ratio Values From The Server to Load".center(125))
-                logging.exception(e)
-            #for display in self.ratio_displays:
-            #    display.blockSignals(False)
-        except TypeError as e:
-            logging.info("Couldn't Load Data from the Server".center(125))
-            logging.exception(e)
-
-        except UnboundLocalError as e:
-            logging.info("Couldn't Load Data".center(125))
-            logging.exception(e)
-        try:
-            self.form.ht_alert_doubleSpinBox.blockSignals(True)
-            self.form.lt_alert_doubleSpinBox.blockSignals(True)
-            try:
+            logger.debug("Loading 'data.txt' From Server")
+            if resp.json() is None:
+                logger.warning("No 'data.txt' Found on Server")
+            else:
+                logger.success("'data.txt' Loaded from Server")
+                logger.debug(f"Response:{self.new_data}")
+                logger.info("Assigning Data Values from 'self.new_data'")
                 self.calibration_data = self.new_data["Calibration Data"]
-                # print(self.calibration_data)
+                self.ratio_data = self.new_data["Ratio Data"]
                 co2_cal = self.calibration_data["Co2 Calibration Data"]["Time per 10mL"]
-                self.form.lcd_co2_cal.display(co2_cal)
-            except KeyError as e:
-                logging.exception(e)
-            self.form.ht_alert_doubleSpinBox.blockSignals(False)
-            self.form.lt_alert_doubleSpinBox.blockSignals(False)
-        except KeyError as e:
-            logging.exception(e)
-        try:
-            self.setting_data = self.new_data["Setting Data"]
-            ht = self.setting_data["Temperature Alerts"]["High Temp"]
-            ht_enabled = self.setting_data["Temperature Alerts"]["High Enabled"]
-            lt = self.setting_data["Temperature Alerts"]["Low Temp"]
-            lt_enabled = self.setting_data["Temperature Alerts"]["Low Enabled"]
-            self.form.ht_alert_doubleSpinBox.setValue(float(ht))
-            self.form.lt_alert_doubleSpinBox.setValue(float(lt))
-            self.form.ht_checkBox.setChecked(bool(int(ht_enabled)))
-            self.form.lt_checkBox.setChecked(bool(int(lt_enabled)))
-            #self.form.alert_limit_spinBox.
-        except KeyError as e:
-            logging.exception(e)
-        logging.info("=" * 125)
+                self.setting_data = self.new_data["Setting Data"]
+                ht = self.setting_data["Temperature Alerts"]["High Temp"]
+                ht_enabled = self.setting_data["Temperature Alerts"]["High Enabled"]
+                lt = self.setting_data["Temperature Alerts"]["Low Temp"]
+                lt_enabled = self.setting_data["Temperature Alerts"]["Low Enabled"]
+                try:
+                    self.form.ht_alert_doubleSpinBox.blockSignals(True)
+                    self.form.lt_alert_doubleSpinBox.blockSignals(True)
+                    self.form.ht_checkBox.blockSignals(True)
+                    self.form.lt_checkBox.blockSignals(True)
+                    for key in self.ratio_data:
+                        ui_obj = getattr(self.form, key)
+                        if isinstance(ui_obj, QtWidgets.QDoubleSpinBox):
+                            ui_obj.setValue(self.ratio_data[key])
+                        else:
+                            ui_obj.setText(str(self.ratio_data[key]))
+                    self.form.lcd_co2_cal.display(co2_cal)
+                    self.form.ht_alert_doubleSpinBox.setValue(float(ht))
+                    self.form.lt_alert_doubleSpinBox.setValue(float(lt))
+                    self.form.ht_checkBox.setChecked(bool(int(ht_enabled)))
+                    self.form.lt_checkBox.setChecked(bool(int(lt_enabled)))
+                    self.form.ht_alert_doubleSpinBox.blockSignals(False)
+                    self.form.lt_alert_doubleSpinBox.blockSignals(False)
+                    logger.success("Data Display Values Updated")
+                except(KeyError, ValueError, TypeError):
+                    logger.warning("Couldn't Assign Values from 'data.txt'")
+        except (UnboundLocalError, json.decoder.JSONDecodeError):
+            logger.warning("Couldn't Load Data")
+        logger.info("=" * 125)
 
     def load_config(self):
-        logging.info("=" * 125)
+        logger.info("=" * 125)
+        logger.info("Connecting To Server".center(125))
+        logger.info("=" * 125)
         resp = requests.get(url=f"{self.server_ip}/getConfig")
-        print(f"Response:{resp.content}")
+        self.config_data = json.loads(resp.content)
         try:
-            logging.info("Attempting to Load from Config.json".center(125))
-            self.config_data = json.loads(resp.content)
-            logging.info(f"Loading Config:{self.config_data}")
-        except Exception:
-            logging.info(f"Couldn't Load Config from the Server")
-        try:
-            email_user = self.config_data["network_config"]["target_email"]
-            service_email = self.config_data["network_config"]["service_email"]
-            alert_limit_email = int(self.config_data["network_config"]["alert_limit"])
-            self.form.email_lineEdit.setText(email_user)
-            self.form.sys_setting_atemail_comboBox.setCurrentText(service_email)
-            self.form.alert_limit_spinBox.setValue(alert_limit_email)
-            self.view_pass()
-        except Exception:
-            logging.exception("Couldn't Load data from 'config.json'")
-        logging.info("=" * 125)
+            logger.debug("Loading 'config.json' From Server")
+            if resp.json() is None:
+                logger.warning("No 'config.json' Found on Server")
+            else:
+                logger.success("'config.json' Loaded from Server")
+                logger.debug(f"Response:{self.config_data}")
+                logger.info("Assigning Config Values from Config.json")
+                try:
+                    email_user = self.config_data["network_config"]["target_email"]
+                    service_email = self.config_data["network_config"]["service_email"]
+                    alert_limit_email = int(self.config_data["network_config"]["alert_limit"])
+                    self.form.email_lineEdit.setText(email_user)
+                    self.form.sys_setting_atemail_comboBox.setCurrentText(service_email)
+                    self.form.alert_limit_spinBox.blockSignals(True)
+                    self.form.alert_limit_spinBox.setValue(alert_limit_email)
+                    self.form.alert_limit_spinBox.blockSignals(False)
+                    logger.success("Config Values Updated")
+                    self.view_pass()
+                except (KeyError, ValueError, TypeError):
+                    logger.warning("Couldn't Assign Values from 'config.json")
+        except requests.exceptions.ConnectionError:
+            logger.critical("Couldn't Connect To Server".center(125))
+        logger.info("=" * 125)
 
     def view_pass(self):
         logger.info("=" * 125)
-        logger.info("Attempting to  Load Password")
+        pass_chk = self.form.view_pass_checkBox.checkState()
+        logger.info("Loading Saved Password")
         if self.config_data["network_config"]["password_email"]:
+            logger.success("Password Found")
             pass_email = self.config_data["network_config"]["password_email"]
-            logger.info(f"Password found: {pass_email}")
+            logger.debug(f"Password: {pass_email}")
             try:
-                pass_chk = self.form.view_pass_checkBox.checkState()
-                logger.info(f"Pass Visible Check: {pass_chk}")
+                logger.debug(f"Pass Reveal State: {pass_chk}")
                 i = len(pass_email)
                 if pass_chk == 2:
                     self.form.email_pass_lineEdit.setText(pass_email)
-                    logger.info(f"Revealing Pass: {pass_email}")
+                    logger.debug(f"Revealing Pass: {pass_email}")
                 else:
                     self.form.email_pass_lineEdit.setText("*"*i)
                     logger.info("Pass Hidden")
             except KeyError:
-                logging.exception("Couldn't Email Password to Load")
+                logger.warning("Couldn't Email Password to Load")
         else:
-            logging.exception("Couldn't Email Password to Load")
-            logging.info(f"self.config data: {self.config_data}")
-        logging.info("=" * 125)
+            logger.warning("Couldn't Email Password to Load")
+            logger.info(f"self.config data: {self.config_data}")
+        logger.info("=" * 125)
 
     def update(self):
         try:
             resp = requests.get(url=f"{self.server_ip}/update")
-            logging.info("Checking for Updates...")
-            logging.info(f"Response: {resp}")
+            logger.info("Checking for Updates...")
+            logger.info(f"Response: {resp}")
 
         except:
-            logging.exception("Couldn't Update")
+            logger.exception("Couldn't Update")
 
     def temp_alert_test(self):
         resp = requests.get(url=f"{self.server_ip}/alertTest")
-        logging.info(f"Response: {resp}")
-        logging.info(f"Sending Alert Test")
+        logger.info(f"Response: {resp}")
+        logger.info(f"Sending Alert Test")
 
     def save_ratios(self):
         self.log.info("Sending New Ratio Data to Server")
@@ -295,13 +297,13 @@ class App(object):
             if not self.calibration_mode_on:
 
                 requests.get(url=f"{self.server_ip}/calibrationModeOn?type={pump_type}")
-                logging.info("Calibration Mode: ON")
+                logger.info("Calibration Mode: ON")
             else:
                 requests.get(url=f"{self.server_ip}/calibrationModeOff?type={pump_type}")
-                logging.info("Calibration Mode: OFF")
+                logger.info("Calibration Mode: OFF")
                 self.load_server()
         except Exception as e:
-            logging.exception(e)
+            logger.exception(e)
 
     def exit_calibrationMode(self, pump_type):
         requests.get(url=f"{self.server_ip}/calibrationModeOff?type={pump_type}")
@@ -311,9 +313,9 @@ class App(object):
         ht_enabled = self.form.ht_checkBox.checkState()
         lt = self.form.lt_alert_doubleSpinBox.value()
         lt_enabled = self.form.lt_checkBox.checkState()
-        logging.info(f"Sending Alert Changes to Network".center(125))
-        logging.info(f"High Temperature: {ht}")
-        logging.info(f"Low Temperature: {lt}")
+        logger.info(f"Sending Alert Changes to Network".center(125))
+        logger.info(f"High Temperature: {ht}")
+        logger.info(f"Low Temperature: {lt}")
         requests.get(url=f"{self.server_ip}/setTemperatureAlert?ht={ht}&lt={lt}&ht_enabled={ht_enabled}"
                          f"&lt_enabled={lt_enabled}")
         self.load_server()
@@ -321,11 +323,11 @@ class App(object):
     def ip_update(self):
         LAN_host = self.form.ip_spinBox.value()
         LAN_id = "192.168.1."
-        print(f"Ip Address Updated")
+        logger.info(f"Ip Address Updated")
 
     def save_email(self):
-        logging.info("=" * 125)
-        logging.info(f"config start of email function: {self.config_data}")
+        logger.debug("=" * 125)
+        logger.info(f"config start of email function: {self.config_data}")
         email_user = self.form.email_lineEdit.text()
         password_email = self.form.email_pass_lineEdit.text()
         if password_email != 0:
@@ -334,39 +336,39 @@ class App(object):
             pass
         if "*" in password_email:
             password_email = self.config_data["network_config"]["password_email"]
-        logging.info(f"config middle of email function: {self.config_data}")
-        logging.info(f"config password_email: {password_email}")
+        logger.info(f"config middle of email function: {self.config_data}")
+        logger.info(f"config password_email: {password_email}")
         service_email_drop = self.form.sys_setting_atemail_comboBox.currentText()
         service_email = service_email_drop.strip()
         #alert_limit = self.form.alert_limit_spinBox.value()
         requests.get(url=f"{self.server_ip}/saveEmail?email_user={email_user}&service_email={service_email}\
                         &password_email={password_email}")
-        logging.info(f"config end of email function: {self.config_data}")
+        logger.info(f"config end of email function: {self.config_data}")
         self.load_config()
-        logging.info(f"config after reloading email function: {self.config_data}")
+        logger.info(f"config after reloading email function: {self.config_data}")
 
     def save_email_alert(self):
-        print("=" * 125)
-        logging.info(f"Email Alert Limit Updated".center(125))
-        print("=" * 125)
+        logger.debug("=" * 125)
+        logger.info(f"Email Alert Limit Updated".center(125))
+        logger.debug("=" * 125)
         alert_limit = self.form.alert_limit_spinBox.value()
-        print(f"Type:{type(alert_limit)} Value: {alert_limit}")
+        logger.info(f"Type:{type(alert_limit)} Value: {alert_limit}")
         requests.get(url=f"{self.server_ip}/saveEmail_limit?alert_limit={alert_limit}")
-        print("=" * 125)
+        logger.debug("=" * 125)
 
     def email_test(self):
         try:
-            logging.info("Asking Server to Test Email")
+            logger.info("Asking Server to Test Email")
             requests.get(url=f"{self.server_ip}/emailTest")
         except:
-            logging.exception("ERROR: Couldn't Send Test Email")
+            logger.exception("ERROR: Couldn't Send Test Email")
 
     def run(self):
         self.window.show()
         self.app.exec()
 
     def handle_response(self, response):
-        print(response.readAll())  # you can change this to show in the log instead if you want to
+        logger.info(response.readAll())  # you can change this to show in the log instead if you want to
 
     def start_timers(self):
         return
@@ -388,30 +390,30 @@ class App(object):
         #try:
         #    self.graphTest()
         #except Exception as e:
-        #    logging.exception(e)
+        #    logger.exception(e)
         try:
             #print(f"ht_chk: {ht_chk}")
             #print(f"lt_chk: {lt_chk}")
             #print(f"ht_thr: {ht_thr}")
             #print(f"lt_thr: {lt_thr}")
             if ht_thr < lt_thr:
-                logging.warning("High Temp Cannot Be Lower Than low Temp")
+                logger.warning("High Temp Cannot Be Lower Than low Temp")
                 return
             if ht_chk == '2':
                 if float(text) > float(ht_thr):
-                    print("High Temp Alert!!!")
+                    logger.warning("High Temp Alert!!!")
                     self.set_temp_display_color("red")
             else:
                 self.set_temp_display_color("white")
             if lt_chk == '2':
                 if float(text) < float(lt_thr):
-                    print("Low Temp Alert!!!")
+                    logger.warning("Low Temp Alert!!!")
                     self.set_temp_display_color("cyan")
             else:
                 self.set_temp_display_color("white")
             #print(f"ws_receive: {text}")
         except:
-            logging.exception("Alert :ERROR")
+            logger.exception("Alert :ERROR")
 
     def on_error(self, error_code):
         return

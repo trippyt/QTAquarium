@@ -19,11 +19,11 @@ class CalibrationCancelled (Exception):
 class AquariumController:
 
     def __init__(self):
-        print("=" * 125)
+        logger.info("=" * 125)
         logger.info("Initializing".center(125))
-        print("=" * 125)
+        logger.info("=" * 125)
         self.csv = RotatingCsvData
-        self.load()
+        self.load_data()
         self.load_config()
         self.hw_controller = Hardware()
         self.email = EmailAlerts()
@@ -274,13 +274,17 @@ class AquariumController:
         self.save_config()
         print("=" * 125)
 
-    def load(self):
+    def load_data(self):
+        logger.info("=" * 125)
+        logger.info("Loading 'data.txt' From Local Path")
+        logger.info("=" * 125)
         try:
-            print("=" * 125)
             if os.path.isfile('data.txt'):
                 with open('data.txt', 'r') as json_file:
                     data = json.loads(json_file.read())
-                    logger.info("Loading Saved Data".center(125))
+                    logger.success("'data.txt' Loaded")
+                    logger.debug(f"'data.txt' contents: {data}")
+                    logger.debug("Assigning Data Values from 'data.txt")
                     self.ratio_data = data["Ratio Data"]
                     self.calibration_data = data["Calibration Data"]
                     #self.setting_data = data["Temperature Alerts"]
@@ -288,13 +292,11 @@ class AquariumController:
                     # schedule_data
                     # light_hour_data
                     # dosage_data = data["Dosage Data"]
-                    print("=" * 125)
-                    print(f"Data Loaded: {data}")
-                    print("=" * 125)
+                    logger.success("Data Values Updated")
                     return data
-        except:
-            logger.exception("Couldn't Load Data.txt")
-        print("=" * 125)
+        except (KeyError, ValueError, TypeError):
+            logger.critical("Couldn't Load Data.txt")
+        logger.info("=" * 125)
 
     def load_config(self):
         try:
