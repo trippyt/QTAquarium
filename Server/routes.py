@@ -10,7 +10,7 @@ from time import sleep
 app = Quart(__name__)
 
 controller = AquariumController()
-emailer = EmailAlerts()
+#emailer = EmailAlerts()
 
 @app.route('/setTemperatureAlert', methods=['GET', 'POST'])
 async def set_temperature_alert():
@@ -134,13 +134,14 @@ async def alert_test():
     resp = "Success"
     return f"{resp}"
 
-
+"""
 @app.route('/emailTest', methods=['GET', 'POST'])
 async def email_test():
     print("Requested to send test email")
     emailer.high_temp_alert()
     resp = "Success"
     return f"{resp}"
+"""
 
 
 @app.websocket('/temp')
