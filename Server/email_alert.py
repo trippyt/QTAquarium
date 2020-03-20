@@ -2,6 +2,7 @@ import smtplib
 import json
 import logging
 import datetime
+from loguru import logger
 
 
 class EmailAlerts:
@@ -29,7 +30,7 @@ class EmailAlerts:
         try:
             with open('config.json', 'r') as json_data_file:
                 self.config_data = json.load(json_data_file)
-            logging.info("Config data loaded from 'config.json'")
+            logger.info("Config data loaded from 'config.json'")
         except Exception as e:
             logging.exception(e)
         try:
@@ -72,7 +73,7 @@ class EmailAlerts:
         self.email_send(alert_type='TEST Alert!')
 
     def email_send(self, alert_type):
-        print(f"Config counters before refresh: {self.alert_counter}")
+        logger.info(f"Config counters before refresh: {self.alert_counter}")
         self.refresh_data()
         self.refresh_time_var(alert_type)
         print(f"Config counters after refresh: {self.alert_counter}")

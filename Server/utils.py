@@ -2,11 +2,16 @@ import asyncio
 import time
 import os
 import json
+import csv
 import git
 import logging
+import loguru
+import pandas
 import base64
+from time import gmtime, strftime
 from AquariumHardware2 import Hardware
 from email_alert import EmailAlerts
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s,%(msecs)d %(levelname)s: %(message)s",
@@ -21,11 +26,13 @@ class CalibrationCancelled (Exception):
 class AquariumController:
 
     def __init__(self):
+        self.csv = RotatingCsvData
         self.load()
         self.load_config()
         self.hw_controller = Hardware()
         self.email = EmailAlerts()
         self.temp_c, self.temp_f = self.hw_controller.read_temperature("temp_tank")
+        self.utc_now = pandas.Timestamp.utcnow()
         self.calibration_data = {
                 "Co2 Calibration Data": {},
                 "Fertilizer Calibration Data": {},
@@ -312,3 +319,37 @@ class AquariumController:
         g = git.cmd.Git("/home/pi/QTAquarium/")
         msg = g.pull()
         print(f"Repo Status: {msg}")
+
+    def temperature_csv(self):
+        columns = [self.utc_now, self.temp_c]
+        self.csv = RotatingCsvData(columns=columns)
+
+
+class RotatingCsvData:
+    def __init__(self, file_name='graph_data.csv', columns=None):
+        self.file_name = file_name
+        self.df = None
+        self.load_graph_data()
+
+    def save_graph_data(self):
+        self.df.to_csv(self.file_name, index=False)
+
+    def load_graph_data(self):
+        if not os.path.isfile(self.file_name):
+            print("File Not Found")
+            self.df = pandas.DataFrame(columns=['timestamp', 'temp'])
+            self.save_graph_data()
+            print("File Created")
+        else:
+            print("File Found")
+            try:
+                self.df = pandas.read_csv(self.file_name)
+                print("CSV Data Loaded")
+                print(f"{self.df}")
+            except pandas.errors.EmptyDataError:
+                print("CSV has been populated")
+                self.df = pandas.DataFrame(columns=['timestamp', 'temp'])
+                self.save_graph_data()
+
+    def data_rotation(self):
+        pass

@@ -3,31 +3,35 @@ import logging
 #  import dht11
 import threading
 from time import sleep
-import RPi.GPIO as GPIO
-from w1thermsensor import W1ThermSensor
+try:
+    from w1thermsensor import W1ThermSensor
+except Exception:
+    print("No w1thermsensor Kernel Found")
+try:
+    import RPi.GPIO as GPIO
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setwarnings(False)
+    pumps = {            # Initializing the GPIO pins 17,27,22 for Dosage pumps
+        'Co2': 17,
+        'Fertilizer': 27,
+        'Water Conditioner': 22
+    }
 
+    for (p_type, pin) in pumps.items():
+        GPIO.setup(pin, GPIO.OUT)
 
-GPIO.setmode(GPIO.BCM)
-GPIO.setwarnings(False)
-pumps = {            # Initializing the GPIO pins 17,27,22 for Dosage pumps
-    'Co2': 17,
-    'Fertilizer': 27,
-    'Water Conditioner': 22
-}
+    Button = 16  # Initializing the GPIO pin 16 for Button
+    led_pin = 12  # Initializing the GPIO pin 12 for LED
 
-for (p_type, pin) in pumps.items():
-    GPIO.setup(pin, GPIO.OUT)
+    FLASH = 0  # Initializing LED States
+    PULSE = 1  # Initializing LED States
 
-Button = 16  # Initializing the GPIO pin 16 for Button
-led_pin = 12  # Initializing the GPIO pin 12 for LED
-
-FLASH = 0  # Initializing LED States
-PULSE = 1  # Initializing LED States
-
-GPIO.setup(Button, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # Setup Button
-GPIO.setup(led_pin, GPIO.OUT)  # Notification LED pin
-pwm = GPIO.PWM(led_pin, 100)  # Created a PWM object
-pwm.start(0)  # Started PWM at 0% duty cycle
+    GPIO.setup(Button, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # Setup Button
+    GPIO.setup(led_pin, GPIO.OUT)  # Notification LED pin
+    pwm = GPIO.PWM(led_pin, 100)  # Created a PWM object
+    pwm.start(0)  # Started PWM at 0% duty cycle
+except ModuleNotFoundError:
+    print("No Rpi Module Found")
 
 
 class CalibrationCancelled (Exception):

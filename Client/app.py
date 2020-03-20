@@ -4,12 +4,12 @@ from PyQt5 import QtCore, QtNetwork
 from PyQt5.QtCore import QTime, QUrl, QEventLoop
 from form import Ui_Form
 import logging
+from loguru import logger
 import sys
 import json
 import requests
-import random
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.figure import Figure
+import pyqtgraph as pg
+from random import randint
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -94,9 +94,52 @@ class App(object):
         #self.form.sys_setting_test_pushButton.clicked.connect(self.email_test)
         self.form.sys_setting_update_pushButton.clicked.connect(self.update)
         self.form.alert_limit_spinBox.valueChanged.connect(self.save_email_alert)
+
+        self.graphWidget = pg.PlotWidget(self.form.temperatureGraph)
+        #self.setCentralWidget(self.form.temperatureGraph)
+
+        #self.x = list(range(61))  # 60 time points
+        #self.y = [randint(20, 25) for i in range(61)]  # 60 data points
+        #self.x = list(range(61))
+        #self.y = [2 for i in range(61)]
+        graphrange = [0 for i in range(15)]
+        self.x = graphrange
+        self.y = graphrange
+
+        self.graphWidget.setBackground('w')
+        self.graphWidget.setGeometry(QtCore.QRect(0, 0, 731, 361))
+        self.graphWidget.setLabel('left', 'Temperature (°C)', color='red', size=30)
+        self.graphWidget.setLabel('bottom', 'Seconds (S)', color='red', size=30)
+        self.graphWidget.showGrid(x=True, y=True)
+        pen = pg.mkPen(color=(0, 0, 255), width=2)
+
+        self.data_line = self.graphWidget.plot(self.x, self.y, pen=pen, symbol='o', symbolSize=10, symbolBrush='c')
+
         self.load_config()
         self.load_server()
 
+        #elf.timer = QtCore.QTimer()
+        #self.timer.setInterval(2000)
+        #self.timer.timeout.connect(self.update_plot_data)
+        #self.timer.start()
+
+    def update_plot_data(self):
+        try:
+            print("hi")
+
+        except Exception as e:
+            logger.exception(e)
+        """
+        try:
+            self.x = self.x[1:]  # Remove the first y element.
+            self.x.append(self.x[-1] + 2)  # Add a new value 1 higher than the last.
+            self.y = self.y[1:]  # Remove the first
+            #self.y.append(randint(0, 100))  # Add a new random value.
+            temp = float(self.temp_c)
+            self.y.append(round(temp))
+
+            self.data_line.setData(self.x, self.y)  # Update the data.
+        """
     def load_server(self):
         resp = requests.get(url=f"{self.server_ip}/getServerData")
         try:
@@ -183,21 +226,21 @@ class App(object):
         logging.info("=" * 125)
 
     def view_pass(self):
-        logging.info("=" * 125)
-        logging.info("Attempting to  Load Password")
+        logger.info("=" * 125)
+        logger.info("Attempting to  Load Password")
         if self.config_data["network_config"]["password_email"]:
             pass_email = self.config_data["network_config"]["password_email"]
-            logging.info(f"Password found: {pass_email}")
+            logger.info(f"Password found: {pass_email}")
             try:
                 pass_chk = self.form.view_pass_checkBox.checkState()
-                logging.info(f"Pass Visible Check: {pass_chk}")
+                logger.info(f"Pass Visible Check: {pass_chk}")
                 i = len(pass_email)
                 if pass_chk == 2:
                     self.form.email_pass_lineEdit.setText(pass_email)
-                    logging.info(f"Revealing Pass: {pass_email}")
+                    logger.info(f"Revealing Pass: {pass_email}")
                 else:
                     self.form.email_pass_lineEdit.setText("*"*i)
-                    logging.info("Pass Hidden")
+                    logger.info("Pass Hidden")
             except KeyError:
                 logging.exception("Couldn't Email Password to Load")
         else:
@@ -305,33 +348,6 @@ class App(object):
         requests.get(url=f"{self.server_ip}/saveEmail_limit?alert_limit={alert_limit}")
         print("=" * 125)
 
-
-    """
-    def save_email(self):
-        try:
-            logging.info("=" * 125)
-            email_user = self.form.email_lineEdit.text()
-            service_email = self.form.sys_setting_atemail_comboBox.currentText()
-            password_email = self.form.email_pass_lineEdit.text()
-            alert_limit = self.form.alert_limit_spinBox.value()
-            if password_email != 0:
-                logging.info(f"Email: {email_user}{service_email}")
-                logging.info(f"Pass: {password_email}")
-                logging.info(f"Alerts limited to: {alert_limit} per day")
-                requests.get(url=f"{self.server_ip}/saveEmail?email_user={email_user}&service_email={service_email}\
-                &password_email={password_email}&alert_limit={alert_limit}")
-                logging.info(f"After self.config_data update: {self.config_data}")
-                logging.info(f"SUCCESS: Email Saved")
-                r = requests.Response()
-                logging.info(f"Save Email Response: {r}")
-            else:
-                logging.info(f"No Email to save")
-            self.load_config()
-        except:
-            logging.exception("ERROR: Email not Saved")
-        logging.info(f"Saving self.config_data: {self.config_data}")
-        logging.info("=" * 125)"""
-
     def email_test(self):
         try:
             logging.info("Asking Server to Test Email")
@@ -352,19 +368,12 @@ class App(object):
     def set_temp_display_color(self, color):
         return self.form.tank_display_c.setStyleSheet(f"QLCDNumber {{background-color: {color}}}")
 
-    def graphTest(self):
-        graph = self.form.temperatureGraph
-        fig = plt.figure()
-        data = [random.random() for i in range(25)]
-        #data = [self.temp_c]
-        ax = fig.add_subplot(111)
-        #ax = graph
-        ax.plot(data, 'r-')
-        ax.set_title('PyQt Matplotlib Example')
-        self.form.temperatureGraph.addItem(data)
+    def graph_test(self):
+        pass
 
     def ws_receive(self, text):
         self.temp_c = text
+        self.update_plot_data()
         self.form.tank_display_c.display(text)
         ht_chk = self.setting_data["Temperature Alerts"]["High Enabled"]
         lt_chk = self.setting_data["Temperature Alerts"]["Low Enabled"]
