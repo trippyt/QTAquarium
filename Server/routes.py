@@ -147,10 +147,9 @@ async def email_test():
 @app.websocket('/temp')
 async def temp():
     while True:
-        temp = controller.tank_temperature()
-        #print(temp)
+        display_temp = controller.tank_temperature()
         await asyncio.sleep(2)
-        await websocket.send(str(temp))
+        await websocket.send(str(display_temp))
 
 
 if __name__ == '__main__':

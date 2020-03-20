@@ -110,19 +110,22 @@ class AquariumController:
 
     def tank_temperature(self):
         temp_c, temp_f = self.hw_controller.read_temperature("temp_tank")
-        ht = self.setting_data["Temperature Alerts"]["High Temp"]
-        lt = self.setting_data["Temperature Alerts"]["Low Temp"]
-        ht_checked = self.setting_data["Temperature Alerts"]["High Enabled"]
-        lt_checked = self.setting_data["Temperature Alerts"]["Low Enabled"]
-        if ht_checked == '2':
-            if temp_c > float(ht):
-                logger.warning("HIGH TEMP ALERT!!!".center(125))
-                cur_temp = temp_c
-                high_temp_threshold = ht
-                self.email.high_temp_alert_example(cur_temp, high_temp_threshold)
-        if lt_checked == '2':
-            if temp_c < float(lt):
-                logger.warning("LOW TEMP ALERT!!!".center(125))
+        try:
+            ht = self.setting_data["Temperature Alerts"]["High Temp"]
+            lt = self.setting_data["Temperature Alerts"]["Low Temp"]
+            ht_checked = self.setting_data["Temperature Alerts"]["High Enabled"]
+            lt_checked = self.setting_data["Temperature Alerts"]["Low Enabled"]
+            if ht_checked == '2':
+                if temp_c > float(ht):
+                    logger.critical("HIGH TEMP ALERT!!!".center(125))
+                    cur_temp = temp_c
+                    high_temp_threshold = ht
+                    self.email.high_temp_alert_example(cur_temp, high_temp_threshold)
+            if lt_checked == '2':
+                if temp_c < float(lt):
+                    logger.critical("LOW TEMP ALERT!!!".center(125))
+        except KeyError:
+            logger.warning("No Temperature Alert Data")
         return round(temp_c, 2)
 
     def email_test(self):
@@ -289,7 +292,7 @@ class AquariumController:
                     logger.debug("Assigning Data Values from 'data.txt")
                     self.ratio_data = data["Ratio Data"]
                     self.calibration_data = data["Calibration Data"]
-                    #self.setting_data = data["Temperature Alerts"]
+                    self.setting_data = data["Temperature Alerts"]
                     # conversion_values
                     # schedule_data
                     # light_hour_data
