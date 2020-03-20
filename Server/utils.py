@@ -304,10 +304,11 @@ class AquariumController:
             logger.info("=" * 125)
             if os.path.isfile('config.json'):
                 with open('config.json', 'r') as json_data_file:
-                    logger.success("'config.json' Loaded")
-                    logger.debug(f"'config.json' contents: {data}")
-                    logger.debug("Assigning Config Values from 'config.json'")
                     config_data = json.loads(json_data_file.read())
+                    logger.success("'config.json' Loaded")
+                    logger.debug(f"'config.json' contents: {config_data}")
+                    logger.debug("Assigning Config Values from 'config.json'")
+
                     self.network_config = config_data["network_config"]
                     self.alert_counter = config_data["alert_counters"]
                     logger.success("Config Values Updated")
