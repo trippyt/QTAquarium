@@ -126,7 +126,7 @@ class AquariumController:
         return round(temp_c, 2)
 
     def email_test(self):
-        self.email.msg_format(alert_type='EMAIL TEST', variable_data=None, custom_msg=self.email.templates.email_test())
+        self.email.msg_format(alert_type='EMAIL TEST', variable_data=None, custom_msg=self.email.templates.test_msg())
 
     def email_ht_alert(self):
         logger.info("=" * 125)
