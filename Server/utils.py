@@ -53,10 +53,10 @@ class AquariumController:
             "target_email": {},
             "password_email": {},
             "service_email": {},
-            "alert_limit_email": {}
+            "alert_limit": {}
         }
-        """
         self.alert_counter = {}
+        """
         self.temperature_csv_timer = QtCore.QTimer()
         self.temperature_csv_timer.setInterval(2000)
         self.temperature_csv_timer.timeout.connect(self.temperature_csv())
@@ -277,7 +277,6 @@ class AquariumController:
     def load_data(self):
         logger.info("=" * 125)
         logger.info("Loading 'data.txt' From Local Path")
-        logger.info("=" * 125)
         try:
             if os.path.isfile('data.txt'):
                 with open('data.txt', 'r') as json_file:
@@ -295,27 +294,27 @@ class AquariumController:
                     logger.success("Data Values Updated")
                     return data
         except (KeyError, ValueError, TypeError):
-            logger.critical("Couldn't Load Data.txt")
+            logger.critical("Couldn't Load 'data.txt'")
         logger.info("=" * 125)
 
     def load_config(self):
         try:
-            print("=" * 125)
-            logger.info("Loading config_data".center(125))
-            print("=" * 125)
+            logger.info("=" * 125)
+            logger.info("Loading config_data")
+            logger.info("=" * 125)
             if os.path.isfile('config.json'):
                 with open('config.json', 'r') as json_data_file:
+                    logger.success("'config.json' Loaded")
+                    logger.debug(f"'config.json' contents: {data}")
+                    logger.debug("Assigning Config Values from 'config.json'")
                     config_data = json.loads(json_data_file.read())
-
                     self.network_config = config_data["network_config"]
                     self.alert_counter = config_data["alert_counters"]
-                    print(f"Sending Config to Client: {self.network_config}")
-                    print(f"Loaded Alert Counters: {self.alert_counter}")
-            print("=" * 125)
+                    logger.success("Config Values Updated")
+        except (KeyError, ValueError, TypeError):
+            logger.warning("Couldn't Assign Values from 'config.json")
+            logger.info("=" * 125)
             return config_data
-        except:
-            logger.exception("Couldn't Load config.json")
-
 
     def update(self):
         g = git.cmd.Git("/home/pi/QTAquarium/")
