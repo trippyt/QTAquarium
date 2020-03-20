@@ -55,9 +55,14 @@ class EmailAlerts:
         logger.info("=" * 125)
 
     def refresh_time_var(self, alert_type):
-        self.prev_date = self.alert_counter[f"{alert_type} Last Date Called"]
-        self.prev_time = self.alert_counter[f"{alert_type} Last Time Called"]
-        self.alerts_sent = self.alert_counter[f"{alert_type}"]
+        try:
+            self.prev_date = self.alert_counter[f"{alert_type} Last Date Called"]
+            self.prev_time = self.alert_counter[f"{alert_type} Last Time Called"]
+            self.alerts_sent = self.alert_counter[f"{alert_type}"]
+        except KeyError:
+            self.prev_date = self.cur_date
+            self.prev_time = self.cur_time
+            self.alerts_sent = 0
 
     def low_temp_alert(self):
         self
