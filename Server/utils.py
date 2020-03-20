@@ -125,6 +125,9 @@ class AquariumController:
                 logger.warning("LOW TEMP ALERT!!!".center(125))
         return round(temp_c, 2)
 
+    def email_test(self):
+        self.email.msg_format(alert_type='EMAIL TEST', variable_data=None, custom_msg=self.email.templates.email_test())
+
     def email_ht_alert(self):
         logger.info("=" * 125)
         logger.info("HT Alert Email Function".center(125))
@@ -134,7 +137,7 @@ class AquariumController:
             "Current Threshold": self.setting_data["Temperature Alerts"]["High Temp"]
         }
         msg = self.email.templates.temperature_msg()
-        send = self.email.msg_format(alert_type='High Temperature', variable_data=data, custom_msg=msg)
+        send = self.email.msg_format(alert_type='TEST EMAIL', variable_data=data, custom_msg=msg)
         logger.info(f"Returned: {send}")
         self.alert_counter = send
         self.save_config()

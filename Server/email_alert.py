@@ -71,7 +71,7 @@ class EmailAlerts:
         self.email_send(alert_type='High Temperature Alert!')
 
     def email_test(self):
-        self.msg = self.templates.email_test()
+        msg = self.templates.email_test()
         self.email_send(alert_type='TEST Alert!')
 
     def email_send(self, alert_type):
@@ -188,6 +188,10 @@ class EmailAlerts:
 class EmailTemplates:
     def __init__(self):
         pass
+    def test_msg(self):
+        m = """This is a Test!
+- Sent from AquaPi"""
+        return m
 
     def temperature_msg(self):
         m = """please do the following checks:

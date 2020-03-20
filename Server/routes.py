@@ -134,14 +134,14 @@ async def alert_test():
     resp = "Success"
     return f"{resp}"
 
-"""
+
 @app.route('/emailTest', methods=['GET', 'POST'])
 async def email_test():
-    print("Requested to send test email")
-    emailer.high_temp_alert()
+    logger.info("Client Request send test email")
+    controller.email_test()
     resp = "Success"
     return f"{resp}"
-"""
+
 
 
 @app.websocket('/temp')
