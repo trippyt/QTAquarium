@@ -56,7 +56,6 @@ class EmailAlerts:
         self.prev_time = self.alert_counter[f"{alert_type} Last Time Called"]
         self.alerts_sent = self.alert_counter[f"{alert_type}"]
 
-
     def low_temp_alert(self):
         self
 
@@ -84,13 +83,13 @@ class EmailAlerts:
         subject = f"AquaPi {alert_type}"
         gmail_sender = self.sender
         gmail_passwd = self.password
-        print(f"Email Built: \n"
-              F"\n"
-              f"To:{to}\n"
-              f"From: {gmail_sender}\n"
-              f"Subject: {subject}\n"
-              F"\n"
-              f"{self.email_msg}")
+        logger.debug(f"Email Built: \n"
+                     F"\n"
+                     f"To:{to}\n"
+                     f"From: {gmail_sender}\n"
+                     f"Subject: {subject}\n"
+                     F"\n"
+                     f"{self.email_msg}")
 
         server = smtplib.SMTP('smtp.gmail.com', 587)
         server.ehlo()
@@ -119,7 +118,7 @@ class EmailAlerts:
                         self.alert_counter[f"{alert_type}"] = 0
                         print(f"{alert_type} Alert counter Reset!!\n"
                               f"Sending Email Alert")
-                        #self.send()
+                        # self.send()
                         print(f"{alert_type} Alert counter: {self.alerts_sent}")
                         self.alert_email_counter(alert_type)
                     elif self.cur_date == self.prev_date:
@@ -154,7 +153,7 @@ class EmailAlerts:
         print("=" * 125)
         print(f"Alert Type: {alert_type}")
         print(f"config before counter: {self.alert_counter}")
-        #cur_datetime = datetime.datetime.utcnow().strftime('%m-%d-%Y - %H:%M:%S')
+        # cur_datetime = datetime.datetime.utcnow().strftime('%m-%d-%Y - %H:%M:%S')
         try:
             if alert_type in self.alert_counter.keys():
                 self.refresh_time_var(alert_type)
@@ -183,20 +182,14 @@ class EmailAlerts:
         return self.alert_counter
 
     def load(self):
-        print("=" * 125)
-        logging.info("Loading 'config.json'")
-        print("=" * 125)
-        logging.info("Loading 'data.txt'")
-        print("=" * 125)
-        print(f"self.config_data: {self.config_data}")
-        print("=" * 125)
-        print(f"Server data: {self.data}")
-        print("=" * 125)
-        print(f"Sender: {self.sender}")
-        print(f"Target: {self.target}")
-        print(f"Password: {self.password}")
-        print(f"High Temp Threshold: {self.high_temp_threshold}")
-        print("=" * 125)
+        logger.info("=" * 125)
+        logger.info("Loading Email Data from 'config.json'")
+        logger.debug(f"Sender: {self.sender}")
+        logger.debug(f"Target: {self.target}")
+        logger.debug(f"Password: {self.password}")
+        logger.info("Loading Alert Data from 'config.json'")
+        logger.debug(f"High Temp Threshold: {self.high_temp_threshold}")
+        logger.info("=" * 125)
 
 
 class EmailTemplates:
