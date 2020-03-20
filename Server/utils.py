@@ -61,6 +61,10 @@ class AquariumController:
         }
 
         self.alert_counter = {}
+        self.temperature_csv_timer = QtCore.QTimer()
+        self.temperature_csv_timer.setInterval(2000)
+        self.temperature_csv_timer.timeout.connect(self.temperature_csv())
+        self.temperature_csv_timer.start()
 
     async def start_calibration(self, pump_type: str):
         try:

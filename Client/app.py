@@ -118,12 +118,13 @@ class App(object):
         self.load_config()
         self.load_server()
 
-        #elf.timer = QtCore.QTimer()
+        #self.timer = QtCore.QTimer()
         #self.timer.setInterval(2000)
         #self.timer.timeout.connect(self.update_plot_data)
         #self.timer.start()
 
     def update_plot_data(self):
+        pass
         try:
             print("hi")
 
