@@ -304,24 +304,22 @@ class AquariumController:
         try:
             logger.info("=" * 125)
             logger.info("Loading config_data")
-            logger.info("=" * 125)
             if os.path.isfile('config.json'):
                 with open('config.json', 'r') as json_data_file:
                     config_data = json.loads(json_data_file.read())
                     logger.success("'config.json' Loaded")
                     logger.debug(f"'config.json' contents: {config_data}")
                     try:
-                        logger.debug("Assigning Config Values from 'config.json'")
+                        logger.info("Assigning Config Values from 'config.json'")
                         self.network_config = config_data["network_config"]
                         self.alert_counter = config_data["alert_counters"]
                         logger.success("Config Values Updated")
                     except (KeyError, ValueError, TypeError):
                         logger.warning("Couldn't Assign Values from 'config.json")
-                    return config_data
         except json.JSONDecodeError.with_traceback():
             logger.critical("Couldn't Load 'config_data")
         logger.info("=" * 125)
-
+        return config_data
 
 
     def update(self):

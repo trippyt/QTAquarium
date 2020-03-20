@@ -103,7 +103,7 @@ class App(object):
         self.form.lt_checkBox.stateChanged.connect(self.set_temp_alert)
         self.form.view_pass_checkBox.stateChanged.connect(self.view_pass)
         self.form.sys_setting_save_pushButton.clicked.connect(self.save_email)
-        self.form.sys_setting_test_pushButton.clicked.connect(self.temp_alert_test)
+        self.form.sys_setting_test_pushButton.clicked.connect(self.email_test)
         #self.form.sys_setting_test_pushButton.clicked.connect(self.email_test)
         self.form.sys_setting_update_pushButton.clicked.connect(self.update)
         self.form.alert_limit_spinBox.valueChanged.connect(self.save_email_alert)
@@ -357,11 +357,9 @@ class App(object):
         logger.debug("=" * 125)
 
     def email_test(self):
-        try:
-            logger.info("Asking Server to Test Email")
-            requests.get(url=f"{self.server_ip}/emailTest")
-        except:
-            logger.exception("ERROR: Couldn't Send Test Email")
+        logger.info("Asking Server to Test Email")
+        requests.get(url=f"{self.server_ip}/emailTest")
+
 
     def run(self):
         self.window.show()
