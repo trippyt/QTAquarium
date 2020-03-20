@@ -301,6 +301,7 @@ class AquariumController:
                     return data
         except (KeyError, ValueError, TypeError):
             logger.critical("Couldn't Load 'data.txt'")
+            logger.exception("Traceback")
         logger.info("=" * 125)
 
     def load_config(self):
