@@ -22,6 +22,10 @@ class InfoHandler(logging.Handler):  # inherit from Handler class
 
     def emit(self, record):  # override Handler's `emit` method
         self.textBrowser.append(self.format(record))
+class PropagateHandler(logging.Handler):
+    def emit(self, record):
+        logging.getLogger(record.name).handle(record)
+
 
 
 class App(object):
@@ -72,7 +76,8 @@ class App(object):
                                self.form.Fertilizer_water, self.form.WaterConditioner_ratio,
                                self.form.WaterConditioner_water, self.form.Co2_dosage,
                                self.form.Fertilizer_dosage, self.form.WaterConditioner_dosage]
-        logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
+        #logger.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
+        logger.add(PropagateHandler(), format="{message}")
         self.log = logging.getLogger('AquariumQT')
         self.log.handlers = [InfoHandler(self.form.textBrowser)]
 

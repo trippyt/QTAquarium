@@ -4,7 +4,7 @@ import os
 import json
 import csv
 import git
-import loguru
+from loguru import logger
 import pandas
 
 from time import gmtime, strftime
