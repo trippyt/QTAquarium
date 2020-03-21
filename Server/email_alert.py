@@ -161,19 +161,22 @@ class EmailAlerts:
         return self.alert_counter
 
     def create_counter(self, alert_type):
-        data = {
-            "network_config": self.network_data,
-            "alert_counters": self.alert_counter
-        }
-        self.alert_counter["alert_counters"][f"{alert_type}"] = {
-                f"Alert Count": 0,
-                f"Last Date Called": "Never",
-                f"Last Time Called": "00:00:00"
-        }
-        logger.info(f"{alert_type} Counter Created")
-        with open('config.json', 'w') as json_data_file:
-            json_data_file.write(json.dumps(data, indent=4))
-        self.email_send(alert_type)
+        try:
+            data = {
+                "network_config": self.network_data,
+                "alert_counters": self.alert_counter
+            }
+            self.alert_counter[f"{alert_type}"] = {
+                    f"Alert Count": 0,
+                    f"Last Date Called": "Never",
+                    f"Last Time Called": "None"
+            }
+            logger.info(f"{alert_type} Counter Created")
+            with open('config.json', 'w') as json_data_file:
+                json_data_file.write(json.dumps(data, indent=4))
+            self.email_send(alert_type)
+        except:
+            logger.exception("Counter Creation Failed")
 
     def alert_email_counter(self, alert_type):
         logger.info("=" * 125)
