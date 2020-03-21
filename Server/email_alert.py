@@ -61,7 +61,8 @@ class EmailAlerts:
             self.prev_date = self.alert_counter[f"{alert_type}"]["Last Date Called"]
             self.prev_time = self.alert_counter[f"{alert_type}"]["Last Time Called"]
             self.alerts_sent = self.alert_counter[f"{alert_type}"]["Alert Counter"]
-        except KeyError:
+        except:
+            logger.exception(f"Couldn't Refresh {alert_type} Variables")
             self.prev_date = self.cur_date
             self.prev_time = self.cur_time
             self.alerts_sent = 0
