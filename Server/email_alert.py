@@ -31,11 +31,13 @@ class EmailAlerts:
             logger.info("Loading Email Data from 'config.json'")
             with open('config.json', 'r') as json_data_file:
                 self.config_data = json.load(json_data_file)
-                self.sender = self.config_data["network_config"]["sender_email"]
-                self.target = self.config_data["network_config"]["target_email"]
+                self.network_data = self.config_data["network_config"]
+                self.sender = self.network_data["sender_email"]
+                self.target = self.network_data["target_email"]
                 self.password = self.config_data["network_config"]["password_email"]
+                self.alert_limit = int(self.network_data["alert_limit"])
                 self.alert_counter = self.config_data["alert_counters"]
-                self.alert_limit = int(self.config_data["network_config"]["alert_limit"])
+
             logger.success("Email Data Loaded from 'config.json'")
             logger.debug(f"Sender: {self.sender}")
             logger.debug(f"Target: {self.target}")
@@ -159,14 +161,18 @@ class EmailAlerts:
         return self.alert_counter
 
     def create_counter(self, alert_type):
-        self.alert_counter[f"{alert_type}"] = {
-                f"{alert_type}": 0,
-                f"{alert_type} Last Date Called": "Never",
-                f"{alert_type} Last Time Called": "None"
+        data = {
+            "network_config": self.network_data,
+            "alert_counters": self.alert_counter
+        }
+        self.alert_counter["alert_counters"][f"{alert_type}"] = {
+                f"Alert Count": 0,
+                f"Last Date Called": "Never",
+                f"Last Time Called": "None"
         }
         logger.info(f"{alert_type} Counter Created")
         with open('config.json', 'w') as json_data_file:
-            json_data_file.write(json.dumps(self.alert_counter, indent=4))
+            json_data_file.write(json.dumps(data, indent=4))
         self.email_send(alert_type)
 
     def alert_email_counter(self, alert_type):
