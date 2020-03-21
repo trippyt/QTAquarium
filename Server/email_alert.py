@@ -159,13 +159,11 @@ class EmailAlerts:
         return self.alert_counter
 
     def create_counter(self, alert_type):
-        self.alert_counter[f"{alert_type}"].append(
-            {
+        self.alert_counter[f"{alert_type}"] = {
                 f"{alert_type}": 0,
                 f"{alert_type} Last Date Called": "Never",
                 f"{alert_type} Last Time Called": "None"
-            }
-        )
+        }
         logger.info(f"{alert_type} Counter Created")
         with open('config.json', 'w') as json_data_file:
             json_data_file.write(json.dumps(self.alert_counter, indent=4))
