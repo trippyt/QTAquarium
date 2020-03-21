@@ -14,7 +14,7 @@ class EmailAlerts:
         self.alert_limit = None
         self.refresh_data()
         self.email_msg = None
-        self.cur_date = datetime.datetime.utcnow().strftime('%m-%d-%Y')
+        self.cur_date = datetime.datetime.utcnow().strftime('%d-%m-%Y')
         self.cur_time = datetime.datetime.utcnow().strftime('%H:%M:%S')
         self.prev_date = {}
         self.prev_time = {}
@@ -76,7 +76,6 @@ class EmailAlerts:
         self.email_send(alert_type='High Temperature Alert!')
 
     def email_test(self):
-        msg = self.templates.email_test()
         self.email_send(alert_type='TEST Alert!')
 
     def email_send(self, alert_type):
@@ -148,6 +147,19 @@ class EmailAlerts:
                     print(f"Last Date Sent: {self.prev_date}\n"
                           f"Last Time Sent: {self.prev_time}\n"
                           f"Times Sent Today: {self.alerts_sent}")
+            else:
+                logger.warning(f"Alert Type: {alert_type}\n"
+                               f"Counter Not Found, Creating Counter")
+                self.alert_counter.update = (
+                    {
+                        f"{alert_type}": 0,
+                        f"{alert_type} Last Date Called": "Never",
+                        f"{alert_type} Last Time Called": "None"
+                    }
+                )
+                logger.info(f"{alert_type} Counter Created")
+                self.email_send(alert_type)
+
         except Exception as e:
             logger.exception("With Building Email")
             logger.exception(e)
@@ -186,7 +198,6 @@ class EmailAlerts:
                                       '%s' % custom_msg,
                                       ''])
         self.email_send(alert_type)
-        # return self.email_send(alert_type)
         return self.alert_counter
 
 
