@@ -159,7 +159,7 @@ class EmailAlerts:
         return self.alert_counter
 
     def create_counter(self, alert_type):
-        self.alert_counter["alert_counters"].update(
+        self.alert_counter["alert_counters"][f"{alert_type}"].update(
             {
                 f"{alert_type}": 0,
                 f"{alert_type} Last Date Called": "Never",
