@@ -29,7 +29,7 @@ class EmailAlerts:
         logger.info("=" * 125)
         try:
             logger.info("Loading Email Data from 'config.json'")
-            with open('config.json', 'r+') as json_data_file:
+            with open('config.json', 'r') as json_data_file:
                 self.config_data = json.load(json_data_file)
                 self.sender = self.config_data["network_config"]["sender_email"]
                 self.target = self.config_data["network_config"]["target_email"]
@@ -107,8 +107,6 @@ class EmailAlerts:
                             'From: %s' % gmail_sender,
                             'Subject: %s' % subject,
                             '', self.email_msg])
-        self.send = server.sendmail(gmail_sender, [to], body)
-
         try:
             if alert_type in self.alert_counter.keys():
                 logger.info(f"Alerts Limited to: {self.alert_limit} per Day\n"
@@ -125,6 +123,7 @@ class EmailAlerts:
                         self.alert_counter[f"{alert_type}"] = 0
                         logger.info(f"{alert_type} Alert counter Reset!!\n"
                                     f"Sending Email Alert")
+                        #server.sendmail(gmail_sender, [to], body)
                         # self.send()
                         logger.info(f"{alert_type} Alert counter: {self.alerts_sent}")
                         self.alert_email_counter(alert_type)
@@ -132,8 +131,8 @@ class EmailAlerts:
                         logger.info("its the same day")
                     else:
                         logger.info(f"Too Many {alert_type} Alerts Today\n"
-                              f"Already Sent: {self.alerts_sent} The Limit is: {self.alert_limit}\n"
-                              f"Email Alert NOT Sent!")
+                                    f"Already Sent: {self.alerts_sent} The Limit is: {self.alert_limit}\n"
+                                    f"Email Alert NOT Sent!")
                 elif self.alerts_sent < self.alert_limit:
                     self.alert_email_counter(alert_type)
                     self.refresh_time_var(alert_type)
@@ -145,20 +144,12 @@ class EmailAlerts:
                     self.refresh_time_var(alert_type)
                     logger.error(f"{alert_type} Alert)".center(125))
                     logger.info(f"Last Date Sent: {self.prev_date}\n"
-                          f"Last Time Sent: {self.prev_time}\n"
-                          f"Times Sent Today: {self.alerts_sent}")
+                                f"Last Time Sent: {self.prev_time}\n"
+                                f"Times Sent Today: {self.alerts_sent}")
             else:
                 logger.warning(f"Alert Type: {alert_type}\n"
                                f"Counter Not Found, Creating Counter")
-                #self.alert_counter["alert_counters"].update(
-                self.alert_counter.update(
-                    {
-                        f"{alert_type}": 0,
-                        f"{alert_type} Last Date Called": "Never",
-                        f"{alert_type} Last Time Called": "None"
-                    }
-                )
-                logger.info(f"{alert_type} Counter Created")
+                self.create_counter(alert_type)
 
         except Exception as e:
             logger.exception("With Building Email")
@@ -166,6 +157,19 @@ class EmailAlerts:
         server.quit()
         logger.info("=" * 125)
         return self.alert_counter
+
+    def create_counter(self, alert_type):
+        self.alert_counter.update(
+            {
+                f"{alert_type}": 0,
+                f"{alert_type} Last Date Called": "Never",
+                f"{alert_type} Last Time Called": "None"
+            }
+        )
+        logger.info(f"{alert_type} Counter Created")
+        with open('config.json', 'w') as json_data_file:
+            json_data_file.write(json.dumps(self.alert_counter, indent=4))
+        self.email_send(alert_type)
 
     def alert_email_counter(self, alert_type):
         logger.info("=" * 125)
