@@ -82,10 +82,10 @@ class EmailAlerts:
         logger.info(f"Config counters before refresh: {self.alert_counter}")
         self.refresh_data()
         self.refresh_time_var(alert_type)
-        print(f"Config counters after refresh: {self.alert_counter}")
-        print("=" * 125)
+        logger.info(f"Config counters after refresh: {self.alert_counter}")
+        logger.info("=" * 125)
         logger.info("Email Builder Function".center(125))
-        print("=" * 125)
+        logger.info("=" * 125)
         to = self.target
         subject = f"AquaPi {alert_type}"
         gmail_sender = self.sender
@@ -111,40 +111,40 @@ class EmailAlerts:
 
         try:
             if alert_type in self.alert_counter.keys():
-                print(f"Alerts Limited to: {self.alert_limit} per Day\n"
-                      f"Alert :'{alert_type}'\n"
-                      f" Last Sent date: {self.prev_date}  Last Sent Time: {self.prev_time}\n"
-                      f"   Current date: {self.cur_date}     current time: {self.cur_time}\n"
-                      f"Config counters: {self.alert_counter}")
-                print("_" * 125)
-                print(f"alerts_sent: {self.alerts_sent} >= alert_limit: {self.alert_limit}")
+                logger.info(f"Alerts Limited to: {self.alert_limit} per Day\n"
+                            f"Alert :'{alert_type}'\n"
+                            f" Last Sent date: {self.prev_date}  Last Sent Time: {self.prev_time}\n"
+                            f"   Current date: {self.cur_date}     current time: {self.cur_time}\n"
+                            f"Config counters: {self.alert_counter}")
+                logger.info("_" * 125)
+                logger.info(f"alerts_sent: {self.alerts_sent} >= alert_limit: {self.alert_limit}")
                 if self.alerts_sent >= self.alert_limit:
-                    print(f"Email Alert Limit Reached!")
+                    logger.info(f"Email Alert Limit Reached!")
                     if self.cur_date > self.prev_date:
-                        print("Today is a New Day")
+                        logger.info("Today is a New Day")
                         self.alert_counter[f"{alert_type}"] = 0
-                        print(f"{alert_type} Alert counter Reset!!\n"
-                              f"Sending Email Alert")
+                        logger.info(f"{alert_type} Alert counter Reset!!\n"
+                                    f"Sending Email Alert")
                         # self.send()
-                        print(f"{alert_type} Alert counter: {self.alerts_sent}")
+                        logger.info(f"{alert_type} Alert counter: {self.alerts_sent}")
                         self.alert_email_counter(alert_type)
                     elif self.cur_date == self.prev_date:
-                        print("its the same day")
+                        logger.info("its the same day")
                     else:
-                        print(f"Too Many {alert_type} Alerts Today\n"
+                        logger.info(f"Too Many {alert_type} Alerts Today\n"
                               f"Already Sent: {self.alerts_sent} The Limit is: {self.alert_limit}\n"
                               f"Email Alert NOT Sent!")
                 elif self.alerts_sent < self.alert_limit:
                     self.alert_email_counter(alert_type)
                     self.refresh_time_var(alert_type)
-                    print(f"Alerts under the Limit")
-                    print(f"Last Date Sent: {self.prev_date}\n"
-                          f"Last Time Sent: {self.prev_time}\n"
-                          f"Times Sent Today: {self.alerts_sent}")
+                    logger.info(f"Alerts under the Limit")
+                    logger.info(f"Last Date Sent: {self.prev_date}\n"
+                                f"Last Time Sent: {self.prev_time}\n"
+                                f"Times Sent Today: {self.alerts_sent}")
                 else:
                     self.refresh_time_var(alert_type)
                     logger.error(f"{alert_type} Alert)".center(125))
-                    print(f"Last Date Sent: {self.prev_date}\n"
+                    logger.info(f"Last Date Sent: {self.prev_date}\n"
                           f"Last Time Sent: {self.prev_time}\n"
                           f"Times Sent Today: {self.alerts_sent}")
             else:
@@ -164,31 +164,31 @@ class EmailAlerts:
             logger.exception("With Building Email")
             logger.exception(e)
         server.quit()
-        print("=" * 125)
+        logger.info("=" * 125)
         return self.alert_counter
 
     def alert_email_counter(self, alert_type):
-        print("=" * 125)
+        logger.info("=" * 125)
         logger.info("Alert Counter Function".center(125))
-        print("=" * 125)
-        print(f"Alert Type: {alert_type}")
-        print(f"config before counter: {self.alert_counter}")
+        logger.info("=" * 125)
+        logger.info(f"Alert Type: {alert_type}")
+        logger.info(f"config before counter: {self.alert_counter}")
         # cur_datetime = datetime.datetime.utcnow().strftime('%m-%d-%Y - %H:%M:%S')
         try:
             if alert_type in self.alert_counter.keys():
                 self.refresh_time_var(alert_type)
-                print(f"Updating {alert_type} Counter")
+                logger.info(f"Updating {alert_type} Counter")
                 self.alert_counter[f"{alert_type}"] += 1
                 self.alert_counter[f"{alert_type} Last Date Called"] = self.cur_date
                 self.alert_counter[f"{alert_type} Last Time Called"] = self.cur_time
             else:
-                print(f"{alert_type} not in dict")
+                logger.info(f"{alert_type} not in dict")
                 self.alert_counter[f"{alert_type}"] = 1
         except Exception as e:
             logger.exception(e)
-            print("Ooops")
-        print(f"config after counter: {self.alert_counter}")
-        print("=" * 125)
+            logger.info("Ooops")
+        logger.info(f"config after counter: {self.alert_counter}")
+        logger.info("=" * 125)
         return self.alert_counter
 
     def msg_format(self, alert_type, variable_data, custom_msg):
@@ -204,6 +204,7 @@ class EmailAlerts:
 class EmailTemplates:
     def __init__(self):
         pass
+
     def test_msg(self):
         m = """This is a Test!
 - Sent from AquaPi"""
