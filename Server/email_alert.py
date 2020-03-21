@@ -156,9 +156,8 @@ class EmailAlerts:
                 logger.warning(f"Alert Type: {alert_type}\n"
                                f"Counter Not Found, Creating Counter")
                 self.create_counter(alert_type)
-        except Exception as e:
+        except:
             logger.exception("With Building Email")
-            logger.exception(e)
         server.quit()
         logger.info("=" * 125)
         return self.alert_counter
