@@ -81,6 +81,7 @@ class EmailAlerts:
         self.email_send(alert_type='TEST Alert!')
 
     def email_send(self, alert_type):
+        counter = self.alert_counter[f"{alert_type}"]["Alert Count"]
         logger.info(f"Config counters before refresh: {self.alert_counter}")
         self.refresh_data()
         self.refresh_time_var(alert_type)
@@ -111,11 +112,12 @@ class EmailAlerts:
                             '', self.email_msg])
         try:
             if alert_type in self.alert_counter.keys():
-                logger.info(f"Alerts Limited to: {self.alert_limit} per Day\n"
-                            f"Alert :'{alert_type}'\n"
-                            f" Last Sent date: {self.prev_date}  Last Sent Time: {self.prev_time}\n"
-                            f"   Current date: {self.cur_date}     current time: {self.cur_time}\n"
-                            f"Config counters: {self.alert_counter}")
+                logger.info(f"Alerts Limited to: {self.alert_limit} per Day")
+                logger.info(f"Alert :'{alert_type}'")
+                logger.info(f"Alert Counter: {counter}")
+                logger.info(f" Last Sent date: {self.prev_date}  Last Sent Time: {self.prev_time}")
+                logger.info(f"   Current date: {self.cur_date}     current time: {self.cur_time}")
+                logger.info(f"Config counters: {self.alert_counter}")
                 logger.info("_" * 125)
                 logger.info(f"alerts_sent: {self.alerts_sent} >= alert_limit: {self.alert_limit}")
                 if self.alerts_sent >= self.alert_limit:
@@ -184,7 +186,7 @@ class EmailAlerts:
         logger.info("=" * 125)
         logger.info(f"Alert Type: {alert_type}")
         logger.info(f"config before counter: {self.alert_counter}")
-        #self.refresh_data()
+        self.refresh_data()
         # cur_datetime = datetime.datetime.utcnow().strftime('%m-%d-%Y - %H:%M:%S')
         try:
             if alert_type in self.alert_counter.keys():
