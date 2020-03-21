@@ -115,11 +115,12 @@ class EmailAlerts:
                             'From: %s' % gmail_sender,
                             'Subject: %s' % subject,
                             '', self.email_msg])
-        try:
+
+        for retry in range(2):
             if alert_type in self.alert_counter.keys():
                 logger.info(f"Alerts Limited to: {self.alert_limit} per Day")
                 logger.info(f"Alert :'{alert_type}'")
-                logger.info(f"Alert Counter: {counter}")
+                logger.info(f"Alert Counter: {self.alerts_sent}")
                 logger.info(f" Last Sent date: {self.prev_date}  Last Sent Time: {self.prev_time}")
                 logger.info(f"   Current date: {self.cur_date}     current time: {self.cur_time}")
                 logger.info(f"Config counters: {self.alert_counter}")
@@ -161,7 +162,7 @@ class EmailAlerts:
                 logger.warning(f"Alert Type: {alert_type}\n"
                                f"Counter Not Found, Creating Counter")
                 self.create_counter(alert_type)
-        except:
+        else:
             logger.exception("With Building Email")
         server.quit()
         logger.info("=" * 125)
