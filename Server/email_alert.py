@@ -58,9 +58,9 @@ class EmailAlerts:
 
     def refresh_time_var(self, alert_type):
         try:
-            self.prev_date = self.alert_counter[f"{alert_type} Last Date Called"]
-            self.prev_time = self.alert_counter[f"{alert_type} Last Time Called"]
-            self.alerts_sent = self.alert_counter[f"{alert_type}"]
+            self.prev_date = self.alert_counter[f"{alert_type}"]["Last Date Called"]
+            self.prev_time = self.alert_counter[f"{alert_type}"]["Last Time Called"]
+            self.alerts_sent = self.alert_counter[f"{alert_type}"]["Alert Counter"]
         except KeyError:
             self.prev_date = self.cur_date
             self.prev_time = self.cur_time
@@ -138,6 +138,7 @@ class EmailAlerts:
                                     f"Already Sent: {self.alerts_sent} The Limit is: {self.alert_limit}\n"
                                     f"Email Alert NOT Sent!")
                 elif self.alerts_sent < self.alert_limit:
+                    # server.sendmail(gmail_sender, [to], body)
                     self.alert_email_counter(alert_type)
                     self.refresh_time_var(alert_type)
                     logger.info(f"Alerts under the Limit")
@@ -150,11 +151,11 @@ class EmailAlerts:
                     logger.info(f"Last Date Sent: {self.prev_date}\n"
                                 f"Last Time Sent: {self.prev_time}\n"
                                 f"Times Sent Today: {self.alerts_sent}")
+
             else:
                 logger.warning(f"Alert Type: {alert_type}\n"
                                f"Counter Not Found, Creating Counter")
                 self.create_counter(alert_type)
-
         except Exception as e:
             logger.exception("With Building Email")
             logger.exception(e)
@@ -176,10 +177,8 @@ class EmailAlerts:
             logger.info(f"{alert_type} Counter Created")
             with open('config.json', 'w') as json_data_file:
                 json_data_file.write(json.dumps(data, indent=4))
-            self.email_send(alert_type)
         except:
             logger.exception("Counter Creation Failed")
-        return self.alert_counter
 
     def alert_email_counter(self, alert_type):
         logger.info("=" * 125)
