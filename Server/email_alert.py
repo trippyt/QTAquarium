@@ -179,6 +179,7 @@ class EmailAlerts:
             self.email_send(alert_type)
         except:
             logger.exception("Counter Creation Failed")
+        return self.alert_counter
 
     def alert_email_counter(self, alert_type):
         logger.info("=" * 125)
