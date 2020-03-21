@@ -58,14 +58,19 @@ class EmailAlerts:
 
     def refresh_time_var(self, alert_type):
         try:
-            self.prev_date = self.alert_counter[f"{alert_type}"]["Last Date Called"]
-            self.prev_time = self.alert_counter[f"{alert_type}"]["Last Time Called"]
-            self.alerts_sent = self.alert_counter[f"{alert_type}"]["Alert Counter"]
+            if alert_type in self.alert_counter.keys():
+                self.prev_date = self.alert_counter[f"{alert_type}"]["Last Date Called"]
+                self.prev_time = self.alert_counter[f"{alert_type}"]["Last Time Called"]
+                self.alerts_sent = self.alert_counter[f"{alert_type}"]["Alert Counter"]
+            else:
+                logger.warning(f"'{alert_type}' Not Valid")
+                logger.info("Assigning Default Variables")
+                self.prev_date = self.cur_date
+                self.prev_time = self.cur_time
+                self.alerts_sent = 0
         except:
             logger.exception(f"Couldn't Refresh {alert_type} Variables")
-            self.prev_date = self.cur_date
-            self.prev_time = self.cur_time
-            self.alerts_sent = 0
+
 
     def low_temp_alert(self):
         self
