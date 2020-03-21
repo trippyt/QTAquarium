@@ -150,7 +150,8 @@ class EmailAlerts:
             else:
                 logger.warning(f"Alert Type: {alert_type}\n"
                                f"Counter Not Found, Creating Counter")
-                self.alert_counter.update = (
+                #self.alert_counter["alert_counters"].update(
+                self.alert_counter.update(
                     {
                         f"{alert_type}": 0,
                         f"{alert_type} Last Date Called": "Never",
@@ -158,7 +159,6 @@ class EmailAlerts:
                     }
                 )
                 logger.info(f"{alert_type} Counter Created")
-                self.email_send(alert_type)
 
         except Exception as e:
             logger.exception("With Building Email")
