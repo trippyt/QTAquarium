@@ -81,7 +81,6 @@ class EmailAlerts:
         self.email_send(alert_type='TEST Alert!')
 
     def email_send(self, alert_type):
-        counter = self.alert_counter[f"{alert_type}"]["Alert Count"]
         logger.info(f"Config counters before refresh: {self.alert_counter}")
         self.refresh_data()
         self.refresh_time_var(alert_type)
