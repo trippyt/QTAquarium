@@ -184,19 +184,19 @@ class EmailAlerts:
         logger.info("=" * 125)
         logger.info(f"Alert Type: {alert_type}")
         logger.info(f"config before counter: {self.alert_counter}")
-        self.refresh_data()
+        #self.refresh_data()
         # cur_datetime = datetime.datetime.utcnow().strftime('%m-%d-%Y - %H:%M:%S')
         try:
             if alert_type in self.alert_counter.keys():
                 self.refresh_time_var(alert_type)
 
                 logger.info(f"Updating {alert_type} Counter")
-                self.alert_counter[f"{alert_type}"] += 1
-                self.alert_counter[f"{alert_type} Last Date Called"] = self.cur_date
-                self.alert_counter[f"{alert_type} Last Time Called"] = self.cur_time
+                self.alert_counter[f"{alert_type}"]["Alert Count"] += 1
+                self.alert_counter[f"{alert_type}"]["Last Date Called"] = self.cur_date
+                self.alert_counter[f"{alert_type}"]["Last Time Called"] = self.cur_time
             else:
                 logger.info(f"{alert_type} not in dict")
-                self.alert_counter[f"{alert_type}"] = 1
+                #self.alert_counter[f"{alert_type}"]["Alert Count"] = 1
         except Exception as e:
             logger.exception(e)
             logger.info("Ooops")
