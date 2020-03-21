@@ -168,7 +168,7 @@ class EmailAlerts:
         self.alert_counter["alert_counters"][f"{alert_type}"] = {
                 f"Alert Count": 0,
                 f"Last Date Called": "Never",
-                f"Last Time Called": "None"
+                f"Last Time Called": "00:00:00"
         }
         logger.info(f"{alert_type} Counter Created")
         with open('config.json', 'w') as json_data_file:
