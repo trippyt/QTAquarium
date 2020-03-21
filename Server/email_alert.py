@@ -29,7 +29,7 @@ class EmailAlerts:
         logger.info("=" * 125)
         try:
             logger.info("Loading Email Data from 'config.json'")
-            with open('config.json', 'r') as json_data_file:
+            with open('config.json', 'r+') as json_data_file:
                 self.config_data = json.load(json_data_file)
                 self.sender = self.config_data["network_config"]["sender_email"]
                 self.target = self.config_data["network_config"]["target_email"]
