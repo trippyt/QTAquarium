@@ -10,7 +10,7 @@ def is_production():
     :return: (bool) True if code is running on the production server, and False otherwise.
     """
     root_url = request.url_root
-    developer_url = 'http://127.0.0.1:5000/'
+    developer_url = 'http://0.0.0.0:5000/'
     return root_url != developer_url
 
 
