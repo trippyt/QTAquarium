@@ -6,226 +6,120 @@ from loguru import logger
 
 class EmailAlerts:
     def __init__(self):
-        self.sender = None
         self.target = None
+        self.sender = None
         self.password = None
-        self.alert_counter = None
-        self.high_temp_threshold = None
-        self.alert_limit = None
-        self.refresh_data()
-        self.email_msg = None
         self.cur_date = datetime.datetime.utcnow().strftime('%d-%m-%Y')
         self.cur_time = datetime.datetime.utcnow().strftime('%H:%M:%S')
-        self.prev_date = {}
-        self.prev_time = {}
-        self.alerts_sent = None
-        self.send = None
+        self.alert_counters = {}
+        self.network_data = {}
+        self.message = EmailData()
 
-        self.templates = EmailTemplates()
+    def email_builder(self, alert_type, alert_data):
+        self._load_variable_data(alert_type)
+        #variable_data =
 
-    def refresh_data(self):
-        logger.info("=" * 125)
-        logger.info("Refreshing Email Data".center(125))
-        logger.info("=" * 125)
+        custom_msg = self.message.custom_msg_builder(alert_type)
+        email_msg = '\r\n'.join([' %s Alert' % alert_type,
+                                 'Data: %s' % alert_data,
+                                 'Message:',
+                                 '%s' % custom_msg,
+                                 ''])
+        self._email_sender(alert_type, email_msg)
+
+    def _load_variable_data(self, alert_type):
         try:
-            logger.info("Loading Email Data from 'config.json'")
             with open('config.json', 'r') as json_data_file:
-                self.config_data = json.load(json_data_file)
-                self.network_data = self.config_data["network_config"]
-                self.sender = self.network_data["sender_email"]
+                data = json.load(json_data_file)
+                self.alert_counters = data["Alert Counters"]
+                self.network_data = data["network_config"]
                 self.target = self.network_data["target_email"]
-                self.password = self.config_data["network_config"]["password_email"]
-                self.alert_limit = int(self.network_data["alert_limit"])
-                self.alert_counter = self.config_data["alert_counters"]
+                self.sender = self.network_data["sender_email"]
+                self.password = self.network_data["password_email"]
 
-            logger.success("Email Data Loaded from 'config.json'")
-            logger.debug(f"Sender: {self.sender}")
-            logger.debug(f"Target: {self.target}")
-            logger.debug(f"Password: {self.password}")
-            logger.debug(f"Max Daily Alert Limit: {self.alert_limit}")
-        except (KeyError, ValueError, TypeError):
-            logger.warning("Couldn't Load Email Data from 'config.json'")
-        try:
-            logger.info("Loading Alert Values from 'data.txt'")
-            with open('data.txt', 'r') as txt_data_file:
-                self.data = json.load(txt_data_file)
-                self.high_temp_threshold = self.data["Setting Data"]["Temperature Alerts"]["High Temp"]
-            logger.success("Alert Values Loaded from 'data.txt'")
-            logger.debug(f"High Temp Threshold: {self.high_temp_threshold}")
-        except (KeyError, ValueError, TypeError):
-            logger.warning("Couldn't Load Email Data from 'config.json'")
-        logger.info("=" * 125)
+                if alert_type not in self.alert_counters.keys():
+                    self.alert_counters[f"{alert_type}"] = {
+                        f"Alert Count": 0,
+                        f"Last Date Called": "Never",
+                        f"Last Time Called": "Never"
+                    }
 
-    def refresh_time_var(self, alert_type):
-        try:
-            if alert_type in self.alert_counter.keys():
-                self.prev_date = self.alert_counter[f"{alert_type}"]["Last Date Called"]
-                self.prev_time = self.alert_counter[f"{alert_type}"]["Last Time Called"]
-                self.alerts_sent = self.alert_counter[f"{alert_type}"]["Alert Counter"]
-            else:
-                logger.warning(f"'{alert_type}' Not Valid")
-                logger.info("Assigning Default Variables")
-                self.prev_date = self.cur_date
-                self.prev_time = self.cur_time
-                self.alerts_sent = 0
+                logger.debug(f"{data}")
         except:
-            logger.exception(f"Couldn't Refresh {alert_type} Variables")
+            logger.exception(f"Couldn't Load Variable data from 'config.json'")
+            return self.alert_counters
 
+    def _update_counter(self, alert_type):
+        data = {
+            "network_config": self.network_data,
+            "Alert Counters": self.alert_counters
+        }
+        logger.info(f"Updating {alert_type} Counter")
+        self.alert_counters[f"{alert_type}"]["Alert Count"] += 1
+        self.alert_counters[f"{alert_type}"]["Last Date Called"] = self.cur_date
+        self.alert_counters[f"{alert_type}"]["Last Time Called"] = self.cur_time
+        counters = self.alert_counters[f"{alert_type}"]
+        logger.debug(f"{counters}")
+        with open('config.json', 'w') as json_data_file:
+            json_data_file.write(json.dumps(data, indent=4))
 
-    def low_temp_alert(self):
-        self
-
-    def aqua_pi_status_report(self):
-        self.msg = self.templates.status_report()
-        self.email_send(alert_type='Status Report')
-
-    def high_temp_alert(self, cur_temp, high_temp_threshold):
-        self.msg = self.templates.high_temp().format(cur_temp=cur_temp, high_temp_threshold=high_temp_threshold)
-        self.email_send(alert_type='High Temperature Alert!')
-
-    def email_test(self):
-        self.email_send(alert_type='TEST Alert!')
-
-    def email_send(self, alert_type):
-        logger.info(f"Config counters before refresh: {self.alert_counter}")
-        self.refresh_data()
-        self.refresh_time_var(alert_type)
-        logger.info(f"Config counters after refresh: {self.alert_counter}")
-        logger.info("=" * 125)
-        logger.info("Email Builder Function".center(125))
-        logger.info("=" * 125)
+    def _email_sender(self, alert_type, email_msg):
+        alert_limit = self.network_data["alert_limit"]
+        prev_date = self.alert_counters[f"{alert_type}"]["Last Date Called"]
         to = self.target
         subject = f"AquaPi {alert_type}"
-        gmail_sender = self.sender
-        gmail_passwd = self.password
-        logger.debug(f"Email Built: \n"
-                     F"\n"
-                     f"To:{to}\n"
-                     f"From: {gmail_sender}\n"
-                     f"Subject: {subject}\n"
-                     F"\n"
-                     f"{self.email_msg}")
-
         server = smtplib.SMTP('smtp.gmail.com', 587)
         server.ehlo()
         server.starttls()
-        server.login(gmail_sender, gmail_passwd)
-
+        server.login(self.sender, self.password)
         body = '\r\n'.join(['To: %s' % to,
-                            'From: %s' % gmail_sender,
+                            'From: %s' % self.sender,
                             'Subject: %s' % subject,
-                            '', self.email_msg])
-
-        for retry in range(2):
-            if alert_type in self.alert_counter.keys():
-                logger.info(f"Alerts Limited to: {self.alert_limit} per Day")
-                logger.info(f"Alert :'{alert_type}'")
-                logger.info(f"Alert Counter: {self.alerts_sent}")
-                logger.info(f" Last Sent date: {self.prev_date}  Last Sent Time: {self.prev_time}")
-                logger.info(f"   Current date: {self.cur_date}     current time: {self.cur_time}")
-                logger.info(f"Config counters: {self.alert_counter}")
-                logger.info("_" * 125)
-                logger.info(f"alerts_sent: {self.alerts_sent} >= alert_limit: {self.alert_limit}")
-                if self.alerts_sent >= self.alert_limit:
-                    logger.info(f"Email Alert Limit Reached!")
-                    if self.cur_date > self.prev_date:
-                        logger.info("Today is a New Day")
-                        self.alert_counter[f"{alert_type}"] = 0
-                        logger.info(f"{alert_type} Alert counter Reset!!\n"
-                                    f"Sending Email Alert")
-                        #server.sendmail(gmail_sender, [to], body)
-                        # self.send()
-                        logger.info(f"{alert_type} Alert counter: {self.alerts_sent}")
-                        self.alert_email_counter(alert_type)
-                    elif self.cur_date == self.prev_date:
-                        logger.info("its the same day")
-                    else:
-                        logger.info(f"Too Many {alert_type} Alerts Today\n"
-                                    f"Already Sent: {self.alerts_sent} The Limit is: {self.alert_limit}\n"
-                                    f"Email Alert NOT Sent!")
-                elif self.alerts_sent < self.alert_limit:
-                    # server.sendmail(gmail_sender, [to], body)
-                    self.alert_email_counter(alert_type)
-                    self.refresh_time_var(alert_type)
-                    logger.info(f"Alerts under the Limit")
-                    logger.info(f"Last Date Sent: {self.prev_date}\n"
-                                f"Last Time Sent: {self.prev_time}\n"
-                                f"Times Sent Today: {self.alerts_sent}")
-                else:
-                    self.refresh_time_var(alert_type)
-                    logger.error(f"{alert_type} Alert)".center(125))
-                    logger.info(f"Last Date Sent: {self.prev_date}\n"
-                                f"Last Time Sent: {self.prev_time}\n"
-                                f"Times Sent Today: {self.alerts_sent}")
-
-            else:
-                logger.warning(f"Alert Type: {alert_type}\n"
-                               f"Counter Not Found, Creating Counter")
-                self.create_counter(alert_type)
-                self.alert_email_counter(alert_type)
-                self.refresh_time_var(alert_type)
+                            '', email_msg])
+        logger.debug(f"Email Built:\n"
+                     f"{body}")
+        if alert_type in self.alert_counters.keys():
+            alerts_sent = self.alert_counters[f"{alert_type}"]["Alert Count"]
+            if alerts_sent >= alert_limit:
+                logger.warning(F"{alert_type} Email Limit Reached")
+                logger.debug(f"Limit: {alert_limit} Sent: {alerts_sent}")
+                if self.cur_date > prev_date:
+                    logger.success(f"New day..Resetting {alert_type} Alert Count")
+                    self.alert_counters[f"{alert_type}"]["Alert Count"] = 0
+                    # server.sendmail(self.sender, [to], body)
+                    logger.success(f"{alert_type} Alert Sent")
+                    self._update_counter(alert_type)
+                elif self.cur_date == prev_date:
+                    logger.critical(f"Can't Send anymore '{alert_type}' Alerts Today")
+                    now = datetime.datetime.now()
+                    midnight = datetime.datetime.strptime(f"{self.cur_date} 00:00:01", "%d-%m-%Y %H:%M:%S") + datetime\
+                        .timedelta(days=1)
+                    logger.debug(f"now = {now}     reset = {midnight}")
+                    tomorrow = str(midnight - now).split('.')[0]
+                    logger.debug(f"Time Until Reset: {tomorrow}")
+            elif alerts_sent < alert_limit:
+                # server.sendmail(self.sender, [to], body)
+                logger.success(f"{alert_type} Alert Sent")
+                self._update_counter(alert_type)
         else:
-            logger.exception("With Building Email")
+            logger.exception(f"Couldn't send {alert_type} Email Alert")
         server.quit()
-        logger.info("=" * 125)
-        return self.alert_counter
-
-    def create_counter(self, alert_type):
-        try:
-            data = {
-                "network_config": self.network_data,
-                "alert_counters": self.alert_counter
-            }
-            self.alert_counter[f"{alert_type}"] = {
-                    f"Alert Count": 0,
-                    f"Last Date Called": "Never",
-                    f"Last Time Called": "00:00:00"
-            }
-            logger.info(f"{alert_type} Counter Created")
-            with open('config.json', 'w') as json_data_file:
-                json_data_file.write(json.dumps(data, indent=4))
-        except:
-            logger.exception("Counter Creation Failed")
-
-    def alert_email_counter(self, alert_type):
-        logger.info("=" * 125)
-        logger.info("Alert Counter Function".center(125))
-        logger.info("=" * 125)
-        logger.info(f"Alert Type: {alert_type}")
-        logger.info(f"config before counter: {self.alert_counter}")
-        self.refresh_data()
-        # cur_datetime = datetime.datetime.utcnow().strftime('%m-%d-%Y - %H:%M:%S')
-        try:
-            if alert_type in self.alert_counter.keys():
-                self.refresh_time_var(alert_type)
-
-                logger.info(f"Updating {alert_type} Counter")
-                self.alert_counter[f"{alert_type}"]["Alert Count"] += 1
-                self.alert_counter[f"{alert_type}"]["Last Date Called"] = self.cur_date
-                self.alert_counter[f"{alert_type}"]["Last Time Called"] = self.cur_time
-            else:
-                logger.info(f"{alert_type} not in dict")
-                #self.alert_counter[f"{alert_type}"]["Alert Count"] = 1
-        except Exception as e:
-            logger.exception(e)
-            logger.info("Ooops")
-        logger.info(f"config after counter: {self.alert_counter}")
-        logger.info("=" * 125)
-        return self.alert_counter
-
-    def msg_format(self, alert_type, variable_data, custom_msg):
-        self.email_msg = '\r\n'.join([' %s Alert' % alert_type,
-                                      'Data: %s' % variable_data,
-                                      'Message:',
-                                      '%s' % custom_msg,
-                                      ''])
-        self.email_send(alert_type)
-        return self.alert_counter
 
 
-class EmailTemplates:
+class EmailData:
     def __init__(self):
         pass
+
+    def custom_msg_builder(self, alert_type):
+        a = alert_type
+        if a == 'EMAIL TEST':
+            return self.test_msg()
+        elif a == 'High Temperature':
+            return self.temperature_msg()
+        elif a == 'Low Temperature':
+            return self.temperature_msg()
+        elif a == 'Status Report':
+            return self.status_report()
 
     def test_msg(self):
         m = """This is a Test!
@@ -238,36 +132,6 @@ class EmailTemplates:
 - check temperature probe cable
 - check temperature probe connection
 - check heater power"""
-        return m
-
-    def high_temp(self):
-        m = """==================================================
-Warning High Temperature
-==================================================
-Current Temperature: {cur_temp},
-Current High Threshold: {high_temp_threshold}
-
-please do the following checks:
-- check temperature probe is in tank water
-- check temperature probe cable
-- check temperature probe connection
-- check heater power
-=================================================="""
-        return m
-
-    def low_temp(self):
-        m = """==================================================
-Warning Low Temperature
-==================================================
-Current Temperature: {},
-Current Low Threshold: {}
-
-please do the following checks:
-- check temperature probe is in tank water
-- check temperature probe cable
-- check temperature probe connection
-- check heater power
-=================================================="""
         return m
 
     def status_report(self):
@@ -296,27 +160,3 @@ water change graphs: {},
 up time graphs: {},
 connectivity graphs: {},
 =================================================="""
-
-
-"""
-==================================================
-Warning Low Temperature                                         # Alert title
-==================================================
-Current Temperature: {},                                        # Variable Data
-Current Low Threshold: {}
-
-please do the following checks:                                 # Custom message defined by alert
-- check temperature probe is in tank water
-- check temperature probe cable
-- check temperature probe connection
-- check heater power
-=================================================="""
-
-
-def email_test(self):
-    m = """==================================================
-Email Test
-==================================================
-Hi from Test
-=================================================="""
-    return m

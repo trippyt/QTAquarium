@@ -13,7 +13,6 @@ from random import randint
 import matplotlib.pyplot as plt
 import numpy as np
 
-
 """
 class InfoHandler(logging.Handler):  # inherit from Handler class
     def __init__(self, textBrowser):
@@ -23,21 +22,23 @@ class InfoHandler(logging.Handler):  # inherit from Handler class
     def emit(self, record):  # override Handler's `emit` method
         self.textBrowser.append(self.format(record))
 """
+
+
 class PropagateHandler(logging.Handler):
     def __init__(self, textBrowser):
         super().__init__()
         self.textBrowser = textBrowser
+
     def emit(self, record):
         logging.getLogger(record.name).handle(record)
         self.textBrowser.append(record.name).handle(record)
-
 
 
 class App(object):
     def __init__(self):
         self.ip_address = "192.168.1.33"
         self.ip_port = "5000"
-        self.server_ip = "http://"+self.ip_address+":"+self.ip_port
+        self.server_ip = "http://" + self.ip_address + ":" + self.ip_port
         self.nam = QtNetwork.QNetworkAccessManager()
 
         self.calibration_data = {
@@ -81,13 +82,13 @@ class App(object):
                                self.form.Fertilizer_water, self.form.WaterConditioner_ratio,
                                self.form.WaterConditioner_water, self.form.Co2_dosage,
                                self.form.Fertilizer_dosage, self.form.WaterConditioner_dosage]
-        #logger.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
+        # logger.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
         self.log = logging.getLogger('AquariumQT')
-        #self.log.handlers = [InfoHandler(self.form.textBrowser)]
-        #logger. = [PropagateHandler(self.form.textBrowser)]
-        #logger.add(PropagateHandler(), format="{message}")
-        #logger.add(sys.stdout, colorize=True, format="<green>{time}</green> <level>{message}</level>")
-        #log_decorate = logger.level("Decorator", no=38, color="<yellow>", icon="🐍")
+        # self.log.handlers = [InfoHandler(self.form.textBrowser)]
+        # logger. = [PropagateHandler(self.form.textBrowser)]
+        # logger.add(PropagateHandler(), format="{message}")
+        # logger.add(sys.stdout, colorize=True, format="<green>{time}</green> <level>{message}</level>")
+        # log_decorate = logger.level("Decorator", no=38, color="<yellow>", icon="🐍")
 
         self.client = QtWebSockets.QWebSocket("", QtWebSockets.QWebSocketProtocol.Version13, None)
         self.client.error.connect(self.on_error)
@@ -104,17 +105,16 @@ class App(object):
         self.form.view_pass_checkBox.stateChanged.connect(self.view_pass)
         self.form.sys_setting_save_pushButton.clicked.connect(self.save_email)
         self.form.sys_setting_test_pushButton.clicked.connect(self.email_test)
-        #self.form.sys_setting_test_pushButton.clicked.connect(self.email_test)
         self.form.sys_setting_update_pushButton.clicked.connect(self.update)
         self.form.alert_limit_spinBox.valueChanged.connect(self.save_email_alert)
 
         self.graphWidget = pg.PlotWidget(self.form.temperatureGraph)
-        #self.setCentralWidget(self.form.temperatureGraph)
+        # self.setCentralWidget(self.form.temperatureGraph)
 
-        #self.x = list(range(61))  # 60 time points
-        #self.y = [randint(20, 25) for i in range(61)]  # 60 data points
-        #self.x = list(range(61))
-        #self.y = [2 for i in range(61)]
+        # self.x = list(range(61))  # 60 time points
+        # self.y = [randint(20, 25) for i in range(61)]  # 60 data points
+        # self.x = list(range(61))
+        # self.y = [2 for i in range(61)]
         graphrange = [0 for i in range(15)]
         self.x = graphrange
         self.y = graphrange
@@ -131,10 +131,10 @@ class App(object):
         self.load_config()
         self.load_server()
 
-        #self.timer = QtCore.QTimer()
-        #self.timer.setInterval(2000)
-        #self.timer.timeout.connect(self.update_plot_data)
-        #self.timer.start()
+        # self.timer = QtCore.QTimer()
+        # self.timer.setInterval(2000)
+        # self.timer.timeout.connect(self.update_plot_data)
+        # self.timer.start()
 
     def update_plot_data(self):
         pass
@@ -156,6 +156,7 @@ class App(object):
 
             self.data_line.setData(self.x, self.y)  # Update the data.
         """
+
     def load_server(self):
         logger.info("=" * 125)
         resp = requests.get(url=f"{self.server_ip}/getServerData")
@@ -247,7 +248,7 @@ class App(object):
                     self.form.email_pass_lineEdit.setText(pass_email)
                     logger.debug(f"Revealing Pass: {pass_email}")
                 else:
-                    self.form.email_pass_lineEdit.setText("*"*i)
+                    self.form.email_pass_lineEdit.setText("*" * i)
                     logger.info("Pass Hidden")
             except KeyError:
                 logger.warning("Couldn't Email Password to Load")
@@ -282,8 +283,8 @@ class App(object):
         self.log.info('Tank Size: {} Litres,\n'
                       'Co2 Concentrate: {} mL, Co2 to Water: {} Litres,\n'
                       'Fertilizer Concentrate: {} mL, Fertilizer to Water: {} Litres,\n'
-                      'WaterConditioner Concentrate: {} mL, WaterConditioner to Water: {} Litres'.format(
-            *ratio_results))
+                      'WaterConditioner Concentrate: {} mL, WaterConditioner to Water: {} Litres'
+                      .format(*ratio_results))
         url = f"http://192.168.1.33:5000/setRatios?Tank={Tank}&Co2_ratio={Co2_ratio}&Co2_water={Co2_water}" \
               f"&Fertilizer_ratio={Fertilizer_ratio}&Fertilizer_water={Fertilizer_water}" \
               f"&WaterConditioner_ratio={WaterConditioner_ratio}&WaterConditioner_water={WaterConditioner_water}"
@@ -340,7 +341,7 @@ class App(object):
         logger.info(f"config password_email: {password_email}")
         service_email_drop = self.form.sys_setting_atemail_comboBox.currentText()
         service_email = service_email_drop.strip()
-        #alert_limit = self.form.alert_limit_spinBox.value()
+        # alert_limit = self.form.alert_limit_spinBox.value()
         requests.get(url=f"{self.server_ip}/saveEmail?email_user={email_user}&service_email={service_email}\
                         &password_email={password_email}")
         logger.info(f"config end of email function: {self.config_data}")
@@ -359,7 +360,6 @@ class App(object):
     def email_test(self):
         logger.info("Asking Server to Test Email")
         requests.get(url=f"{self.server_ip}/emailTest")
-
 
     def run(self):
         self.window.show()
@@ -385,15 +385,15 @@ class App(object):
         lt_chk = self.setting_data["Temperature Alerts"]["Low Enabled"]
         ht_thr = self.setting_data["Temperature Alerts"]["High Temp"]
         lt_thr = self.setting_data["Temperature Alerts"]["Low Temp"]
-        #try:
+        # try:
         #    self.graphTest()
-        #except Exception as e:
+        # except Exception as e:
         #    logger.exception(e)
         try:
-            #print(f"ht_chk: {ht_chk}")
-            #print(f"lt_chk: {lt_chk}")
-            #print(f"ht_thr: {ht_thr}")
-            #print(f"lt_thr: {lt_thr}")
+            # print(f"ht_chk: {ht_chk}")
+            # print(f"lt_chk: {lt_chk}")
+            # print(f"ht_thr: {ht_thr}")
+            # print(f"lt_thr: {lt_thr}")
             if ht_thr < lt_thr:
                 logger.warning("High Temp Cannot Be Lower Than low Temp")
                 return
@@ -409,7 +409,7 @@ class App(object):
                     self.set_temp_display_color("cyan")
             else:
                 self.set_temp_display_color("white")
-            #print(f"ws_receive: {text}")
+            # print(f"ws_receive: {text}")
         except:
             logger.exception("Alert :ERROR")
 
