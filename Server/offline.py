@@ -27,7 +27,7 @@ async def monitor_temperature():
 
 async def monitor_loop():
     tank_temp = loop.create_task(monitor_temperature())
-    await asyncio.wait(tank_temp)
+    await asyncio.sleep(2)
 
 if __name__ == '__main__':
     loop = asyncio.get_event_loop()
