@@ -13,7 +13,7 @@ def server_check():
         logger.exception("4xx, 5xx")
     else:
         logger.debug("All good!")  # Proceed to do stuff with `r`
-        return r.raise_for_status()
+    return r.raise_for_status()
 
 
 def start_server():
