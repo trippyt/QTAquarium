@@ -8,15 +8,18 @@ hardware = Hardware()
 
 
 def check_server():
-    try:
-        r = requests.get('http://example.com')
-        r.raise_for_status()  # Raises a HTTPError if the status is 4xx, 5xxx
-    except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
-        logger.exception("Down")
-    except requests.exceptions.HTTPError:
-        logger.exception("4xx, 5xx")
-    else:
-        logger.info("All good!")  # Proceed to do stuff with `r`
+    while True:
+        try:
+            r = requests.get('http://192.168.1.33:5000')
+            r.raise_for_status()  # Raises a HTTPError if the status is 4xx, 5xxx
+        except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
+            logger.exception("Down")
+        except requests.exceptions.HTTPError:
+            logger.exception("4xx, 5xx")
+        else:
+            logger.info("All good!")  # Proceed to do stuff with `r`
+            await asyncio.sleep(3)
+
 
 
 async def monitor_temperature():
@@ -26,14 +29,8 @@ async def monitor_temperature():
         await asyncio.sleep(2)
 
 
-async def test():
-    while True:
-        print("HI")
-        await asyncio.sleep(2)
-
-
 async def monitor_loop():
-    await asyncio.gather(monitor_temperature(), test())
+    await asyncio.gather(monitor_temperature(), check_server())
 
 
 if __name__ == '__main__':
