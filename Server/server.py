@@ -17,9 +17,10 @@ def server_check():
 
 
 def start_server():
+    logger.debug(server_check())
     if __name__ == '__main__':
         app.run("0.0.0.0")
 
 
 start_server()
-print(server_check())
+
