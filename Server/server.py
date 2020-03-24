@@ -9,11 +9,13 @@ def server_check():
         r.raise_for_status()  # Raises a HTTPError if the status is 4xx, 5xxx
     except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
         logger.exception("Down")
+        return r.raise_for_status()
     except requests.exceptions.HTTPError:
         logger.exception("4xx, 5xx")
+        return r.raise_for_status()
     else:
         logger.debug("All good!")  # Proceed to do stuff with `r`
-    return r.raise_for_status()
+        return r.raise_for_status()
 
 
 def start_server():
