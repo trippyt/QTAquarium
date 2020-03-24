@@ -32,4 +32,4 @@ async def monitor_loop():
 
 server.start()
 check_server()
-monitor_loop()
+await monitor_loop()
