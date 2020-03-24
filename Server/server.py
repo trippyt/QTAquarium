@@ -1,7 +1,6 @@
 from routes import app
-from quart import Quart, request
 from loguru import logger
-
+import requests.exceptions
 
 def is_production():
     """ Determines if app is running on the production server or not.
@@ -11,9 +10,17 @@ def is_production():
     :return: (bool) True if code is running on the production server, and False otherwise.
     """
     try:
-        root_url = request.url_root
-        developer_url = 'http://0.0.0.0:5000/'
-        return root_url != developer_url
+
+
+        try:
+            r = requests.get('http://example.com')
+            r.raise_for_status()  # Raises a HTTPError if the status is 4xx, 5xxx
+        except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
+            logger.debug("Down")
+        except requests.exceptions.HTTPError:
+            logger.debug("4xx, 5xx")
+        else:
+            logger.debug("All good!")  # Proceed to do stuff with `r`
     except RuntimeError:
         logger.exception(f"ooops2")
 
