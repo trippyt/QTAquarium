@@ -1,8 +1,10 @@
 import server
-from AquariumHardware2 import Hardware as Hardware
+from AquariumHardware2 import Hardware
 import requests.exceptions
 from loguru import logger
 import asyncio
+
+hardware = Hardware()
 
 
 def check_server():
@@ -18,7 +20,7 @@ def check_server():
 
 
 def monitor_temperature():
-    temp_c = Hardware.read_temperature("temp_tank")
+    temp_c = hardware.read_temperature("temp_tank")
     logger.debug(f"Current Offline Temperature: {temp_c}")
 
 
