@@ -24,3 +24,4 @@ def monitor_temperature():
 
 server.start()
 check_server()
+monitor_temperature()
