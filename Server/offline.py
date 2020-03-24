@@ -29,6 +29,7 @@ def monitor_loop():
         monitor_temperature()
         await asyncio.sleep(2)
 
+
 server.start()
 check_server()
-monitor_temperature()
+monitor_loop()
