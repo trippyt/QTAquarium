@@ -22,14 +22,13 @@ def check_server():
 async def monitor_temperature():
     temp_c = hardware.read_temperature("temp_tank")
     logger.debug(f"Current Offline Temperature: {temp_c}")
+    asyncio.sleep(2)
 
-
-async def monitor_loop():
+def monitor_loop():
     while True:
         await monitor_temperature()
-        await asyncio.sleep(2)
 
 
 server.start()
 check_server()
-await monitor_loop()
+monitor_loop()
