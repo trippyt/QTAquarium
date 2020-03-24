@@ -26,8 +26,14 @@ async def monitor_temperature():
         await asyncio.sleep(2)
 
 
+async def test():
+    while True:
+        print("HI")
+        await asyncio.sleep(2)
+
+
 async def monitor_loop():
-    await asyncio.gather(monitor_temperature())
+    await asyncio.gather(monitor_temperature(), test())
 
 
 if __name__ == '__main__':
