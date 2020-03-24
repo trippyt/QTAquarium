@@ -7,7 +7,7 @@ import asyncio
 hardware = Hardware()
 
 
-def check_server():
+async def check_server():
     while True:
         try:
             r = requests.get('http://192.168.1.33:5000')
