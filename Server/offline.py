@@ -1,4 +1,5 @@
-import server
+#import server
+from routes import app
 from AquariumHardware2 import Hardware
 import requests.exceptions
 from loguru import logger
@@ -20,6 +21,10 @@ async def check_server():
             logger.info("All good!")  # Proceed to do stuff with `r`
             await asyncio.sleep(3)
 
+
+def start():
+    if __name__ == '__main__':
+        app.run("0.0.0.0")
 
 
 async def monitor_temperature():
