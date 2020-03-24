@@ -27,7 +27,7 @@ async def monitor_temperature():
 
 def monitor_loop():
     while True:
-        await monitor_temperature()
+        monitor_temperature()
 
 
 server.start()
