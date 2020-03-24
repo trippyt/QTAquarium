@@ -21,4 +21,5 @@ def start_server():
         app.run("0.0.0.0")
 
 
+start_server()
 print(server_check())
