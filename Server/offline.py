@@ -16,7 +16,6 @@ class OfflineFunctions:
         self.temp_c = hardware.read_temperature("temp_tank")
         self.csv = RotatingCsvData
         self.csv = RotatingCsvData(columns=['timestamp', 'temp'])
-        self.csv.load_graph_data()
         pass
 
     async def check_server(self):
