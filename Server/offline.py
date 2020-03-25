@@ -48,11 +48,6 @@ class OfflineFunctions:
         # loop.close()
 
 
-    # server.start()
-    # check_server()
-    # monitor_loop()
-
-
 class RotatingCsvData:
     def __init__(self, file_name='graph_data.csv', columns=None):
         self.columns = None
