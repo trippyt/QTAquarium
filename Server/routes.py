@@ -143,6 +143,10 @@ async def email_test():
     return f"{resp}"
 
 
+@app.route('/')
+def hello_world():
+    return 'Server Online :-)'
+
 
 @app.websocket('/temp')
 async def temp():
