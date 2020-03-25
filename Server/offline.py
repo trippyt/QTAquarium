@@ -11,7 +11,7 @@ hardware = Hardware()
 async def check_server():
     while True:
         try:
-            r = requests.get('http://192.168.1.33:5000')
+            r = requests.get('http://192.168.1.33')
             r.raise_for_status()  # Raises a HTTPError if the status is 4xx, 5xxx
         except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
             logger.exception("Down")
