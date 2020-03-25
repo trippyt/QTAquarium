@@ -1,11 +1,10 @@
-# import server
-# from routes import app
 import os
 import pandas
 from AquariumHardware2 import Hardware
 import requests.exceptions
 from loguru import logger
 import asyncio
+import time
 
 hardware = Hardware()
 
@@ -14,11 +13,9 @@ class OfflineFunctions:
     def __init__(self):
         self.utc_now = pandas.Timestamp.utcnow()
         self.temp_c = hardware.read_temperature("temp_tank")
-        self.csv = RotatingCsvData
         self.csv = RotatingCsvData(columns=['timestamp', 'temp'])
-        pass
 
-    async def check_server(self):
+    def check_server(self):
         while True:
             try:
                 r = requests.get('http://192.168.1.33:5000')
@@ -30,27 +27,16 @@ class OfflineFunctions:
             else:
                 # logger.info("All good!")  # Proceed to do stuff with `r`
                 logger.debug(r.text)
-                # await asyncio.sleep(3)
 
-    async def monitor_temperature(self):
+    def monitor_temperature(self):
         while True:
             logger.debug(f"Current Offline Temperature: {self.temp_c}")
-            self.csv = RotatingCsvData(columns=self.columns)
-            await asyncio.sleep(2)
-
-    async def monitor_loop(self):
-        await asyncio.gather(self.monitor_temperature())
-
-    if __name__ == '__main__':
-        asyncio.run(monitor_loop())
-        # loop = asyncio.get_event_loop()
-        # loop.run_until_complete(monitor_loop())
-        # loop.close()
+            self.csv.append_row(timestamp=pandas.Timestamp.utcnow(), temp=self.temp_c)
 
 
 class RotatingCsvData:
     def __init__(self, file_name='graph_data.csv', columns=None):
-        self.columns = None
+        self.columns = columns
         self.file_name = file_name
         self.df = None
         self.load_graph_data()
@@ -61,7 +47,7 @@ class RotatingCsvData:
     def load_graph_data(self):
         if not os.path.isfile(self.file_name):
             logger.info("File Not Found")
-            self.df = pandas.DataFrame(columns=['timestamp', 'temp'])
+            self.df = pandas.DataFrame(columns=self.columns)
             self.save_graph_data()
             logger.info("File Created")
         else:
@@ -72,8 +58,40 @@ class RotatingCsvData:
                 logger.info(f"{self.df}")
             except pandas.errors.EmptyDataError:
                 logger.info("CSV has been populated")
-                self.df = pandas.DataFrame(columns=['timestamp', 'temp'])
+                self.df = pandas.DataFrame(columns=self.columns)
                 self.save_graph_data()
+
+    def append_row(self, **kwargs):
+        self.df = self.df.append(columns=self.columns)
+        self.save_graph_data()
+
+        """
+        add new data to dataframe here
+        example for measuring temp:
+          csv = RotatingCsvData(columns=['timestamp', 'temp'])
+          temp_c = hardware.read_temperature("temp_tank")[0]
+          csv.append_row(timestamp=pandas.Timestamp.utcnow(), temp=temp_c)
+
+        in the above example, kwargs will be a dictionary:
+        { 'timestamp': ...,
+          'temp': ... }
+        """
+
 
     def data_rotation(self):
         pass
+
+def server_check_ready(start):
+  # determine if server check should be done
+  if time.now() - start > some_threshold: # this could be the exponential backoff
+    return True
+  return False
+
+if __name__ == '__main__':
+    offline_funcs = OfflineFunctions()
+    start = time.now()
+    while True:
+        if server_check_ready(start):
+            offline_funcs.check_server()
+        offline_funcs.monitor_temperature()
+        time.sleep(2)
