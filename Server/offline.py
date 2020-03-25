@@ -15,7 +15,7 @@ class OfflineFunctions:
         self.utc_now = pandas.Timestamp.utcnow()
         self.temp_c = hardware.read_temperature("temp_tank")
         self.csv = RotatingCsvData
-        self.columns = [self.utc_now, self.temp_c]
+        self.csv = RotatingCsvData(columns=['timestamp', 'temp'])
         self.csv.load_graph_data()
         pass
 
@@ -56,6 +56,7 @@ class OfflineFunctions:
 
 class RotatingCsvData:
     def __init__(self, file_name='graph_data.csv', columns=None):
+        self.columns = None
         self.file_name = file_name
         self.df = None
         self.load_graph_data()
