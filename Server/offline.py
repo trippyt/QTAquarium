@@ -19,7 +19,7 @@ async def check_server():
             logger.exception("4xx, 5xx")
         else:
             logger.info("All good!")  # Proceed to do stuff with `r`
-            await asyncio.sleep(3)
+            #await asyncio.sleep(3)
 
 
 def start():
