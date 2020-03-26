@@ -12,7 +12,7 @@ hardware = Hardware()
 class OfflineFunctions:
     def __init__(self):
         self.utc_now = pandas.Timestamp.utcnow()
-        self.temp_c = hardware.read_temperature("temp_tank")
+        self.temp_c = hardware.read_temperature("temp_tank")[0]
         self.csv = RotatingCsvData(columns=['timestamp', 'temp'])
 
     def check_server(self):
@@ -62,7 +62,7 @@ class RotatingCsvData:
                 self.save_graph_data()
 
     def append_row(self, **kwargs):
-        self.df = self.df.append(columns=self.columns)
+        self.df = self.df.append(kwargs, ignore_index=True)
         self.save_graph_data()
 
         """
@@ -77,9 +77,9 @@ class RotatingCsvData:
           'temp': ... }
         """
 
-
     def data_rotation(self):
         pass
+
 
 def server_check_ready(start):
   # determine if server check should be done
