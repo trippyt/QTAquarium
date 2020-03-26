@@ -29,9 +29,10 @@ class OfflineFunctions:
                 logger.debug(r.text)
 
     def monitor_temperature(self):
+        temp = hardware.read_temperature("temp_tank")[0]
         while True:
-            logger.debug(f"Current Offline Temperature: {self.temp_c}")
-            self.csv.append_row(timestamp=pandas.Timestamp.utcnow(), temp=hardware.read_temperature("temp_tank")[0])
+            logger.debug(f"Current Offline Temperature: {temp}")
+            self.csv.append_row(timestamp=pandas.Timestamp.utcnow(), temp=temp)
 
 
 class RotatingCsvData:
