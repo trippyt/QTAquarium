@@ -79,7 +79,7 @@ class RotatingCsvData:
         else:
             logger.warning("Not enough time passed")
             logger.debug(f"Time Elapsed: {elapsed_time}")
-        if self.df.index.min():
+        if self.df % 1000 == 0:
             self.data_rotation()
             logger.debug("Rotating CSV data")
             logger.debug(self.df.index.min())
@@ -90,10 +90,9 @@ class RotatingCsvData:
         #    self.data_rotation()
 
     def data_rotation(self):
-        if self.df.index.min():
-            self.df.drop(0)
-            self.df.reset_index(drop=True)
-            self.save_graph_data()
+        self.df.drop(0)
+        self.df.reset_index(drop=True)
+        self.save_graph_data()
 
 
 def server_check_ready(start):
