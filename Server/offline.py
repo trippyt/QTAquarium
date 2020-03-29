@@ -67,6 +67,8 @@ class RotatingCsvData:
 
     def append_row(self, **kwargs):
         self.df = self.df.append(kwargs, ignore_index=True)
+        if self.last_df_save is None:
+            self.last_df_save = datetime.datetime.utcnow() - datetime.timedelta(minutes=5)
         elapsed_time = datetime.datetime.utcnow() - self.last_df_save
         if elapsed_time > datetime.timedelta(minutes=5):
             self.save_graph_data()
