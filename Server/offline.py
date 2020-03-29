@@ -68,15 +68,22 @@ class RotatingCsvData:
     def append_row(self, **kwargs):
         self.df = self.df.append(kwargs, ignore_index=True)
         if self.last_df_save is None:
-            self.last_df_save = datetime.datetime.utcnow() - datetime.timedelta(seconds=10)
+            self.last_df_save = datetime.datetime.utcnow() - datetime.timedelta(minutes=5)
         elapsed_time = datetime.datetime.utcnow() - self.last_df_save
-        if elapsed_time > datetime.timedelta(seconds=10):
+        if elapsed_time > datetime.timedelta(minutes=5):
             self.save_graph_data()
             logger.success("CSV Updated")
             logger.debug(f"Time Elapsed: {elapsed_time}")
         else:
             logger.warning("Not enough time passed")
             logger.debug(f"Time Elapsed: {elapsed_time}")
+        if self.df.index.min():
+            self.data_rotation()
+            logger.debug("Rotating CSV data")
+            logger.debug(self.df.index.min())
+        else:
+            logger.warning("CSV Data not Rotated")
+            logger.debug(self.df.index.min())
         # check if data should be rotated
         #    self.data_rotation()
 
