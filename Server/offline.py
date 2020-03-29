@@ -3,6 +3,7 @@ import pandas
 from AquariumHardware2 import Hardware
 import requests.exceptions
 from loguru import logger
+import datetime
 import asyncio
 import time
 
@@ -34,14 +35,17 @@ class OfflineFunctions:
             logger.debug(f"Current Offline Temperature: {temp}")
             self.csv.append_row(timestamp=pandas.Timestamp.utcnow(), temp=temp)
 
+
 class RotatingCsvData:
     def __init__(self, file_name='graph_data.csv', columns=None):
         self.columns = columns
         self.file_name = file_name
         self.df = None
+        self.last_df_save = None
         self.load_graph_data()
 
     def save_graph_data(self):
+        self.last_df_save = datetime.datetime.utcnow()
         self.df.to_csv(self.file_name, index=False)
 
     def load_graph_data(self):
@@ -63,29 +67,30 @@ class RotatingCsvData:
 
     def append_row(self, **kwargs):
         self.df = self.df.append(kwargs, ignore_index=True)
-        self.save_graph_data()
-
-        """
-        add new data to dataframe here
-        example for measuring temp:
-          csv = RotatingCsvData(columns=['timestamp', 'temp'])
-          temp_c = hardware.read_temperature("temp_tank")[0]
-          csv.append_row(timestamp=pandas.Timestamp.utcnow(), temp=temp_c)
-
-        in the above example, kwargs will be a dictionary:
-        { 'timestamp': ...,
-          'temp': ... }
-        """
+        elapsed_time = datetime.datetime.utcnow() - self.last_df_save
+        if elapsed_time > datetime.timedelta(minutes=5):
+            self.save_graph_data()
+            logger.success("CSV Updated")
+            logger.debug(f"Time Elapsed: {elapsed_time}")
+        else:
+            logger.warning("Not enough time passed")
+            logger.debug(f"Time Elapsed: {elapsed_time}")
+        # check if data should be rotated
+        #    self.data_rotation()
 
     def data_rotation(self):
-        pass
+        if self.df.index.min():
+            self.df.drop(0)
+            self.df.reset_index(drop=True)
+            self.save_graph_data()
 
 
 def server_check_ready(start):
-  # determine if server check should be done
-  if time.now() - start > some_threshold: # this could be the exponential backoff
-    return True
-  return False
+    # determine if server check should be done
+    if time.now() - start > some_threshold: # this could be the exponential backoff
+        return True
+    return False
+
 
 if __name__ == '__main__':
     offline_funcs = OfflineFunctions()
