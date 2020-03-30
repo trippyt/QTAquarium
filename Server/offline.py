@@ -43,6 +43,8 @@ class RotatingCsvData:
         self.df = None
         self.last_df_save = datetime.datetime.utcnow()
         self.load_graph_data()
+        self.save_interval = datetime.timedelta(seconds=10)
+        self.line_limit = 300
 
     def save_graph_data(self):
         self.last_df_save = datetime.datetime.utcnow()
@@ -70,7 +72,7 @@ class RotatingCsvData:
         line_count = len(self.df)
         elapsed_time = datetime.datetime.utcnow() - self.last_df_save
         # if elapsed_time > datetime.timedelta(minutes=5):
-        if elapsed_time > datetime.timedelta(seconds=10):
+        if elapsed_time > self.save_interval:
             self.save_graph_data()
             logger.success("CSV Updated")
             logger.debug(f"Time Elapsed: {elapsed_time}")
@@ -78,7 +80,7 @@ class RotatingCsvData:
         else:
             logger.warning("Not enough time passed")
             logger.debug(f"Time Elapsed: {elapsed_time}")
-        if line_count >= 300:
+        if line_count >= self.line_limit:
             self.data_rotation()
             logger.success("Rotating CSV data")
             logger.debug(f"CSV Line Count: {line_count}")
