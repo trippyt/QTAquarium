@@ -67,6 +67,7 @@ class RotatingCsvData:
 
     def append_row(self, **kwargs):
         self.df = self.df.append(kwargs, ignore_index=True)
+        line_count = len(self.df)
         if self.last_df_save is None:
             # self.last_df_save = datetime.datetime.utcnow() - datetime.timedelta(minutes=5)
             self.last_df_save = datetime.datetime.utcnow() - datetime.timedelta(seconds=10)
@@ -76,10 +77,11 @@ class RotatingCsvData:
             self.save_graph_data()
             logger.success("CSV Updated")
             logger.debug(f"Time Elapsed: {elapsed_time}")
+            logger.debug(f"Line Count: {line_count}")
         else:
             logger.warning("Not enough time passed")
             logger.debug(f"Time Elapsed: {elapsed_time}")
-        if len(self.df) >= 1000:
+        if line_count >= 1000:
             self.data_rotation()
             logger.debug("Rotating CSV data")
             logger.debug(self.df.index.min())
