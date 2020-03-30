@@ -79,7 +79,7 @@ class RotatingCsvData:
         else:
             logger.warning("Not enough time passed")
             logger.debug(f"Time Elapsed: {elapsed_time}")
-        if self.df % 1000 == 0:
+        if len(self.df) >= 1000:
             self.data_rotation()
             logger.debug("Rotating CSV data")
             logger.debug(self.df.index.min())
