@@ -92,7 +92,7 @@ class RotatingCsvData:
         #    self.data_rotation()
 
     def data_rotation(self):
-        self.df.drop(0)
+        self.df.drop(0, inplace=True)
         self.df.reset_index(drop=True)
 
 
