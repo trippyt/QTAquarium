@@ -41,7 +41,7 @@ class RotatingCsvData:
         self.columns = columns
         self.file_name = file_name
         self.df = None
-        self.last_df_save = None
+        self.last_df_save = datetime.datetime.utcnow()
         self.load_graph_data()
 
     def save_graph_data(self):
@@ -68,9 +68,6 @@ class RotatingCsvData:
     def append_row(self, **kwargs):
         self.df = self.df.append(kwargs, ignore_index=True)
         line_count = len(self.df)
-        if self.last_df_save is None:
-            # self.last_df_save = datetime.datetime.utcnow() - datetime.timedelta(minutes=5)
-            self.last_df_save = datetime.datetime.utcnow() - datetime.timedelta(seconds=10)
         elapsed_time = datetime.datetime.utcnow() - self.last_df_save
         # if elapsed_time > datetime.timedelta(minutes=5):
         if elapsed_time > datetime.timedelta(seconds=10):
@@ -78,16 +75,16 @@ class RotatingCsvData:
             logger.success("CSV Updated")
             logger.debug(f"Time Elapsed: {elapsed_time}")
             logger.debug(f"CSV Line Count: {line_count}")
-            if line_count >= 300:
-                self.data_rotation()
-                logger.success("Rotating CSV data")
-                logger.debug(f"CSV Line Count: {line_count}")
-            else:
-                logger.warning("CSV Data not Rotated")
-                logger.debug(f"CSV Line Count: {line_count}")
         else:
             logger.warning("Not enough time passed")
             logger.debug(f"Time Elapsed: {elapsed_time}")
+        if line_count >= 300:
+            self.data_rotation()
+            logger.success("Rotating CSV data")
+            logger.debug(f"CSV Line Count: {line_count}")
+        else:
+            logger.warning("CSV Data not Rotated")
+            logger.debug(f"CSV Line Count: {line_count}")
 
         # check if data should be rotated
         #    self.data_rotation()
@@ -95,7 +92,6 @@ class RotatingCsvData:
     def data_rotation(self):
         self.df.drop(0)
         self.df.reset_index(drop=True)
-        self.save_graph_data()
 
 
 def server_check_ready(start):
