@@ -71,7 +71,6 @@ class RotatingCsvData:
         self.df = self.df.append(kwargs, ignore_index=True)
         line_count = len(self.df)
         elapsed_time = datetime.datetime.utcnow() - self.last_df_save
-        # if elapsed_time > datetime.timedelta(minutes=5):
         if line_count > self.line_limit:
             self.data_rotation()
             logger.success("Rotating CSV data")
@@ -88,12 +87,9 @@ class RotatingCsvData:
             logger.warning("Not enough time passed")
             logger.debug(f"Time Elapsed: {elapsed_time}")
 
-
-        # check if data should be rotated
-        #    self.data_rotation()
-
     def data_rotation(self):
-        self.df.drop(0, inplace=True)
+        row_remove = len(self.df) - self.line_limit
+        self.df.drop(range(0, row_remove), inplace=True)
         self.df.reset_index(drop=True)
 
 
