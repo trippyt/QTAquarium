@@ -45,6 +45,7 @@ class RotatingCsvData:
         self.load_graph_data()
         self.save_interval = datetime.timedelta(seconds=10)
         self.line_limit = 300
+        self.line_count = None
 
     def save_graph_data(self):
         self.last_df_save = datetime.datetime.utcnow()
@@ -69,20 +70,20 @@ class RotatingCsvData:
 
     def append_row(self, **kwargs):
         self.df = self.df.append(kwargs, ignore_index=True)
-        line_count = len(self.df)
+        self.line_count = len(self.df)
         elapsed_time = datetime.datetime.utcnow() - self.last_df_save
-        if line_count > self.line_limit:
+        if self.line_count > self.line_limit:
             self.data_rotation()
             logger.success("Rotating CSV data")
-            logger.debug(f"CSV Line Count: {line_count}")
+            logger.debug(f"CSV Line Count: {self.line_count}")
         else:
             logger.warning("CSV Data not Rotated")
-            logger.debug(f"CSV Line Count: {line_count}")
+            logger.debug(f"CSV Line Count: {self.line_count}")
         if elapsed_time > self.save_interval:
             self.save_graph_data()
             logger.success("CSV Updated")
             logger.debug(f"Time Elapsed: {elapsed_time}")
-            logger.debug(f"CSV Line Count: {line_count}")
+            logger.debug(f"CSV Line Count: {self.line_count}")
         else:
             logger.warning("Not enough time passed")
             logger.debug(f"Time Elapsed: {elapsed_time}")
@@ -91,7 +92,7 @@ class RotatingCsvData:
         row_remove = len(self.df) - self.line_limit
         self.df.drop(range(0, row_remove), inplace=True)
         self.df.reset_index(drop=True)
-
+        self.line_count = len(self.df)
 
 def server_check_ready(start):
     # determine if server check should be done
