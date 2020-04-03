@@ -30,7 +30,7 @@ class OfflineFunctions:
         try:
             r = requests.get('http://192.168.1.33:5000')
             r.raise_for_status()  # Raises a HTTPError if the status is 4xx, 5xxx
-            boot_time = psutil.boot_time()
+            boot_time = datetime.datetime.fromtimestamp(psutil.boot_time()).strftime("%Y-%m-%d %H:%M:%S")
         except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
             logger.exception("Down")
             self.start_server()
