@@ -110,7 +110,7 @@ def server_check_ready(start):
     return False
 
 offline_funcs = OfflineFunctions()
-schedule.every(10).minutes.do(offline_funcs.check_server)
+schedule.every(2).minutes.do(offline_funcs.check_server)
 schedule.every().second.do(offline_funcs.monitor_temperature)
 while True:
     schedule.run_pending()
