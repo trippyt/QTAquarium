@@ -35,10 +35,9 @@ class OfflineFunctions:
             logger.debug(r.text)
 
     def monitor_temperature(self):
-        while True:
-            temp = hardware.read_temperature("temp_tank")[0]
-            logger.debug(f"Current Offline Temperature: {temp}")
-            self.csv.append_row(timestamp=pandas.Timestamp.utcnow(), temp=temp)
+        temp = hardware.read_temperature("temp_tank")[0]
+        logger.debug(f"Current Offline Temperature: {temp}")
+        self.csv.append_row(timestamp=pandas.Timestamp.utcnow(), temp=temp)
 
 
 class RotatingCsvData:
@@ -99,22 +98,12 @@ class RotatingCsvData:
         self.df.reset_index(drop=True)
         self.line_count = len(self.df)
 
+
 def server_check_ready(start):
     # determine if server check should be done
     if time.now() - start > some_threshold: # this could be the exponential backoff
         return True
     return False
-
-"""
-if __name__ == '__main__':
-    offline_funcs = OfflineFunctions()
-    start = time.now()
-    while True:
-        if server_check_ready(start):
-            offline_funcs.check_server()
-        offline_funcs.monitor_temperature()
-        time.sleep(2)
-"""
 
 offline_funcs = OfflineFunctions()
 schedule.every(10).minutes.do(offline_funcs.check_server)
