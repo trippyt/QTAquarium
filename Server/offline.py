@@ -6,6 +6,7 @@ from loguru import logger
 import datetime
 import asyncio
 import time
+import server
 
 hardware = Hardware()
 
@@ -16,24 +17,34 @@ class OfflineFunctions:
         self.temp_c = hardware.read_temperature("temp_tank")[0]
         self.csv = RotatingCsvData(columns=['timestamp', 'temp'])
 
-    def check_server(self):
+    async def start_server(self):
+        logger.debug("Starting Server")
+        server.start()
+
+    async def check_server(self):
         while True:
             try:
                 r = requests.get('http://192.168.1.33:5000')
                 r.raise_for_status()  # Raises a HTTPError if the status is 4xx, 5xxx
             except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
                 logger.exception("Down")
+                await self.start_server()
             except requests.exceptions.HTTPError:
                 logger.exception("4xx, 5xx")
             else:
                 # logger.info("All good!")  # Proceed to do stuff with `r`
                 logger.debug(r.text)
 
-    def monitor_temperature(self):
+    async def monitor_temperature(self):
         while True:
             temp = hardware.read_temperature("temp_tank")[0]
             logger.debug(f"Current Offline Temperature: {temp}")
             self.csv.append_row(timestamp=pandas.Timestamp.utcnow(), temp=temp)
+
+    async def main(self):
+        print("top of main")
+        await self.check_server()
+        await self.monitor_temperature()
 
 
 class RotatingCsvData:
@@ -100,7 +111,7 @@ def server_check_ready(start):
         return True
     return False
 
-
+"""
 if __name__ == '__main__':
     offline_funcs = OfflineFunctions()
     start = time.now()
@@ -109,3 +120,7 @@ if __name__ == '__main__':
             offline_funcs.check_server()
         offline_funcs.monitor_temperature()
         time.sleep(2)
+"""
+
+offline_funcs = OfflineFunctions()
+asyncio.run(offline_funcs.main())
