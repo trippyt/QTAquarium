@@ -6,7 +6,6 @@ from loguru import logger
 import datetime
 import schedule
 import time
-import server
 import subprocess
 import psutil
 
