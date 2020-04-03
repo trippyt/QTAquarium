@@ -4,7 +4,7 @@ from AquariumHardware2 import Hardware
 import requests.exceptions
 from loguru import logger
 import datetime
-import asyncio
+import schedule
 import time
 import server
 
@@ -17,34 +17,28 @@ class OfflineFunctions:
         self.temp_c = hardware.read_temperature("temp_tank")[0]
         self.csv = RotatingCsvData(columns=['timestamp', 'temp'])
 
-    async def start_server(self):
+    def start_server(self):
         logger.debug("Starting Server")
         server.start()
 
-    async def check_server(self):
-        while True:
-            try:
-                r = requests.get('http://192.168.1.33:5000')
-                r.raise_for_status()  # Raises a HTTPError if the status is 4xx, 5xxx
-            except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
-                logger.exception("Down")
-                await self.start_server()
-            except requests.exceptions.HTTPError:
-                logger.exception("4xx, 5xx")
-            else:
-                # logger.info("All good!")  # Proceed to do stuff with `r`
-                logger.debug(r.text)
+    def check_server(self):
+        try:
+            r = requests.get('http://192.168.1.33:5000')
+            r.raise_for_status()  # Raises a HTTPError if the status is 4xx, 5xxx
+        except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
+            logger.exception("Down")
+            self.start_server()
+        except requests.exceptions.HTTPError:
+            logger.exception("4xx, 5xx")
+        else:
+            # logger.info("All good!")  # Proceed to do stuff with `r`
+            logger.debug(r.text)
 
-    async def monitor_temperature(self):
+    def monitor_temperature(self):
         while True:
             temp = hardware.read_temperature("temp_tank")[0]
             logger.debug(f"Current Offline Temperature: {temp}")
             self.csv.append_row(timestamp=pandas.Timestamp.utcnow(), temp=temp)
-
-    async def main(self):
-        print("top of main")
-        await self.check_server()
-        await self.monitor_temperature()
 
 
 class RotatingCsvData:
@@ -123,4 +117,7 @@ if __name__ == '__main__':
 """
 
 offline_funcs = OfflineFunctions()
-asyncio.run(offline_funcs.main())
+schedule.every(10).minutes.do(offline_funcs.check_server)
+schedule.every().second.do(offline_funcs.monitor_temperature)
+while True:
+    schedule.run_pending()
