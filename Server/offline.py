@@ -7,6 +7,8 @@ import datetime
 import schedule
 import time
 import server
+import subprocess
+import psutil
 
 hardware = Hardware()
 
@@ -18,13 +20,18 @@ class OfflineFunctions:
         self.csv = RotatingCsvData(columns=['timestamp', 'temp'])
 
     def start_server(self):
-        logger.debug("Starting Server")
-        server.start()
+        for proc in psutil.process_iter(['pid', 'name', 'username', 'cmdline']):
+            if 'server.py' in ''.join(proc.info['cmdline']):
+                logger.warning("Killing Server Process")
+                proc.kill()
+        subprocess.Popen(['python3', 'server.py'])
+        logger.success("Server Started")
 
     def check_server(self):
         try:
             r = requests.get('http://192.168.1.33:5000')
             r.raise_for_status()  # Raises a HTTPError if the status is 4xx, 5xxx
+            boot_time = psutil.boot_time()
         except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
             logger.exception("Down")
             self.start_server()
@@ -32,6 +39,7 @@ class OfflineFunctions:
             logger.exception("4xx, 5xx")
         else:
             # logger.info("All good!")  # Proceed to do stuff with `r`
+            logger.success(f"Server Runtime: {boot_time}")
             logger.debug(r.text)
 
     def monitor_temperature(self):
@@ -102,12 +110,6 @@ class RotatingCsvData:
         self.df.reset_index(drop=True)
         self.line_count = len(self.df)
 
-
-def server_check_ready(start):
-    # determine if server check should be done
-    if time.now() - start > some_threshold: # this could be the exponential backoff
-        return True
-    return False
 
 offline_funcs = OfflineFunctions()
 schedule.every(2).minutes.do(offline_funcs.check_server)

@@ -6,4 +6,3 @@ def start():
         app.run("0.0.0.0")
 
 
-start()
