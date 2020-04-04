@@ -31,15 +31,18 @@ class OfflineFunctions:
             r = requests.get('http://0.0.0.0:5000')
             r.raise_for_status()  # Raises a HTTPError if the status is 4xx, 5xxx
             now = time.time() - psutil.boot_time()
-            boot_time = datetime.datetime.fromtimestamp(now).strftime("%d-%m-%Y %H:%M:%S")
+            nows = time.time()
+            boot = psutil.boot_time()
+            boot_time = datetime.datetime.fromtimestamp(now).strftime("%H:%M:%S")
         except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
-            logger.exception("Down")
+            logger.critical("Down")
             self.start_server()
         except requests.exceptions.HTTPError:
-            logger.exception("4xx, 5xx")
+            logger.warning("4xx, 5xx")
         else:
             # logger.info("All good!")  # Proceed to do stuff with `r`
             logger.success(f"Server Runtime: {boot_time}")
+            logger.debug(f"now: {now} - boot: {boot} = {boot_time}")
             logger.debug(r.text)
 
     def getSysStat(self):
