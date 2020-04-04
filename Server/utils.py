@@ -22,13 +22,11 @@ class AquariumController:
         logger.info("=" * 125)
         logger.info("Initializing".center(125))
         logger.info("=" * 125)
-        self.csv = RotatingCsvData
         self.load_data()
         self.load_config()
         self.hw_controller = Hardware()
         self.email = EmailAlerts()
         self.temp_c, self.temp_f = self.hw_controller.read_temperature("temp_tank")
-        self.utc_now = pandas.Timestamp.utcnow()
         self.calibration_data = {
                 "Co2 Calibration Data": {},
                 "Fertilizer Calibration Data": {},
@@ -56,12 +54,7 @@ class AquariumController:
             "alert_limit": {}
         }
         self.alert_counter = {}
-        """
-        self.temperature_csv_timer = QtCore.QTimer()
-        self.temperature_csv_timer.setInterval(2000)
-        self.temperature_csv_timer.timeout.connect(self.temperature_csv())
-        self.temperature_csv_timer.start()
-        """
+
     async def start_calibration(self, pump_type: str):
         try:
             '''asyncio.create_task(self.hw_controller.notification_led_pulse())
@@ -331,36 +324,5 @@ class AquariumController:
         msg = g.pull()
         logger.info(f"Repo Status: {msg}")
 
-    def temperature_csv(self):
-        columns = [self.utc_now, self.temp_c]
-        self.csv = RotatingCsvData(columns=columns)
 
 
-class RotatingCsvData:
-    def __init__(self, file_name='graph_data.csv', columns=None):
-        self.file_name = file_name
-        self.df = None
-        self.load_graph_data()
-
-    def save_graph_data(self):
-        self.df.to_csv(self.file_name, index=False)
-
-    def load_graph_data(self):
-        if not os.path.isfile(self.file_name):
-            logger.info("File Not Found")
-            self.df = pandas.DataFrame(columns=['timestamp', 'temp'])
-            self.save_graph_data()
-            logger.info("File Created")
-        else:
-            logger.info("File Found")
-            try:
-                self.df = pandas.read_csv(self.file_name)
-                logger.info("CSV Data Loaded")
-                logger.info(f"{self.df}")
-            except pandas.errors.EmptyDataError:
-                logger.info("CSV has been populated")
-                self.df = pandas.DataFrame(columns=['timestamp', 'temp'])
-                self.save_graph_data()
-
-    def data_rotation(self):
-        pass
