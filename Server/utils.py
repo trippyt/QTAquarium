@@ -336,7 +336,7 @@ class AquariumController:
         fieldnames = ("timestamp", "temp")
         reader = csv.DictReader(csv_file, fieldnames)
         rows = [row for row in reader]
-        json.dump(rows[1:], json_file)  # [1:] to skip first row - the header row
+        json.dump(rows[1:], json_file, indent=4)  # [1:] to skip first row - the header row
         json_file.write('\n')
         with open('graph_data.json', 'r') as csv_json:
             graph_json = json.loads(csv_json.read())
