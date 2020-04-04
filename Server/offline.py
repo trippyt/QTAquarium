@@ -17,6 +17,7 @@ class OfflineFunctions:
         self.utc_now = pandas.Timestamp.utcnow()
         self.temp_c = hardware.read_temperature("temp_tank")[0]
         self.csv = RotatingCsvData(columns=['timestamp', 'temp'])
+        self.server_boot_time = datetime.datetime.utcnow()
 
     def start_server(self):
         for proc in psutil.process_iter(['pid', 'name', 'username', 'cmdline']):
@@ -25,15 +26,13 @@ class OfflineFunctions:
                 proc.kill()
         subprocess.Popen(['python3', 'server.py'])
         logger.success("Server Started")
+        logger.debug(f"Server Started at {self.server_boot_time}")
 
     def check_server(self):
         try:
             r = requests.get('http://0.0.0.0:5000')
             r.raise_for_status()  # Raises a HTTPError if the status is 4xx, 5xxx
-            now = time.time() - psutil.boot_time()
-            nows = time.time()
-            boot = psutil.boot_time()
-            boot_time = datetime.datetime.fromtimestamp(now).strftime("%H:%M:%S")
+            server_runtime = datetime.datetime.utcnow() - self.server_boot_time
         except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
             logger.critical("Down")
             self.start_server()
@@ -41,8 +40,7 @@ class OfflineFunctions:
             logger.warning("4xx, 5xx")
         else:
             # logger.info("All good!")  # Proceed to do stuff with `r`
-            logger.success(f"Server Runtime: {boot_time}")
-            logger.debug(f"now: {now} - boot: {boot} = {boot_time}")
+            logger.success(f"Server Runtime: {server_runtime}")
             logger.debug(r.text)
 
     def getSysStat(self):
