@@ -14,6 +14,7 @@ hardware = Hardware()
 
 class OfflineFunctions:
     def __init__(self):
+        self.__sysStat = None
         self.utc_now = pandas.Timestamp.utcnow()
         self.temp_c = hardware.read_temperature("temp_tank")[0]
         self.csv = RotatingCsvData(columns=['timestamp', 'temp'])
@@ -41,9 +42,13 @@ class OfflineFunctions:
         else:
             # logger.info("All good!")  # Proceed to do stuff with `r`
             logger.success(f"Server Runtime: {server_runtime}")
+            print(self.getSysStat)
             logger.debug(r.text)
 
     def getSysStat(self):
+        sysStat = self.__sysStat
+        sysStat.networkStats = self.__queryNetworkStats()
+
         """
 
         # Get system statistics. This function will always get the latest system stats.
@@ -64,6 +69,7 @@ class OfflineFunctions:
         sysStat.networkCount = len(sysStat.networkStats)
         return self.__sysStat
     """
+        return self.__sysStat
 
     def monitor_temperature(self):
         temp = hardware.read_temperature("temp_tank")[0]
