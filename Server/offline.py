@@ -42,7 +42,7 @@ class OfflineFunctions:
         else:
             # logger.info("All good!")  # Proceed to do stuff with `r`
             logger.success(f"Server Runtime: {server_runtime}")
-            print(self.getSysStat)
+            print(self.getSysStat())
             logger.debug(r.text)
 
     def getSysStat(self):
