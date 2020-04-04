@@ -35,7 +35,7 @@ class OfflineFunctions:
             r.raise_for_status()  # Raises a HTTPError if the status is 4xx, 5xxx
             server_runtime = datetime.datetime.utcnow() - self.server_boot_time
         except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
-            logger.critical("Down")
+            logger.critical("Server is Down")
             self.start_server()
         except requests.exceptions.HTTPError:
             logger.warning("4xx, 5xx")

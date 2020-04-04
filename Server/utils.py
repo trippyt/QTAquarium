@@ -326,7 +326,9 @@ class AquariumController:
         for row in reader:
             json.dump(row, json_file)
             json_file.write('\n')
-        return json_file
+        with open('graph_data.json', 'r') as csv_json:
+            graph_json = json.loads(csv_file.read())
+        return graph_json
 
 
     def update(self):
