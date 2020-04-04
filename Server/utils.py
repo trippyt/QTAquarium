@@ -318,6 +318,16 @@ class AquariumController:
         logger.info("=" * 125)
         return config_data
 
+    def csv(self):
+        csv_file = open('graph_data.csv', 'r')
+        json_file = open('graph_data.json', 'w')
+        fieldnames = ("timestamp", "temp")
+        reader = csv.DictReader(csv_file, fieldnames)
+        for row in reader:
+            json.dump(row, json_file)
+            json_file.write('\n')
+        return json_file
+
 
     def update(self):
         g = git.cmd.Git("/home/pi/QTAquarium/")

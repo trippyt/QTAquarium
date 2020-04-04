@@ -27,7 +27,7 @@ class OfflineFunctions:
                 proc.kill()
         subprocess.Popen(['python3', 'server.py'])
         logger.success("Server Started")
-        logger.debug(f"Server Started at {self.server_boot_time}")
+        logger.debug(f"Server Process Started at {self.server_boot_time}")
 
     def check_server(self):
         try:

@@ -96,6 +96,10 @@ class App(object):
         self.client.pong.connect(self.ws_receive)
         self.client.textMessageReceived.connect(self.ws_receive)
 
+        self.client.open(QUrl(f"ws://{self.ip_address}:5000/csv"))
+        self.client.pong.connect(self.ws_receive2)
+        self.client.textMessageReceived.connect(self.ws_receive2)
+
         self.form.Co2_calibrateButton.clicked.connect(lambda: self.enter_calibrationMode("Co2"))
         self.form.save_ratios_pushButton.clicked.connect(self.save_ratios)
         self.form.ht_alert_doubleSpinBox.valueChanged.connect(self.set_temp_alert)
@@ -136,27 +140,27 @@ class App(object):
         # self.timer.timeout.connect(self.update_plot_data)
         # self.timer.start()
 
-    def update_plot_data(self):
-        pass
+    def update_plot_data(self, data):
+        #temp_graph_data =
         """
+        self.x = self.x[1:]  # Remove the first y element.
+        self.x.append(self.x[-1] + 1)  # Add a new value 1 higher than the last.
+        self.y = self.y[1:]  # Remove the first
+        #self.y.append(randint(0, 100))  # Add a new random value.
+        temp = float(self.temp_c)
+        self.y.append(temp)
+
+        self.data_line.setData(self.x, self.y)  # Update the data.
+
         try:
-            logger.info("hi")
-
-        except Exception as e:
-            logger.exception(e)
+            data = float(self.temp_c)
+            curve = pg.PlotDataItem(data)
+            data = np.roll(data, 1)  # scroll data
+            curve.setData(data)  # re-plot
+        except:
+            logger.exception("shit")
         """
-        """
-        try:
-            self.x = self.x[1:]  # Remove the first y element.
-            self.x.append(self.x[-1] + 2)  # Add a new value 1 higher than the last.
-            self.y = self.y[1:]  # Remove the first
-            #self.y.append(randint(0, 100))  # Add a new random value.
-            temp = float(self.temp_c)
-            self.y.append(round(temp))
-
-            self.data_line.setData(self.x, self.y)  # Update the data.
-        """
-
+        print(data)
     def load_server(self):
         logger.info("=" * 125)
         resp = requests.get(url=f"{self.server_ip}/getServerData")
@@ -376,6 +380,10 @@ class App(object):
 
     def graph_test(self):
         pass
+
+    def ws_receive2(self, csv):
+        data = csv
+        self.update_plot_data(data)
 
     def ws_receive(self, text):
         self.temp_c = text

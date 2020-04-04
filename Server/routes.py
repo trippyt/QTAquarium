@@ -148,6 +148,12 @@ def hello_world():
     return 'Server Online :-)'
 
 
+@app.websocket('/csv')
+async def csv():
+    while True:
+        csv_data = controller.csv()
+        await websocket.send(jsonify(csv_data))
+
 @app.websocket('/temp')
 async def temp():
     while True:
