@@ -318,7 +318,7 @@ class AquariumController:
         logger.info("=" * 125)
         return config_data
 
-    def csv(self):
+    def json_to_csv(self):
         csv_file = open('graph_data.csv', 'r')
         json_file = open('graph_data.json', 'w')
         fieldnames = ("timestamp", "temp")
@@ -327,7 +327,7 @@ class AquariumController:
             json.dump(row, json_file)
             json_file.write('\n')
         with open('graph_data.json', 'r') as csv_json:
-            graph_json = json.loads(csv_file.read())
+            graph_json = json.loads(csv_json.read())
         return graph_json
 
 

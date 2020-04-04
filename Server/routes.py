@@ -151,7 +151,7 @@ def hello_world():
 @app.websocket('/csv')
 async def csv():
     while True:
-        csv_data = controller.csv()
+        csv_data = controller.json_to_csv()
         await websocket.send(jsonify(csv_data))
 
 @app.websocket('/temp')
