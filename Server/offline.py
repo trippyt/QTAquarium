@@ -28,9 +28,10 @@ class OfflineFunctions:
 
     def check_server(self):
         try:
-            r = requests.get('http://192.168.1.33:5000')
+            r = requests.get('http://0.0.0.0:5000')
             r.raise_for_status()  # Raises a HTTPError if the status is 4xx, 5xxx
-            boot_time = datetime.datetime.fromtimestamp(psutil.boot_time()).strftime("%Y-%m-%d %H:%M:%S")
+            now = time.time() - psutil.boot_time()
+            boot_time = datetime.datetime.fromtimestamp(now).strftime("%d-%m-%Y %H:%M:%S")
         except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
             logger.exception("Down")
             self.start_server()
@@ -40,6 +41,28 @@ class OfflineFunctions:
             # logger.info("All good!")  # Proceed to do stuff with `r`
             logger.success(f"Server Runtime: {boot_time}")
             logger.debug(r.text)
+
+    def getSysStat(self):
+        """
+
+        # Get system statistics. This function will always get the latest system stats.
+        # Returns:
+        #     sysStat (SysStat): System statistics.
+
+        sysStat = self.__sysStat
+        sysStat.upTime = time.time() - psutil.boot_time()
+        sysStat.cpuStat = self.__queryCPUStat()
+        sysStat.memoryStat = self.__queryMemoryStat()
+        sysStat.gpuStats = self.__queryGPUStats()
+        sysStat.gpuCount = len(sysStat.gpuStats)
+        sysStat.processStat, sysStat.processStats = self.__queryProcessStats()
+        sysStat.processCount = len(sysStat.processStats)
+        sysStat.gpuProcessStats = self.__queryGPUProcessStats()
+        sysStat.gpuProcessCount = len(sysStat.gpuProcessStats)
+        sysStat.networkStats = self.__queryNetworkStats()
+        sysStat.networkCount = len(sysStat.networkStats)
+        return self.__sysStat
+    """
 
     def monitor_temperature(self):
         temp = hardware.read_temperature("temp_tank")[0]
