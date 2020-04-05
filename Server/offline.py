@@ -138,7 +138,7 @@ class RotatingCsvData:
 
 
 offline_funcs = OfflineFunctions()
-schedule.every(2).minutes.do(offline_funcs.check_server)
+schedule.every(1).minutes.do(offline_funcs.check_server)
 schedule.every().second.do(offline_funcs.monitor_temperature)
 while True:
     schedule.run_pending()
