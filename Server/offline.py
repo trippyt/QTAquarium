@@ -142,6 +142,8 @@ print("before check")
 schedule.every(2).minutes.do(offline_funcs.check_server)
 print("after check")
 schedule.every().second.do(offline_funcs.monitor_temperature)
-
-while True:
-    schedule.run_pending()
+try:
+    while True:
+        schedule.run_pending()
+except:
+    logger.exception("Schedule error")
