@@ -92,13 +92,13 @@ class App(object):
 
         self.client = QtWebSockets.QWebSocket("", QtWebSockets.QWebSocketProtocol.Version13, None)
         self.client.error.connect(self.on_error)
-        self.client.open(QUrl(f"ws://{self.ip_address}:5000/temp"))
+        self.client.open(QUrl(f"ws://{self.ip_address}:5000/csv"))
         self.client.pong.connect(self.ws_receive)
         self.client.textMessageReceived.connect(self.ws_receive)
 
-        self.client.open(QUrl(f"ws://{self.ip_address}:5000/csv"))
-        self.client.pong.connect(self.ws_receive2)
-        self.client.textMessageReceived.connect(self.ws_receive2)
+        #self.client.open(QUrl(f"ws://{self.ip_address}:5000/csv"))
+        #self.client.pong.connect(self.ws_receive2)
+        #self.client.textMessageReceived.connect(self.ws_receive2)
 
         self.form.Co2_calibrateButton.clicked.connect(lambda: self.enter_calibrationMode("Co2"))
         self.form.save_ratios_pushButton.clicked.connect(self.save_ratios)
@@ -381,10 +381,10 @@ class App(object):
     def graph_test(self):
         pass
 
-    def ws_receive2(self, csv):
+    def ws_receive(self, csv):
         data = csv
         self.update_plot_data(data)
-
+    """
     def ws_receive(self, text):
         self.temp_c = text
         self.update_plot_data()
@@ -420,7 +420,7 @@ class App(object):
             # print(f"ws_receive: {text}")
         except:
             logger.exception("Alert :ERROR")
-
+    """
     def on_error(self, error_code):
         return
 

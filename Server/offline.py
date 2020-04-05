@@ -138,9 +138,7 @@ class RotatingCsvData:
 
 
 offline_funcs = OfflineFunctions()
-print("before check")
 schedule.every(2).minutes.do(offline_funcs.check_server)
-print("after check")
 schedule.every().second.do(offline_funcs.monitor_temperature)
 try:
     while True:
