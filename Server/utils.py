@@ -354,7 +354,7 @@ class AquariumController:
         """
         try:
             with open('graph_data.csv', 'r') as csv_file:
-                return csv_file
+                return csv_file.read()
         except:
             logger.exception("You Fucked Up")
 
