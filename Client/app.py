@@ -9,9 +9,7 @@ import sys
 import json
 import requests
 import pyqtgraph as pg
-from random import randint
-import matplotlib.pyplot as plt
-import numpy as np
+import pandas
 
 """
 class InfoHandler(logging.Handler):  # inherit from Handler class
@@ -40,6 +38,7 @@ class App(object):
         self.ip_port = "5000"
         self.server_ip = "http://" + self.ip_address + ":" + self.ip_port
         self.nam = QtNetwork.QNetworkAccessManager()
+        self.df = None
 
         self.calibration_data = {
             "Co2 Calibration Data": {},
@@ -141,6 +140,10 @@ class App(object):
         # self.timer.start()
 
     def update_plot_data(self, data):
+        self.df = pandas.read_csv(data)
+        logger.info("CSV Data Loaded")
+        logger.info(f"{self.df}")
+
         #temp_graph_data =
         """
         self.x = self.x[1:]  # Remove the first y element.
@@ -160,7 +163,7 @@ class App(object):
         except:
             logger.exception("shit")
         """
-        print(data)
+
     def load_server(self):
         logger.info("=" * 125)
         resp = requests.get(url=f"{self.server_ip}/getServerData")
