@@ -31,7 +31,7 @@ class OfflineFunctions:
 
     def check_server(self):
         try:
-            r = requests.get('http://0.0.0.0:5000')
+            r = requests.get('http://localhost:5000')
             r.raise_for_status()  # Raises a HTTPError if the status is 4xx, 5xxx
             server_runtime = datetime.datetime.utcnow() - self.server_boot_time
             raspberry_pi_runtime = datetime.datetime.utcnow() - psutil.boot_time()
@@ -138,7 +138,10 @@ class RotatingCsvData:
 
 
 offline_funcs = OfflineFunctions()
+print("before check")
 schedule.every(2).minutes.do(offline_funcs.check_server)
+print("after check")
 schedule.every().second.do(offline_funcs.monitor_temperature)
+
 while True:
     schedule.run_pending()
