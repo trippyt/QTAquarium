@@ -352,8 +352,11 @@ class AquariumController:
                 json_file.write(json.dumps(rows))
         return json_file
         """
-        with open('graph_data.csv', 'r') as csv_file:
-            return csv_file
+        try:
+            with open('graph_data.csv', 'r') as csv_file:
+                return csv_file
+        except:
+            logger.exception("You Fucked Up")
 
 
     def update(self):
