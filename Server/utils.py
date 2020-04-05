@@ -343,6 +343,7 @@ class AquariumController:
             graph_json = json.loads(csv_json.read())
         return graph_json
         """
+        """
         fieldnames = ("timestamp", "temp")
         with open('graph_data.json', 'w') as json_file:
             with open('graph_data.csv', 'r') as csv_file:
@@ -350,6 +351,10 @@ class AquariumController:
                 rows = [row for row in reader]
                 json_file.write(json.dumps(rows))
         return json_file
+        """
+        with open('graph_data.csv', 'r') as csv_file:
+            return csv_file
+
 
     def update(self):
         g = git.cmd.Git("/home/pi/QTAquarium/")
