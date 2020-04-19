@@ -10,6 +10,13 @@ import json
 import requests
 import pyqtgraph as pg
 import pandas
+import io
+import schedule
+from PyQt5.QtCore import QFile, QTextStream
+from PyQt5.QtWidgets import QApplication
+from BreezeStyleSheets import breeze_resources
+from dateaxisitem import DateAxisItem
+
 
 """
 class InfoHandler(logging.Handler):  # inherit from Handler class
@@ -39,6 +46,8 @@ class App(object):
         self.server_ip = "http://" + self.ip_address + ":" + self.ip_port
         self.nam = QtNetwork.QNetworkAccessManager()
         self.df = None
+        self.data = None
+        schedule.every().second.do(self.update_plot_data)
 
         self.calibration_data = {
             "Co2 Calibration Data": {},
@@ -110,26 +119,41 @@ class App(object):
         self.form.sys_setting_test_pushButton.clicked.connect(self.email_test)
         self.form.sys_setting_update_pushButton.clicked.connect(self.update)
         self.form.alert_limit_spinBox.valueChanged.connect(self.save_email_alert)
+        """try:
+            app = QApplication(sys.argv)
+            file = QFile(":/dark.qss")
+            file.open(QFile.ReadOnly | QFile.Text)
+            stream = QTextStream(file)
+            app.setStyleSheet(stream.readAll())
+        except:
+            logger.exception("Couldn't Load Style Sheet")
+        """
 
-        self.graphWidget = pg.PlotWidget(self.form.temperatureGraph)
-        # self.setCentralWidget(self.form.temperatureGraph)
+        try:
+            self.graphWidget = pg.PlotWidget(self.form.temperatureGraph)
+            # axis = DateAxisItem(orientation='bottom')
+            # axis.attachToPlotItem(self.graphWidget.getPlotItem())
+            # self.setCentralWidget(self.form.temperatureGraph)
 
-        # self.x = list(range(61))  # 60 time points
-        # self.y = [randint(20, 25) for i in range(61)]  # 60 data points
-        # self.x = list(range(61))
-        # self.y = [2 for i in range(61)]
-        graphrange = [0 for i in range(15)]
-        self.x = graphrange
-        self.y = graphrange
+            # self.x = list(range(61))  # 60 time points
+            # self.y = [randint(20, 25) for i in range(61)]  # 60 data points
+            # self.x = list(range(61))
+            # self.y = [2 for i in range(61)]
+            graphrange = [0 for i in range(15)]
+            self.x = graphrange
+            self.y = graphrange
 
-        self.graphWidget.setBackground('w')
-        self.graphWidget.setGeometry(QtCore.QRect(0, 0, 731, 361))
-        self.graphWidget.setLabel('left', 'Temperature (°C)', color='red', size=30)
-        self.graphWidget.setLabel('bottom', 'Seconds (S)', color='red', size=30)
-        self.graphWidget.showGrid(x=True, y=True)
-        pen = pg.mkPen(color=(0, 0, 255), width=2)
+            self.graphWidget.setBackground('k')
+            self.graphWidget.setGeometry(QtCore.QRect(0, 0, 731, 361))
+            self.graphWidget.setLabel('left', 'Temperature (°C)', color='red', size=30)
+            self.graphWidget.setLabel('bottom', 'Seconds (S)', color='red', size=30)
+            self.graphWidget.showGrid(x=True, y=True)
+            pen = pg.mkPen(color=(0, 0, 255), width=2)
+        except:
+            logger.exception("Couldn't Draw Graph")
 
-        self.data_line = self.graphWidget.plot(self.x, self.y, pen=pen, symbol='o', symbolSize=10, symbolBrush='c')
+        #self.data_line = self.graphWidget.plot(self.x, self.y, pen=pen, symbol='o', symbolSize=10, symbolBrush='c')
+        self.data_line = self.graphWidget.plot(self.x, self.y, pen=pen)
 
         self.load_config()
         self.load_server()
@@ -139,10 +163,32 @@ class App(object):
         # self.timer.timeout.connect(self.update_plot_data)
         # self.timer.start()
 
-    def update_plot_data(self, data):
-        self.df = pandas.read_csv(data)
-        logger.info("CSV Data Loaded")
-        logger.info(f"{self.df}")
+    def update_plot_data(self):
+        #logger.critical("WOOP")
+        try:
+            if self.data is not None:
+                self.df = pandas.read_csv(self.data)
+                # self.x = pandas.to_datetime(self.df['timestamp']).astype(int)
+                # self.x = self.df['timestamp']
+                self.x = pandas.to_datetime(self.df['timestamp'])
+                # self.x = [t.timestamp() for t in pandas.to_datetime(self.df['timestamp'])]
+                #logger.debug(f"self.x = {self.x}")
+                self.y = self.df['temp'].values
+                # self.y = self.df['temp']
+                # axis = DateAxisItem(orientation='bottom')
+                # axis.attachToPlotItem(self.graphWidget.getPlotItem())
+                # self.x = [t.timestamp() for t in self.x]
+                self.x = [t.timestamp() for t in self.x]
+                # self.x = [t for t in self.x]
+                self.data_line.setData(self.x, self.y)
+
+                self.graphWidget.showGrid(x=False, y=False)
+                self.graphWidget.showGrid(x=True, y=True)
+
+                #logger.info("CSV Data Loaded")
+                #logger.info(f"{self.df}")
+        except:
+            logger.exception("oops")
 
         #temp_graph_data =
         """
@@ -385,8 +431,15 @@ class App(object):
         pass
 
     def ws_receive(self, csv):
-        data = csv
-        self.update_plot_data(data)
+        try:
+            self.data = io.StringIO(csv)
+            schedule.run_pending()
+
+            #schedule.every().second.do(self.update_plot_data, data=data)
+            #schedule.run_pending()
+        except:
+            logger.exception("fucked it")
+
     """
     def ws_receive(self, text):
         self.temp_c = text
@@ -434,3 +487,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
