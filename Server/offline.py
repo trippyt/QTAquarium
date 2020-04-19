@@ -82,7 +82,7 @@ class RotatingCsvData:
         self.last_df_save = datetime.datetime.utcnow()
         self.load_graph_data()
         self.save_interval = datetime.timedelta(seconds=10)
-        self.line_limit = 300
+        self.line_limit = 30000
         self.line_count = None
 
     def save_graph_data(self):

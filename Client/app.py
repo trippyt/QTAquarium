@@ -85,6 +85,15 @@ class App(object):
         self.form = Ui_Form()
         self.window.setCentralWidget(self.central)
         self.form.setupUi(self.central)
+        try:
+            file = QFile(":/dark.qss")
+            file.open(QFile.ReadOnly | QFile.Text)
+            stream = QTextStream(file)
+            self.app.setStyleSheet(stream.readAll())
+        except:
+            logger.exception("Couldn't Load Style Sheet")
+
+
         self.ratio_displays = [self.form.Tank, self.form.Co2_ratio,
                                self.form.Co2_water, self.form.Fertilizer_ratio,
                                self.form.Fertilizer_water, self.form.WaterConditioner_ratio,
@@ -119,20 +128,11 @@ class App(object):
         self.form.sys_setting_test_pushButton.clicked.connect(self.email_test)
         self.form.sys_setting_update_pushButton.clicked.connect(self.update)
         self.form.alert_limit_spinBox.valueChanged.connect(self.save_email_alert)
-        """try:
-            app = QApplication(sys.argv)
-            file = QFile(":/dark.qss")
-            file.open(QFile.ReadOnly | QFile.Text)
-            stream = QTextStream(file)
-            app.setStyleSheet(stream.readAll())
-        except:
-            logger.exception("Couldn't Load Style Sheet")
-        """
+
 
         try:
             self.graphWidget = pg.PlotWidget(self.form.temperatureGraph)
-            # axis = DateAxisItem(orientation='bottom')
-            # axis.attachToPlotItem(self.graphWidget.getPlotItem())
+
             # self.setCentralWidget(self.form.temperatureGraph)
 
             # self.x = list(range(61))  # 60 time points
@@ -168,19 +168,13 @@ class App(object):
         try:
             if self.data is not None:
                 self.df = pandas.read_csv(self.data)
-                # self.x = pandas.to_datetime(self.df['timestamp']).astype(int)
-                # self.x = self.df['timestamp']
+                self.y = self.df['temp'].to_numpy()
                 self.x = pandas.to_datetime(self.df['timestamp'])
-                # self.x = [t.timestamp() for t in pandas.to_datetime(self.df['timestamp'])]
-                #logger.debug(f"self.x = {self.x}")
-                self.y = self.df['temp'].values
-                # self.y = self.df['temp']
-                # axis = DateAxisItem(orientation='bottom')
-                # axis.attachToPlotItem(self.graphWidget.getPlotItem())
-                # self.x = [t.timestamp() for t in self.x]
                 self.x = [t.timestamp() for t in self.x]
-                # self.x = [t for t in self.x]
                 self.data_line.setData(self.x, self.y)
+                axis = DateAxisItem(orientation='bottom')
+                axis.attachToPlotItem(self.graphWidget.getPlotItem())
+
 
                 self.graphWidget.showGrid(x=False, y=False)
                 self.graphWidget.showGrid(x=True, y=True)
