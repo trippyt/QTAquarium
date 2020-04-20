@@ -168,13 +168,13 @@ class App(object):
         try:
             if self.data is not None:
                 self.df = pandas.read_csv(self.data)
+                logger.debug(f"CSV Line Count: {len(self.df)}")
                 self.y = self.df['temp'].to_numpy()
                 self.x = pandas.to_datetime(self.df['timestamp'])
                 self.x = [t.timestamp() for t in self.x]
                 self.data_line.setData(self.x, self.y)
-                axis = DateAxisItem(orientation='bottom')
-                axis.attachToPlotItem(self.graphWidget.getPlotItem())
-
+                #axis = DateAxisItem(orientation='bottom')
+                #axis.attachToPlotItem(self.graphWidget.getPlotItem())
 
                 self.graphWidget.showGrid(x=False, y=False)
                 self.graphWidget.showGrid(x=True, y=True)
@@ -182,7 +182,7 @@ class App(object):
                 #logger.info("CSV Data Loaded")
                 #logger.info(f"{self.df}")
         except:
-            logger.exception("oops")
+            logger.exception("Couldn't Update Plot Data")
 
         #temp_graph_data =
         """

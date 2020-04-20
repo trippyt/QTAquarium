@@ -31,6 +31,7 @@ class Ui_Form(object):
         self.pushButton_pauseOperation.setObjectName("pushButton_pauseOperation")
         self.tabWidget = QtWidgets.QTabWidget(Form)
         self.tabWidget.setGeometry(QtCore.QRect(10, 150, 881, 431))
+        self.tabWidget.setTabPosition(QtWidgets.QTabWidget.North)
         self.tabWidget.setObjectName("tabWidget")
         self.Home_tab = QtWidgets.QWidget()
         self.Home_tab.setObjectName("Home_tab")
@@ -39,7 +40,8 @@ class Ui_Form(object):
         self.groupBox_7.setObjectName("groupBox_7")
         self.tank_display_c = QtWidgets.QLCDNumber(self.groupBox_7)
         self.tank_display_c.setGeometry(QtCore.QRect(10, 20, 91, 51))
-        self.tank_display_c.setSegmentStyle(QtWidgets.QLCDNumber.Flat)
+        self.tank_display_c.setAutoFillBackground(True)
+        self.tank_display_c.setSegmentStyle(QtWidgets.QLCDNumber.Filled)
         self.tank_display_c.setObjectName("tank_display_c")
         self.label_19 = QtWidgets.QLabel(self.groupBox_7)
         self.label_19.setGeometry(QtCore.QRect(110, 80, 21, 21))
@@ -676,7 +678,7 @@ class Ui_Form(object):
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
-        Form.setWindowTitle(_translate("Form", "Form"))
+        Form.setWindowTitle(_translate("Form", "AquaPi"))
         self.pushButton_clearLog.setText(_translate("Form", "Clear Log"))
         self.pushButton_pauseOperation.setText(_translate("Form", "Pause Operation"))
         self.groupBox_7.setTitle(_translate("Form", "Aquarium"))

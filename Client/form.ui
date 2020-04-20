@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>AquaPi</string>
   </property>
   <widget class="QTextBrowser" name="textBrowser">
    <property name="geometry">
@@ -70,6 +70,9 @@
      <height>431</height>
     </rect>
    </property>
+   <property name="tabPosition">
+    <enum>QTabWidget::North</enum>
+   </property>
    <property name="currentIndex">
     <number>0</number>
    </property>
@@ -98,8 +101,11 @@
         <height>51</height>
        </rect>
       </property>
+      <property name="autoFillBackground">
+       <bool>true</bool>
+      </property>
       <property name="segmentStyle">
-       <enum>QLCDNumber::Flat</enum>
+       <enum>QLCDNumber::Filled</enum>
       </property>
      </widget>
      <widget class="QLabel" name="label_19">
