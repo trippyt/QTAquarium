@@ -168,7 +168,9 @@ class App(object):
         try:
             if self.data is not None:
                 self.df = pandas.read_csv(self.data)
-                logger.debug(f"CSV Line Count: {len(self.df)}")
+                logger.debug(f"CSV Line Count: {len(self.df)}\n" 
+                             f"First Value Read: {self.df.head(1)}\n"
+                             f"Last Value Read: {self.df.tail(1)}")
                 self.y = self.df['temp'].to_numpy()
                 self.x = pandas.to_datetime(self.df['timestamp'])
                 self.x = [t.timestamp() for t in self.x]
