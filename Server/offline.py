@@ -70,7 +70,7 @@ class OfflineFunctions:
 
     def monitor_temperature(self):
         temp = hardware.read_temperature("temp_tank")[0]
-        logger.debug(f"Current Offline Temperature: {temp}")
+        # logger.debug(f"Current Offline Temperature: {temp}")
         self.csv.append_row(timestamp=pandas.Timestamp.utcnow(), temp=temp)
 
 
@@ -88,6 +88,7 @@ class RotatingCsvData:
     def save_graph_data(self):
         self.last_df_save = datetime.datetime.utcnow()
         self.df.to_csv(self.file_name, index=False)
+        logger.success("CSV Updated")
 
     def load_graph_data(self):
         if not os.path.isfile(self.file_name):
