@@ -166,7 +166,7 @@ class App(object):
     def update_plot_data(self):
         try:
             if self.data is not None:
-                self.df = pandas.read_csv(self.data, delim_whitespace=True)
+                self.df = pandas.read_csv(self.data, parse_dates=['timestamp'])
                 logger.debug(f"CSV Line Count: {len(self.df)}\n" 
                              f"First Value Read: {self.df.head(1)}\n"
                              f"Last Value Read: {self.df.tail(1)}")
@@ -429,9 +429,6 @@ class App(object):
         try:
             self.data = io.StringIO(csv)
             schedule.run_pending()
-
-            #schedule.every().second.do(self.update_plot_data, data=data)
-            #schedule.run_pending()
         except:
             logger.exception("fucked it")
 

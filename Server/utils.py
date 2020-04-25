@@ -319,39 +319,6 @@ class AquariumController:
         return config_data
 
     def json_to_csv(self):
-        """
-        csv_file = open('graph_data.csv', 'r')
-        json_file = open('graph_data.json', 'w')
-        fieldnames = ("timestamp", "temp")
-        reader = csv.DictReader(csv_file, fieldnames)
-        for row in reader:
-            json.dump(row, json_file)
-            json_file.write('\n')
-        with open('graph_data.json', 'r') as csv_json:
-            graph_json = json.loads(csv_json.read())
-        return graph_json
-        """
-        """
-        csv_file = open('graph_data.csv', 'r')
-        json_file = open('graph_data.json', 'w')
-        fieldnames = ("timestamp", "temp")
-        reader = csv.DictReader(csv_file, fieldnames)
-        rows = [row for row in reader if row]
-        json.dump(rows[1:], json_file, indent=4)  # [1:] to skip first row - the header row
-        json_file.write('\n')
-        with open('graph_data.json', 'r') as csv_json:
-            graph_json = json.loads(csv_json.read())
-        return graph_json
-        """
-        """
-        fieldnames = ("timestamp", "temp")
-        with open('graph_data.json', 'w') as json_file:
-            with open('graph_data.csv', 'r') as csv_file:
-                reader = csv.DictReader(csv_file, fieldnames)
-                rows = [row for row in reader]
-                json_file.write(json.dumps(rows))
-        return json_file
-        """
         try:
             with open('graph_data.csv', 'r') as csv_file:
                 return csv_file.read()
