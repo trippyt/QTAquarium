@@ -164,10 +164,9 @@ class App(object):
         # self.timer.start()
 
     def update_plot_data(self):
-        #logger.critical("WOOP")
         try:
             if self.data is not None:
-                self.df = pandas.read_csv(self.data)
+                self.df = pandas.read_csv(self.data, delim_whitespace=True)
                 logger.debug(f"CSV Line Count: {len(self.df)}\n" 
                              f"First Value Read: {self.df.head(1)}\n"
                              f"Last Value Read: {self.df.tail(1)}")
