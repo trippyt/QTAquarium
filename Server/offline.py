@@ -136,11 +136,9 @@ class RotatingCsvData:
 
     def data_rotation(self):
         row_remove = len(self.df) - self.line_limit
-        logger.debug(row_remove)
         self.df.drop(range(0, row_remove), inplace=True)
         self.df.reset_index(drop=True)
         self.line_count = len(self.df)
-        logger.debug(self.line_count)
 
 
 offline_funcs = OfflineFunctions()
