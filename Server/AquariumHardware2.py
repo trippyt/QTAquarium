@@ -77,7 +77,7 @@ class Hardware:
             if isinstance(sensor, W1ThermSensor):
                 temperature_in_all_units = sensor.get_temperatures([W1ThermSensor.DEGREES_C, W1ThermSensor.DEGREES_F])
                 return temperature_in_all_units
-        except w1thermsensor.errors.SensorNotReadyError:
+        except W1ThermSensor.errors.SensorNotReadyError:
             pass
 
         #elif isinstance(sensor, dht11.DHT11):
