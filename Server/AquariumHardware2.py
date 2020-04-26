@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import loguru as logger
 #  import dht11
 import threading
 from time import sleep
@@ -77,8 +78,8 @@ class Hardware:
             if isinstance(sensor, W1ThermSensor):
                 temperature_in_all_units = sensor.get_temperatures([W1ThermSensor.DEGREES_C, W1ThermSensor.DEGREES_F])
                 return temperature_in_all_units
-        except W1ThermSensor.core.SensorNotReadyError:
-            print("Sensor %s is not ready to read")
+        except SensorNotReadyError:
+            logger.exception("Sensor %s is not ready to read")
 
         #elif isinstance(sensor, dht11.DHT11):
         #    result = sensor.read()
