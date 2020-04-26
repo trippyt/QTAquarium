@@ -42,7 +42,7 @@ class OfflineFunctions:
             logger.warning("4xx, 5xx")
         else:
             # logger.info("All good!")  # Proceed to do stuff with `r`
-            logger.success(f"Server Uptime: {server_uptime}")
+            logger.success(f"Server Up-time: {server_uptime}")
             #logger.debug(f"Raspberry Pi Runtime: {raspberry_pi_runtime}")
             logger.debug(r.text)
 

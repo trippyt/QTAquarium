@@ -182,6 +182,8 @@ class App(object):
 
                 #logger.info("CSV Data Loaded")
                 #logger.info(f"{self.df}")
+        except pandas.errors.EmptydataError:
+            logger.warning("Graph Data Received was Empty")
         except:
             logger.exception("Couldn't Update Plot Data")
 
