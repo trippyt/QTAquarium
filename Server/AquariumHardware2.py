@@ -4,7 +4,7 @@ import logging
 import threading
 from time import sleep
 try:
-    from w1thermsensor import W1ThermSensor
+    from w1thermsensor import W1ThermSensor, core
 except Exception:
     print("No w1thermsensor Kernel Found")
 try:
@@ -73,10 +73,12 @@ class Hardware:
         sensor = self.sensors.get(temp_sensor_type, None)
         if sensor is None:
             raise Exception('Invalid Sensor Type!')
-
-        if isinstance(sensor, W1ThermSensor):
-            temperature_in_all_units = sensor.get_temperatures([W1ThermSensor.DEGREES_C, W1ThermSensor.DEGREES_F])
-            return temperature_in_all_units
+        try:
+            if isinstance(sensor, W1ThermSensor):
+                temperature_in_all_units = sensor.get_temperatures([W1ThermSensor.DEGREES_C, W1ThermSensor.DEGREES_F])
+                return temperature_in_all_units
+        except W1ThermSensor.core.SensorNotReadyError:
+            print("Sensor %s is not ready to read")
 
         #elif isinstance(sensor, dht11.DHT11):
         #    result = sensor.read()
