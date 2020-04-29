@@ -74,12 +74,10 @@ class Hardware:
         sensor = self.sensors.get(temp_sensor_type, None)
         if sensor is None:
             raise Exception('Invalid Sensor Type!')
-        try:
-            if isinstance(sensor, W1ThermSensor):
-                temperature_in_all_units = sensor.get_temperatures([W1ThermSensor.DEGREES_C, W1ThermSensor.DEGREES_F])
-                return temperature_in_all_units
-        except:
-            print("Sensor %s is not ready to read")
+        if isinstance(sensor, W1ThermSensor):
+            temperature_in_all_units = sensor.get_temperatures([W1ThermSensor.DEGREES_C, W1ThermSensor.DEGREES_F])
+            return temperature_in_all_units
+
 
         #elif isinstance(sensor, dht11.DHT11):
         #    result = sensor.read()
