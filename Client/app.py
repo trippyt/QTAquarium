@@ -215,7 +215,7 @@ class App(object):
                 c = self.temp_data['temp'].iat[-1]
                 self.form.tank_display_c.display(c)
         except pandas.errors.EmptyDataError:
-            logger.exception("No columns to parse from file")
+            logger.warning("No columns to parse from file")
 
 
 
@@ -440,8 +440,7 @@ class App(object):
         pass
 
     def ws_receive(self, csv):
-        if io.StringIO(csv) is not 0:
-            self.data = io.StringIO(csv)
+        self.data = io.StringIO(csv)
         logger.debug(len(csv))
         try:
             schedule.run_pending()
