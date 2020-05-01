@@ -10,6 +10,7 @@ import json
 import requests
 import pyqtgraph as pg
 import pandas
+from pandas import errors
 import io
 import schedule
 from PyQt5.QtCore import QFile, QTextStream
@@ -47,7 +48,9 @@ class App(object):
         self.nam = QtNetwork.QNetworkAccessManager()
         self.df = None
         self.data = None
+        self.temp_data = None
         schedule.every().second.do(self.update_plot_data)
+        schedule.every().second.do(self.temp_display)
 
         self.calibration_data = {
             "Co2 Calibration Data": {},
@@ -204,6 +207,17 @@ class App(object):
         except:
             logger.exception("shit")
         """
+
+    def temp_display(self):
+        try:
+            if self.data is not None:
+                self.temp_data = pandas.read_csv(self.data)
+                c = self.temp_data['temp'].iat[-1]
+                self.form.tank_display_c.display(c)
+        except pandas.errors.EmptyDataError:
+            logger.exception("No columns to parse from file")
+
+
 
     def load_server(self):
         logger.info("=" * 125)
@@ -426,8 +440,10 @@ class App(object):
         pass
 
     def ws_receive(self, csv):
-        try:
+        if io.StringIO(csv) is not 0:
             self.data = io.StringIO(csv)
+        logger.debug(len(csv))
+        try:
             schedule.run_pending()
         except:
             logger.exception("fucked it")

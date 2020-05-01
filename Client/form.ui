@@ -1358,8 +1358,8 @@
       <rect>
        <x>440</x>
        <y>10</y>
-       <width>431</width>
-       <height>201</height>
+       <width>441</width>
+       <height>221</height>
       </rect>
      </property>
      <property name="sizePolicy">
@@ -1374,10 +1374,10 @@
      <widget class="QGroupBox" name="groupBox_26">
       <property name="geometry">
        <rect>
-        <x>10</x>
+        <x>0</x>
         <y>0</y>
-        <width>411</width>
-        <height>191</height>
+        <width>441</width>
+        <height>211</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -1832,8 +1832,8 @@
       <rect>
        <x>0</x>
        <y>10</y>
-       <width>431</width>
-       <height>201</height>
+       <width>441</width>
+       <height>221</height>
       </rect>
      </property>
      <property name="sizePolicy">
@@ -1852,6 +1852,29 @@
         <y>10</y>
         <width>411</width>
         <height>183</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_11">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>230</y>
+       <width>881</width>
+       <height>171</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string/>
+     </property>
+     <widget class="QTextBrowser" name="textBrowser_2">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>431</width>
+        <height>151</height>
        </rect>
       </property>
      </widget>

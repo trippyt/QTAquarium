@@ -29,8 +29,6 @@ async def set_temperature_alert():
         print(f"lt is: TRUE")
     else:
         print(f"lt is: FALSE")
-
-
     print(f"Receiving Temperature Alert Data H:{ht} L:{lt}")
     controller.alert_data(ht, lt, ht_enabled, lt_enabled)
     return f"Temperature Alerts H:{ht} L:{lt}"
@@ -151,7 +149,8 @@ def hello_world():
 @app.websocket('/csv')
 async def csv():
     while True:
-        csv_data = controller.json_to_csv()
+        csv_data = controller.get_csv()
+        await asyncio.sleep(1)
         await websocket.send(csv_data)
 
 @app.websocket('/temp')
