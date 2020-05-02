@@ -93,7 +93,9 @@ class RotatingCsvData:
 
     def save_graph_data(self):
         try:
+            logger.debug(f"Acquiring Lock")
             self.lock.acquire(timeout=10)
+            logger.success(f"File: {self.file_name}, Locked")
             self.last_df_save = datetime.datetime.utcnow()
             self.df.to_csv(self.file_name, index=False)
             logger.success("CSV Updated")
@@ -101,6 +103,9 @@ class RotatingCsvData:
             print("Another instance of this application currently holds the lock.")
         finally:
             self.lock.release()
+            logger.debug("Lock Released")
+            logger.success(f"File: {self.file_name}, UnLocked")
+
 
 
     def load_graph_data(self):
