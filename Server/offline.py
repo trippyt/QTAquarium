@@ -100,7 +100,7 @@ class RotatingCsvData:
             self.df.to_csv(self.file_name, index=False)
             logger.success("CSV Updated")
         except Timeout:
-            print("Another instance of this application currently holds the lock.")
+            logger.warning("Another instance of this application currently holds the lock.")
         finally:
             self.lock.release()
             logger.debug("Lock Released")

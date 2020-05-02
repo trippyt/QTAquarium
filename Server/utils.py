@@ -326,13 +326,13 @@ class AquariumController:
 
     def get_csv(self):
         try:
-            self.lock.acquire(timeout=5)
+            self.lock.acquire()
             with open('graph_data.csv', 'r') as csv_file:
                 return csv_file.read()
         except Timeout:
-            print("Another instance of this application currently holds the lock.")
-        finally:
-            self.lock.release()
+            logger.warning("Another instance of this application currently holds the lock.")
+        #finally:
+        #    self.lock.release()
 
     def update(self):
         g = git.cmd.Git("/home/pi/QTAquarium/")

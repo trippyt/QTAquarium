@@ -216,7 +216,7 @@ class App(object):
                 c = self.temp_data['temp'].iat[-1]
                 self.form.tank_display_c.display(c)
         except pandas.errors.EmptyDataError:
-            logger.exception("No columns to parse from file")
+            logger.warning("No columns to parse from file")
 
     def load_server(self):
         logger.info("=" * 125)
