@@ -212,12 +212,11 @@ class App(object):
         try:
             if self.data is not None:
                 self.temp_data = pandas.read_csv(self.data)
+                logger.debug(self.temp_data)
                 c = self.temp_data['temp'].iat[-1]
                 self.form.tank_display_c.display(c)
         except pandas.errors.EmptyDataError:
-            logger.warning("No columns to parse from file")
-
-
+            logger.exception("No columns to parse from file")
 
     def load_server(self):
         logger.info("=" * 125)

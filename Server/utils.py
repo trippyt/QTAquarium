@@ -328,7 +328,6 @@ class AquariumController:
         try:
             self.lock.acquire(timeout=10)
             csv_file = open('graph_data.csv', 'r')
-            logger.success("CSV Sent")
             return csv_file.read()
         except Timeout:
             print("Another instance of this application currently holds the lock.")
