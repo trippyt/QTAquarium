@@ -6,6 +6,8 @@ import csv
 import git
 from loguru import logger
 import pandas
+from filelock import Timeout, FileLock
+
 
 from time import gmtime, strftime
 from AquariumHardware2 import Hardware
@@ -27,6 +29,10 @@ class AquariumController:
         self.hw_controller = Hardware()
         self.email = EmailAlerts()
         self.temp_c, self.temp_f = self.hw_controller.read_temperature("temp_tank")
+        self.file_name = 'graph_data.csv'
+        lock_path = self.file_name+".lock"
+        self.lock = FileLock(lock_path)
+
         self.calibration_data = {
                 "Co2 Calibration Data": {},
                 "Fertilizer Calibration Data": {},
@@ -320,9 +326,11 @@ class AquariumController:
 
     def get_csv(self):
         try:
-            with open('graph_data.csv', 'r') as csv_file:
-                if csv_file is not None:
+            with self.lock.acquire():
+                with open('graph_data.csv', 'r') as csv_file:
                     return csv_file.read()
+        except Timeout:
+            print("Another instance of this application currently holds the lock.")
         except:
             logger.exception("You Fucked Up")
 

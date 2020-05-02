@@ -8,6 +8,7 @@ import schedule
 import time
 import subprocess
 import psutil
+from filelock import Timeout, FileLock
 
 hardware = Hardware()
 
@@ -87,11 +88,20 @@ class RotatingCsvData:
         self.save_interval = datetime.timedelta(seconds=10)
         self.line_limit = 3000
         self.line_count = None
+        lock_path = self.file_name+".lock"
+        self.lock = FileLock(lock_path)
 
     def save_graph_data(self):
-        self.last_df_save = datetime.datetime.utcnow()
-        self.df.to_csv(self.file_name, index=False)
-        logger.success("CSV Updated")
+        try:
+            with self.lock.acquire(timeout=10):
+                self.last_df_save = datetime.datetime.utcnow()
+                self.df.to_csv(self.file_name, index=False)
+                logger.success("CSV Updated")
+        except Timeout:
+            print("Another instance of this application currently holds the lock.")
+        finally:
+            self.lock.release()
+
 
     def load_graph_data(self):
         if not os.path.isfile(self.file_name):
