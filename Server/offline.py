@@ -93,10 +93,10 @@ class RotatingCsvData:
 
     def save_graph_data(self):
         try:
-            with self.lock.acquire(timeout=10):
-                self.last_df_save = datetime.datetime.utcnow()
-                self.df.to_csv(self.file_name, index=False)
-                logger.success("CSV Updated")
+            self.lock.acquire(timeout=10)
+            self.last_df_save = datetime.datetime.utcnow()
+            self.df.to_csv(self.file_name, index=False)
+            logger.success("CSV Updated")
         except Timeout:
             print("Another instance of this application currently holds the lock.")
         finally:
