@@ -94,7 +94,7 @@ class RotatingCsvData:
     def save_graph_data(self):
         try:
             logger.debug(f"Acquiring Lock")
-            self.lock.acquire(timeout=10)
+            self.lock.acquire()
             logger.success(f"File: {self.file_name}, Locked")
             self.last_df_save = datetime.datetime.utcnow()
             self.df.to_csv(self.file_name, index=False)
