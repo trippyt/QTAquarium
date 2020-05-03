@@ -103,7 +103,6 @@ class RotatingCsvData:
             logger.warning("Another instance of this application currently holds the lock.")
         finally:
             self.lock.release()
-            logger.debug("Lock Released")
             logger.success(f"File: {self.file_name}, UnLocked")
 
 
