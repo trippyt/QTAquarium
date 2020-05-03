@@ -150,9 +150,7 @@ def hello_world():
 async def csv():
     while True:
         csv_data = controller.get_csv()
-
         if csv_data is not None:
-            logger.debug(len(csv_data))
             await websocket.send(csv_data)
 
 @app.websocket('/temp')
