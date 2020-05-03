@@ -150,7 +150,7 @@ def hello_world():
 async def csv():
     while True:
         csv_data = controller.get_csv()
-        print(csv_data)
+        logger.debug(len(csv_data))
         if csv_data is not None:
             await websocket.send(csv_data)
 
