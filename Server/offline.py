@@ -74,6 +74,7 @@ class OfflineFunctions:
             temp = hardware.read_temperature("temp_tank")[0]
             temp_rounded = round(temp, 2)
             logger.debug(f"Current Offline Temperature: {temp}")
+            logger.debug(f"Rounded Temperature: {temp_rounded}")
             self.csv.append_row(timestamp=pandas.Timestamp.utcnow(), temp=temp_rounded)
         except:
             logger.exception("Temperature Monitoring Failed")
