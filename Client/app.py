@@ -1,5 +1,6 @@
 from time import gmtime, strftime
 from PyQt5 import QtWidgets, QtWebSockets
+from PyQt5.QtWidgets import QWidget, QGridLayout
 from PyQt5 import QtCore, QtNetwork
 from PyQt5.QtCore import QTime, QUrl, QEventLoop
 from form import Ui_Form
@@ -13,7 +14,11 @@ import pandas
 from pandas import errors
 import io
 import schedule
+import datetime
 from PyQt5.QtCore import QFile, QTextStream
+import datetime
+import time
+import numpy as np
 from PyQt5.QtWidgets import QApplication
 from BreezeStyleSheets import breeze_resources
 from dateaxisitem import DateAxisItem
@@ -49,7 +54,8 @@ class App(object):
         self.df = None
         self.data = None
         self.temp_data = None
-        schedule.every().second.do(self.update_plot_data)
+        #schedule.every().second.do(self.update_plot_data)
+        schedule.every().second.do(self.graph_display)###
         schedule.every().second.do(self.temp_display)
 
         self.calibration_data = {
@@ -131,33 +137,30 @@ class App(object):
         self.form.sys_setting_test_pushButton.clicked.connect(self.email_test)
         self.form.sys_setting_update_pushButton.clicked.connect(self.update)
         self.form.alert_limit_spinBox.valueChanged.connect(self.save_email_alert)
+        #self.temperature_graph = TemperatureWidget()
+        #self.plot = pg.PlotWidget(self.form.temperatureGraph)
 
+        parent = self.form.temperatureGraph.parent()
+        geom_object = self.form.temperatureGraph.frameGeometry()
+        geometry = QtCore.QRect(geom_object.left(), geom_object.top(), geom_object.width(), geom_object.height())
+        object_name = self.form.temperatureGraph.objectName()
 
-        try:
-            self.graphWidget = pg.PlotWidget(self.form.temperatureGraph)
+        del self.form.temperatureGraph
 
-            # self.setCentralWidget(self.form.temperatureGraph)
+        self.plot = pg.PlotWidget(
+            parent,
+            title="Aquarium Temperature",
+            labels={'left': 'Temperature / °C'},
+            axisItems={'bottom': TimeAxisItem(orientation='bottom')}
+        )
+        self.plot.setGeometry(geometry)
+        self.plot.setObjectName(object_name)
 
-            # self.x = list(range(61))  # 60 time points
-            # self.y = [randint(20, 25) for i in range(61)]  # 60 data points
-            # self.x = list(range(61))
-            # self.y = [2 for i in range(61)]
-            graphrange = [0 for i in range(15)]
-            self.x = graphrange
-            self.y = graphrange
+        self.plot.showGrid(x=True, y=True)
 
-            self.graphWidget.setBackground('k')
-            self.graphWidget.setGeometry(QtCore.QRect(0, 0, 731, 361))
-            self.graphWidget.setLabel('left', 'Temperature (°C)', color='red', size=30)
-            self.graphWidget.setLabel('bottom', 'Seconds (S)', color='red', size=30)
-            self.graphWidget.showGrid(x=True, y=True)
-            pen = pg.mkPen(color=(0, 0, 255), width=2)
-        except:
-            logger.exception("Couldn't Draw Graph")
-
-        #self.data_line = self.graphWidget.plot(self.x, self.y, pen=pen, symbol='o', symbolSize=10, symbolBrush='c')
-        self.data_line = self.graphWidget.plot(self.x, self.y, pen=pen)
-
+        self.plotCurve = self.plot.plot(pen='y')
+        self.plotData = {'x': [], 'y': []}
+        
         self.load_config()
         self.load_server()
 
@@ -166,47 +169,24 @@ class App(object):
         # self.timer.timeout.connect(self.update_plot_data)
         # self.timer.start()
 
-    def update_plot_data(self):
+    def graph_display(self):
+        data = self.data.read()
         try:
-            if self.data is not None:
+            if data is not None:
+                self.data.seek(0)
                 self.df = pandas.read_csv(self.data, parse_dates=['timestamp'])
-                logger.debug(f"CSV Line Count: {len(self.df)}\n" 
-                             f"First Value Read: {self.df.head(1)}\n"
-                             f"Last Value Read: {self.df.tail(1)}")
                 self.y = self.df['temp'].to_numpy()
                 self.x = pandas.to_datetime(self.df['timestamp'])
                 self.x = [t.timestamp() for t in self.x]
-                self.data_line.setData(self.x, self.y)
-                #axis = DateAxisItem(orientation='bottom')
-                #axis.attachToPlotItem(self.graphWidget.getPlotItem())
-
-                self.graphWidget.showGrid(x=False, y=False)
-                self.graphWidget.showGrid(x=True, y=True)
-
-                #logger.info("CSV Data Loaded")
-                #logger.info(f"{self.df}")
+                self.x = [round(t) for t in self.x]
+                self.plotData['x'] = self.x
+                self.plotData['y'] = self.y
+                self.plotCurve.setData(self.plotData['x'], self.plotData['y'])
+        except pandas.errors.EmptyDataError:
+            logger.warning("No Graph Data")
         except:
             logger.exception("Couldn't Update Plot Data")
 
-        #temp_graph_data =
-        """
-        self.x = self.x[1:]  # Remove the first y element.
-        self.x.append(self.x[-1] + 1)  # Add a new value 1 higher than the last.
-        self.y = self.y[1:]  # Remove the first
-        #self.y.append(randint(0, 100))  # Add a new random value.
-        temp = float(self.temp_c)
-        self.y.append(temp)
-
-        self.data_line.setData(self.x, self.y)  # Update the data.
-
-        try:
-            data = float(self.temp_c)
-            curve = pg.PlotDataItem(data)
-            data = np.roll(data, 1)  # scroll data
-            curve.setData(data)  # re-plot
-        except:
-            logger.exception("shit")
-        """
 
     def temp_display(self):
         data = self.data.read()
@@ -441,12 +421,15 @@ class App(object):
         pass
 
     def ws_receive(self, csv):
-        self.data = io.StringIO(csv)
-        logger.debug(len(csv))
+        try:
+            self.data = io.StringIO(csv)
+        #logger.debug(len(csv))
+        except:
+            logger.debug("stringio error")
         try:
             schedule.run_pending()
         except:
-            logger.exception("fucked it")
+            logger.exception("schedule run error")
 
     """
     def ws_receive(self, text):
@@ -489,6 +472,21 @@ class App(object):
         return
 
 
+class TimeAxisItem(pg.AxisItem):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.setLabel(text='Time', units=None)
+        self.enableAutoSIPrefix(False)
+
+    def tickStrings(self, values, scale, spacing):
+        try:
+            #print(list(datetime.datetime.fromtimestamp(value).strftime("%d-%m-%y %H:%M") for value in values))
+            for value in values:
+                a = datetime.datetime.fromtimestamp(value).strftime("%d-%m-%y %H:%M")
+                #print(a)
+            return [datetime.datetime.fromtimestamp(value).strftime("%d-%m-%Y %H:%M") for value in values]
+        except:
+            logger.exception("tickStrings")
 def main():
     App().run()
 

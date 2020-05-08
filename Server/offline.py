@@ -86,7 +86,7 @@ class RotatingCsvData:
         self.last_df_save = datetime.datetime.utcnow()
         self.load_graph_data()
         self.save_interval = datetime.timedelta(seconds=10)
-        self.line_limit = 3000
+        self.line_limit = 36000
         self.line_count = None
         lock_path = self.file_name+".lock"
         self.lock = FileLock(lock_path)
@@ -134,7 +134,7 @@ class RotatingCsvData:
             logger.success("Rotating CSV data")
             logger.debug(f"CSV Line Count: {self.line_count}")
             """
-        else:
+        else:  # if line count is lower than the limit, it wont rotate the data
             logger.warning("CSV Data not Rotated")
             logger.debug(f"CSV Line Count: {self.line_count}")
         if elapsed_time > self.save_interval:
