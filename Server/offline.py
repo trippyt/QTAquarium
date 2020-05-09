@@ -9,6 +9,7 @@ import time
 import subprocess
 import psutil
 from filelock import Timeout, FileLock
+from hurry.filesize import size
 
 hardware = Hardware()
 
@@ -73,8 +74,12 @@ class OfflineFunctions:
         try:
             temp = hardware.read_temperature("temp_tank")[0]
             temp_rounded = round(temp, 2)
+            path = 'graph_data.csv'
+            csv_bytes = os.path.getsize(path)
+            csv_size = size(csv_bytes)
             logger.debug(f"Current Offline Temperature: {temp}")
             logger.debug(f"Rounded Temperature: {temp_rounded}")
+            logger.debug(f"CSV Data File Size: {csv_size}")
             self.csv.append_row(timestamp=pandas.Timestamp.utcnow(), temp=temp_rounded)
         except:
             logger.exception("Temperature Monitoring Failed")
