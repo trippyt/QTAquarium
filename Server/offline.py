@@ -10,6 +10,7 @@ import subprocess
 import psutil
 from filelock import Timeout, FileLock
 from hurry.filesize import size
+import w1thermsensor
 
 hardware = Hardware()
 
@@ -81,6 +82,8 @@ class OfflineFunctions:
             logger.debug(f"Rounded Temperature: {temp_rounded}")
             logger.debug(f"CSV Data File Size: {csv_size}")
             self.csv.append_row(timestamp=pandas.Timestamp.utcnow(), temp=temp_rounded)
+        except w1thermsensor.errors.SensorNotReadyError:
+            logger.critical("Sensor Not Ready")
         except:
             logger.exception("Temperature Monitoring Failed")
 
