@@ -179,15 +179,11 @@ class AquariumController:
             except ZeroDivisionError:
                 dosage = 0
             ratiodict[value + '_dosage'] =  "{:.2f}".format(float(dosage))
-
             #if dosage != 0 else 0
             self.ratio_data = ratiodict
         logger.info(f"Dict Data: {ratiodict}")
         self.save()
-        #for key in ratiodict:
-        #    ratio_data["Ratio Data"].update(
-        #        f"{key}"
-        #    )
+
 
     def ratios(self, ratio_results):
         logger.info(f"Ratio: {ratio_results}")

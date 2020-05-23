@@ -89,6 +89,13 @@ please do the following checks:
 graph
 - temp at what time and date
 
+List Of Sensors:
+- Temperature probe - DS18b20
+- temp/humidity probe - DHT22
+- float sensors x6 -https://www.amazon.co.uk/Water-Sensor-Horizontal-Liquid-Switch/dp/B00CFSWMLU/ref=sr_1_7?dchild=1&keywords=float+sensor&qid=1589130847&s=kitchen&sr=1-7
+-backup float sensor x1
+- Non Contact Water sensor - https://www.amazon.co.uk/SODIAL-12-24V-Non-contact-Liquid-Container/dp/B0725S85QK/ref=pd_sbs_60_7?_encoding=UTF8&pd_rd_i=B0725S85QK&pd_rd_r=cda245d5-9519-488a-9247-972aaab53c46&pd_rd_w=AoyUb&pd_rd_wg=ovfTJ&pf_rd_p=2773aa8e-42c5-4dbe-bda8-5cdf226aa078&pf_rd_r=AEQQQKN029Q9BAAY01T7&psc=1&refRID=AEQQQKN029Q9BAAY01T7
+- Dose Pumps x3 -https://www.amazon.co.uk/dp/B07HHT7CD1/?coliid=IWE44WELTO92E&colid=2I7IBH5JLBU1C&psc=1&ref_=lv_ov_lig_dp_it
 
 
 

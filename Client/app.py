@@ -102,7 +102,6 @@ class App(object):
         except:
             logger.exception("Couldn't Load Style Sheet")
 
-
         self.ratio_displays = [self.form.Tank, self.form.Co2_ratio,
                                self.form.Co2_water, self.form.Fertilizer_ratio,
                                self.form.Fertilizer_water, self.form.WaterConditioner_ratio,
@@ -137,8 +136,17 @@ class App(object):
         self.form.sys_setting_test_pushButton.clicked.connect(self.email_test)
         self.form.sys_setting_update_pushButton.clicked.connect(self.update)
         self.form.alert_limit_spinBox.valueChanged.connect(self.save_email_alert)
+        #self.form.aquaPi_calendarWidget.selectionChanged.connect(self.aquaPi_schedules)
         #self.temperature_graph = TemperatureWidget()
         #self.plot = pg.PlotWidget(self.form.temperatureGraph)
+        self.aquaPi_schedules = {}
+        self.aquaPi_hours_list = [self.form.hours_0, self.form.hours_1, self.form.hours_2, self.form.hours_3,
+                                  self.form.hours_4, self.form.hours_5, self.form.hours_6, self.form.hours_7,
+                                  self.form.hours_8, self.form.hours_9, self.form.hours_10, self.form.hours_11,
+                                  self.form.hours_12, self.form.hours_13, self.form.hours_14, self.form.hours_15,
+                                  self.form.hours_16, self.form.hours_17, self.form.hours_18, self.form.hours_19,
+                                  self.form.hours_20, self.form.hours_21, self.form.hours_22, self.form.hours_23]
+        self.form.hour_save_button.clicked.connect(self.save_aquaPi_schedules)
 
         parent = self.form.temperatureGraph.parent()
         geom_object = self.form.temperatureGraph.frameGeometry()
@@ -169,12 +177,33 @@ class App(object):
         # self.timer.timeout.connect(self.update_plot_data)
         # self.timer.start()
 
+    def save_aquaPi_schedules(self):
+        hour_results = [hour.isChecked() for hour in self.aquaPi_hours_list]
+        hour_0, hour_1, hour_2, hour_3, hour_4, hour_5, hour_6, hour_7, hour_8, hour_9, hour_10, hour_11, \
+        hour_12, hour_13, hour_14, hour_15, hour_16, hour_17, hour_18, hour_19, hour_20, hour_21, hour_22, \
+        hour_23 = hour_results
+        a = [index for index, val in enumerate(hour_results) if val]
+        print(f"Selected Hours = {a}")
+        """
+        date = self.form.aquaPi_calendarWidget.selectedDate().toString("dd-MM-yyyy")
+        does_operation = self.form.hour_comboBox.currentText()
+        run_operation_on = for True in hour_results
+        print(f"On {date}, {does_operation} Will run at {run_operation_on}")
+        print(hour_results)
+        print(hour_10)"""
+
+
+        #a = self.form.hours_0.isChecked()
+        #print(a)
+        #hours =
+
     def graph_display(self):
         data = self.data.read()
         try:
             if data is not None:
                 self.data.seek(0)
                 self.df = pandas.read_csv(self.data, parse_dates=['timestamp'])
+                self.df = self.df[np.abs(self.df['temp']) < 100]
                 self.y = self.df['temp'].to_numpy()
                 self.x = pandas.to_datetime(self.df['timestamp'])
                 self.x = [t.timestamp() for t in self.x]
@@ -204,6 +233,13 @@ class App(object):
         logger.info("=" * 125)
         resp = requests.get(url=f"{self.server_ip}/getServerData")
         self.new_data = json.loads(resp.content)
+        """try:
+            resp = requests.get(url=f"{self.server_ip}/getServerData")
+            self.new_data = json.loads(resp.content)
+            return schedule.cancel_job(self.load_server())
+        except requests.exceptions.ConnectionError:
+            logger.critical("Server Not Responding")
+            schedule.every().minute.do(self.load_server())"""
         try:
             logger.debug("Loading 'data.txt' From Server")
             if resp.json() is None:

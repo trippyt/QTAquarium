@@ -11,6 +11,8 @@ import psutil
 from filelock import Timeout, FileLock
 from hurry.filesize import size
 import w1thermsensor
+import sqlite3
+from sqlite3 import Error
 
 hardware = Hardware()
 
@@ -19,9 +21,16 @@ class OfflineFunctions:
     def __init__(self):
         self.__sysStat = None
         self.utc_now = pandas.Timestamp.utcnow()
-        self.temp_c = hardware.read_temperature("temp_tank")[0]
+        temp_c = hardware.read_temperature("temp_tank")[0]
+        temp_f = hardware.read_temperature("temp_tank")[1]
+        self.temp_c = round(temp_c, 2)
+        self.temp_f = round(temp_f, 2)
         self.csv = RotatingCsvData(columns=['timestamp', 'temp'])
         self.server_boot_time = datetime.datetime.utcnow()
+        self.datetimenow = datetime.datetime.utcnow()
+        self.entities = (self.datetimenow.strftime("%d-%m-%y"), self.datetimenow.strftime("%H:%M:%S"), self.temp_c,
+                    self.temp_f)
+        self.con = self.sql_connection()
 
     def start_server(self):
         for proc in psutil.process_iter(['pid', 'name', 'username', 'cmdline']):
@@ -70,6 +79,25 @@ class OfflineFunctions:
         sysStat.networkCount = len(sysStat.networkStats)
         return self.__sysStat
     """
+    def sql_connection(self):
+        try:
+            con = sqlite3.connect('AquaPiDB.db')
+            logger.debug("Connection is established: Database has been created ")
+            return con
+        except Error:
+            logger.exception(Error)
+
+    def sql_table(self, con):
+        cursorObj = con.cursor()
+        cursorObj.execute("CREATE TABLE tank_temperature(date datetime, time datetime, temperature_c float,"
+                          " temperature_f float)")
+        con.commit()
+
+    def sql_insert(self, con, entities):
+        cursorObj = con.cursor()
+        cursorObj.execute(
+            '''INSERT INTO tank_temperature VALUES(?, ?, ?, ?)''', entities)
+        con.commit()
 
     def monitor_temperature(self):
         try:
@@ -82,6 +110,8 @@ class OfflineFunctions:
             logger.debug(f"Rounded Temperature: {temp_rounded}")
             logger.debug(f"CSV Data File Size: {csv_size}")
             self.csv.append_row(timestamp=pandas.Timestamp.utcnow(), temp=temp_rounded)
+
+            self.sql_insert(con=self.con, entities=self.entities)
         except w1thermsensor.errors.SensorNotReadyError:
             logger.critical("Sensor Not Ready")
         except:
@@ -168,6 +198,8 @@ class RotatingCsvData:
 offline_funcs = OfflineFunctions()
 schedule.every(2).minutes.do(offline_funcs.check_server)
 schedule.every().second.do(offline_funcs.monitor_temperature)
+con = offline_funcs.sql_connection()
+offline_funcs.sql_table(con=con)
 try:
     while True:
         schedule.run_pending()
