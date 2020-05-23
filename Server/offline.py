@@ -26,6 +26,7 @@ class OfflineFunctions:
         self.csv = RotatingCsvData(columns=['timestamp', 'temp'])
         self.server_boot_time = datetime.datetime.utcnow()
         self.datetimenow = datetime.datetime.utcnow()
+        self.con = self.sql_connection()
 
     def start_server(self):
         for proc in psutil.process_iter(['pid', 'name', 'username', 'cmdline']):
