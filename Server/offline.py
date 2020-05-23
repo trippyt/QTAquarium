@@ -11,8 +11,8 @@ import psutil
 from filelock import Timeout, FileLock
 from hurry.filesize import size
 import w1thermsensor
-import sqlite3
-from sqlite3 import Error
+import psycopg2
+from psycopg2 import Error
 
 hardware = Hardware()
 
@@ -26,9 +26,6 @@ class OfflineFunctions:
         self.csv = RotatingCsvData(columns=['timestamp', 'temp'])
         self.server_boot_time = datetime.datetime.utcnow()
         self.datetimenow = datetime.datetime.utcnow()
-        self.entities = (self.datetimenow.strftime("%d-%m-%y"), self.datetimenow.strftime("%H:%M:%S"), self.temp_c,
-                         self.temp_f)
-        self.con = self.sql_connection()
 
     def start_server(self):
         for proc in psutil.process_iter(['pid', 'name', 'username', 'cmdline']):
@@ -80,7 +77,7 @@ class OfflineFunctions:
 
     def sql_connection(self):
         try:
-            con = sqlite3.connect('AquaPiDB.db')
+            con = psycopg2.connect(host="192.168.1.33", database="AquaPiDB", user="postgres", password="aquaPi")
             logger.debug("Connection is established: Database has been created ")
             return con
         except Error:

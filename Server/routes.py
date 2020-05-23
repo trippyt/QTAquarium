@@ -153,6 +153,13 @@ async def csv():
         if csv_data is not None:
             await websocket.send(csv_data)
 
+@app.websocket('/db')
+async def csv():
+    while True:
+        db_data = controller.get_db()
+        if db_data is not None:
+            await websocket.send(db_data)
+
 @app.websocket('/temp')
 async def temp():
     while True:

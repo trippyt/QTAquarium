@@ -13,6 +13,9 @@ from time import gmtime, strftime
 from AquariumHardware2 import Hardware
 from email_alert import EmailAlerts
 
+import sqlite3
+from sqlite3 import Error
+
 
 class CalibrationCancelled (Exception):
     pass
@@ -32,6 +35,9 @@ class AquariumController:
         self.file_name = 'graph_data.csv'
         lock_path = self.file_name+".lock"
         self.lock = FileLock(lock_path)
+
+        self.con = self.sql_connection()
+        self.cursorObj = self.con.cursor()
 
         self.calibration_data = {
                 "Co2 Calibration Data": {},
@@ -327,6 +333,18 @@ class AquariumController:
                     return csv_file.read()
         except Timeout:
             logger.warning("Another instance of this application currently holds the lock.")
+
+    def get_db(self):
+        db = self.cursorObj.execute("SELECT * FROM tank_temperature")
+        return db
+
+    def sql_connection(self):
+        try:
+            con = sqlite3.connect('AquaPiDB.db')
+            logger.debug("Connection is established to Database")
+            return con
+        except Error:
+            logger.exception(Error)
 
     def update(self):
         g = git.cmd.Git("/home/pi/QTAquarium/")
