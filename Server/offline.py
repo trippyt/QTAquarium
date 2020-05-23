@@ -21,10 +21,8 @@ class OfflineFunctions:
     def __init__(self):
         self.__sysStat = None
         self.utc_now = pandas.Timestamp.utcnow()
-        temp_c = hardware.read_temperature("temp_tank")[0]
-        temp_f = hardware.read_temperature("temp_tank")[1]
-        self.temp_c = round(temp_c, 2)
-        self.temp_f = round(temp_f, 2)
+        self.temp_c = 0
+        self.temp_f = 0
         self.csv = RotatingCsvData(columns=['timestamp', 'temp'])
         self.server_boot_time = datetime.datetime.utcnow()
         self.datetimenow = datetime.datetime.utcnow()
@@ -101,6 +99,7 @@ class OfflineFunctions:
 
     def monitor_temperature(self):
         try:
+            """
             temp = hardware.read_temperature("temp_tank")[0]
             temp_rounded = round(temp, 2)
             path = 'graph_data.csv'
@@ -109,12 +108,17 @@ class OfflineFunctions:
             logger.debug(f"Current Offline Temperature: {temp}")
             logger.debug(f"Rounded Temperature: {temp_rounded}")
             logger.debug(f"CSV Data File Size: {csv_size}")
-            self.csv.append_row(timestamp=pandas.Timestamp.utcnow(), temp=temp_rounded)
-
+            # self.csv.append_row(timestamp=pandas.Timestamp.utcnow(), temp=temp_rounded)
+            """
+            temp_c = hardware.read_temperature("temp_tank")[0]
+            temp_f = hardware.read_temperature("temp_tank")[1]
+            self.temp_c = round(temp_c, 2)
+            self.temp_f = round(temp_f, 2)
+            logger.debug(f"Current Temperature Reading: {temp_c}°C/{temp_f}°F")
             self.sql_insert(con=self.con, entities=self.entities)
         except w1thermsensor.errors.SensorNotReadyError:
             logger.critical("Sensor Not Ready")
-        except:
+        except Error:
             logger.exception("Temperature Monitoring Failed")
 
 
