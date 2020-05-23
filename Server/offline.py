@@ -93,7 +93,7 @@ class OfflineFunctions:
     def sql_insert(self, con, entities):
         cursorObj = con.cursor()
         cursorObj.execute(
-            '''INSERT INTO tank_temperature VALUES(?, ?, ?, ?)''', entities)
+            '''INSERT INTO tank_temperature VALUES(%s, %s, %s, %s)''', entities)
         con.commit()
 
     def monitor_temperature(self):
@@ -118,10 +118,10 @@ class OfflineFunctions:
                         self.temp_f)
             logger.debug(f"Current Temperature Reading: {self.temp_c}°C/{self.temp_f}°F")
             self.sql_insert(con=self.con, entities=entities)
-            path = 'AquaPiDB.db'
-            db_in_bytes = os.path.getsize(path)
-            db_size = size(db_in_bytes)
-            logger.debug(f"Current DataBase Size: {db_size}")
+            #path = 'AquaPiDB.db'
+            #db_in_bytes = os.path.getsize(path)
+            #db_size = size(db_in_bytes)
+            #logger.debug(f"Current DataBase Size: {db_size}")
         except w1thermsensor.errors.SensorNotReadyError:
             logger.critical("Sensor Not Ready")
         except Error:
