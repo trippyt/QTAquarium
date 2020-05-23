@@ -154,7 +154,7 @@ async def csv():
             await websocket.send(csv_data)
 
 @app.websocket('/db')
-async def csv():
+async def db():
     while True:
         db_data = controller.get_db()
         if db_data is not None:
