@@ -27,7 +27,7 @@ class OfflineFunctions:
         self.server_boot_time = datetime.datetime.utcnow()
         self.datetimenow = datetime.datetime.utcnow()
         self.entities = (self.datetimenow.strftime("%d-%m-%y"), self.datetimenow.strftime("%H:%M:%S"), self.temp_c,
-                    self.temp_f)
+                         self.temp_f)
         self.con = self.sql_connection()
 
     def start_server(self):
@@ -44,7 +44,7 @@ class OfflineFunctions:
             r = requests.get('http://localhost:5000')
             r.raise_for_status()  # Raises a HTTPError if the status is 4xx, 5xxx
             server_uptime = datetime.datetime.utcnow() - self.server_boot_time
-            #raspberry_pi_runtime = datetime.datetime.utcnow() - psutil.boot_time()
+            # raspberry_pi_runtime = datetime.datetime.utcnow() - psutil.boot_time()
         except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
             logger.critical("Server is Down")
             self.start_server()
@@ -53,7 +53,7 @@ class OfflineFunctions:
         else:
             # logger.info("All good!")  # Proceed to do stuff with `r`
             logger.success(f"Server Up-time: {server_uptime}")
-            #logger.debug(f"Raspberry Pi Runtime: {raspberry_pi_runtime}")
+            # logger.debug(f"Raspberry Pi Runtime: {raspberry_pi_runtime}")
             logger.debug(r.text)
 
     def getSysStat(self):
@@ -77,6 +77,7 @@ class OfflineFunctions:
         sysStat.networkCount = len(sysStat.networkStats)
         return self.__sysStat
     """
+
     def sql_connection(self):
         try:
             con = sqlite3.connect('AquaPiDB.db')
@@ -114,7 +115,7 @@ class OfflineFunctions:
             temp_f = hardware.read_temperature("temp_tank")[1]
             self.temp_c = round(temp_c, 2)
             self.temp_f = round(temp_f, 2)
-            logger.debug(f"Current Temperature Reading: {temp_c}°C/{temp_f}°F")
+            logger.debug(f"Current Temperature Reading: {self.temp_c}°C/{self.temp_f}°F")
             self.sql_insert(con=self.con, entities=self.entities)
         except w1thermsensor.errors.SensorNotReadyError:
             logger.critical("Sensor Not Ready")
@@ -132,7 +133,7 @@ class RotatingCsvData:
         self.save_interval = datetime.timedelta(seconds=10)
         self.line_limit = 36000
         self.line_count = None
-        lock_path = self.file_name+".lock"
+        lock_path = self.file_name + ".lock"
         self.lock = FileLock(lock_path)
 
     def save_graph_data(self):
@@ -148,8 +149,6 @@ class RotatingCsvData:
         finally:
             self.lock.release()
             logger.success(f"File: {self.file_name}, UnLocked")
-
-
 
     def load_graph_data(self):
         if not os.path.isfile(self.file_name):
