@@ -115,8 +115,7 @@ class OfflineFunctions:
             self.temp_c = round(temp_c, 2)
             self.temp_f = round(temp_f, 2)
             self.datetimenow = datetime.datetime.utcnow()
-            entities = (self.datetimenow.strftime("%d-%m-%y"), self.datetimenow.strftime("%H:%M:%S"), self.temp_c,
-                        self.temp_f)
+            entities = (self.datetimenow, self.temp_c, self.temp_f)
             logger.debug(f"Current Temperature Reading: {self.temp_c}°C/{self.temp_f}°F")
             self.sql_insert(con=self.con, entities=entities)
             #path = 'AquaPiDB.db'
