@@ -93,7 +93,8 @@ class OfflineFunctions:
     def sql_insert(self, con, entities):
         cursorObj = con.cursor()
         cursorObj.execute(
-            '''INSERT INTO tank_temperature VALUES(%s, %s, %s, %s)''', entities)
+            '''INSERT INTO tank_temperature (date, time, temperature_c, temperature_f) VALUES(%s, %s, %s, %s)''',
+            entities)
         con.commit()
 
     def monitor_temperature(self):
