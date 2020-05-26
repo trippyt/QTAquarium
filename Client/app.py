@@ -13,7 +13,7 @@ import pyqtgraph as pg
 import pandas
 from pandas import errors
 import io
-import schedule
+# import schedule
 import datetime
 from PyQt5.QtCore import QFile, QTextStream
 import datetime
@@ -22,7 +22,11 @@ import numpy as np
 from PyQt5.QtWidgets import QApplication
 from BreezeStyleSheets import breeze_resources
 from dateaxisitem import DateAxisItem
-
+import psycopg2
+from psycopg2 import Error
+import asyncio
+import asyncpgsa
+import aioschedule as schedule
 
 """
 class InfoHandler(logging.Handler):  # inherit from Handler class
@@ -49,13 +53,15 @@ class App(object):
     def __init__(self):
         self.ip_address = "192.168.1.33"
         self.ip_port = "5000"
-        self.server_ip = "http://" + self.ip_address + ":" + self.ip_port
+        self.db_user = "postgres"
+        self.db_pass = "aquaPi"
+        self.server_ip = f"http://{self.ip_address}:{self.ip_port}"
         self.nam = QtNetwork.QNetworkAccessManager()
         self.df = None
         self.data = None
         self.temp_data = None
-        #schedule.every().second.do(self.update_plot_data)
-        schedule.every().second.do(self.graph_display)###
+        # schedule.every().second.do(self.update_plot_data)
+        schedule.every().second.do(self.graph_display)  ###
         schedule.every().second.do(self.temp_display)
 
         self.calibration_data = {
@@ -115,15 +121,15 @@ class App(object):
         # logger.add(sys.stdout, colorize=True, format="<green>{time}</green> <level>{message}</level>")
         # log_decorate = logger.level("Decorator", no=38, color="<yellow>", icon="🐍")
 
-        self.client = QtWebSockets.QWebSocket("", QtWebSockets.QWebSocketProtocol.Version13, None)
-        self.client.error.connect(self.on_error)
-        self.client.open(QUrl(f"ws://{self.ip_address}:5000/csv"))
-        self.client.pong.connect(self.ws_receive)
-        self.client.textMessageReceived.connect(self.ws_receive)
+        # self.client = QtWebSockets.QWebSocket("", QtWebSockets.QWebSocketProtocol.Version13, None)
+        # self.client.error.connect(self.on_error)
+        # self.client.open(QUrl(f"ws://{self.ip_address}:5000/csv"))
+        # self.client.pong.connect(self.ws_receive)
+        # self.client.textMessageReceived.connect(self.ws_receive)
 
-        #self.client.open(QUrl(f"ws://{self.ip_address}:5000/csv"))
-        #self.client.pong.connect(self.ws_receive2)
-        #self.client.textMessageReceived.connect(self.ws_receive2)
+        # self.client.open(QUrl(f"ws://{self.ip_address}:5000/csv"))
+        # self.client.pong.connect(self.ws_receive2)
+        # self.client.textMessageReceived.connect(self.ws_receive2)
 
         self.form.Co2_calibrateButton.clicked.connect(lambda: self.enter_calibrationMode("Co2"))
         self.form.save_ratios_pushButton.clicked.connect(self.save_ratios)
@@ -136,9 +142,9 @@ class App(object):
         self.form.sys_setting_test_pushButton.clicked.connect(self.email_test)
         self.form.sys_setting_update_pushButton.clicked.connect(self.update)
         self.form.alert_limit_spinBox.valueChanged.connect(self.save_email_alert)
-        #self.form.aquaPi_calendarWidget.selectionChanged.connect(self.aquaPi_schedules)
-        #self.temperature_graph = TemperatureWidget()
-        #self.plot = pg.PlotWidget(self.form.temperatureGraph)
+        # self.form.aquaPi_calendarWidget.selectionChanged.connect(self.aquaPi_schedules)
+        # self.temperature_graph = TemperatureWidget()
+        # self.plot = pg.PlotWidget(self.form.temperatureGraph)
         self.aquaPi_schedules = {}
         self.aquaPi_hours_list = [self.form.hours_0, self.form.hours_1, self.form.hours_2, self.form.hours_3,
                                   self.form.hours_4, self.form.hours_5, self.form.hours_6, self.form.hours_7,
@@ -168,16 +174,29 @@ class App(object):
 
         self.plotCurve = self.plot.plot(pen='y')
         self.plotData = {'x': [], 'y': []}
-        
+
         self.load_config()
         self.load_server()
 
-        # self.timer = QtCore.QTimer()
-        # self.timer.setInterval(2000)
-        # self.timer.timeout.connect(self.update_plot_data)
-        # self.timer.start()
+        #self.timer = QtCore.QTimer()
+        #self.timer.setInterval(10)
+        #self.timer.timeout.connect(self.sch_run)
+        #self.timer.start()
+
+        self.pool = None
+
+        #asyncio.run(self.sch_run())
+        #asyncio.get_event_loop().run_until_complete(self.sch_run())
+
+        #asyncio.get_event_loop().run_until_complete(
+        #    self.sch_run()
+        #)
+        #asyncio.get_event_loop().run_forever(self.tank_db())
+        asyncio.get_event_loop().create_task(self.sch_run())
+
 
     def save_aquaPi_schedules(self):
+        logger.info("=" * 125)
         hour_results = [hour.isChecked() for hour in self.aquaPi_hours_list]
         hour_0, hour_1, hour_2, hour_3, hour_4, hour_5, hour_6, hour_7, hour_8, hour_9, hour_10, hour_11, \
         hour_12, hour_13, hour_14, hour_15, hour_16, hour_17, hour_18, hour_19, hour_20, hour_21, hour_22, \
@@ -192,42 +211,95 @@ class App(object):
         print(hour_results)
         print(hour_10)"""
 
+        # a = self.form.hours_0.isChecked()
+        # print(a)
+        # hours =
 
-        #a = self.form.hours_0.isChecked()
-        #print(a)
-        #hours =
-
-    def graph_display(self):
-        data = self.data.read()
+    async def sql_connection(self):
+        logger.info("=" * 125)
+        logger.info("sql_connection: Entered".center(125))
         try:
-            if data is not None:
-                self.data.seek(0)
-                self.df = pandas.read_csv(self.data, parse_dates=['timestamp'])
-                self.df = self.df[np.abs(self.df['temp']) < 100]
-                self.y = self.df['temp'].to_numpy()
-                self.x = pandas.to_datetime(self.df['timestamp'])
+            pool = await asyncpgsa.create_pool(
+                host=self.ip_address,
+                database="AquaPiDB",
+                user=self.db_user,
+                password=self.db_pass
+            )
+            logger.debug("Connection is established: Database has been created ")
+            return pool
+        except Error:
+            logger.exception(Error)
+        finally:
+            logger.info("sql_connection: Exited".center(125))
+            logger.info("=" * 125)
+
+    async def tank_db(self):
+        logger.info("=" * 125)
+        logger.info("tank_db: Entered".center(125))
+        while True:
+            try:
+                if not self.pool:
+                    self.pool = await self.sql_connection()
+                async with self.pool.transaction() as conn:
+                    rows = await conn.fetch('SELECT * FROM tank_temperature')
+                    df = pandas.DataFrame(rows, columns=list(rows[0].keys()))
+                    logger.success(df)
+                return df
+            except:
+                logger.exception("tank_db Error")
+            finally:
+                logger.info("tank_db: Exited".center(125))
+                logger.info("=" * 125)
+
+    async def graph_display(self):
+        logger.info("=" * 125)
+        logger.info("graph_display: Entered".center(125))
+        try:
+            if not self.pool:
+                self.pool = await self.sql_connection()
+
+            t = time.time()
+            async with self.pool.transaction() as conn:
+                rows = await conn.fetch('SELECT * FROM tank_temperature')
+                # logger.debug(f"Con: {conn}")
+            logger.critical('Async')
+            logger.critical(time.time() - t)
+
+            t = time.time()
+            self.df = pandas.DataFrame(rows, columns=list(rows[0].keys()))
+            logger.critical('DF')
+            logger.critical(time.time() - t)
+
+            # logger.debug(f"Values: {self.df.dtypes}")
+            t = time.time()
+            if self.df is not None:
+                self.y = self.df['temperature_c'].to_numpy(dtype=float)
+                self.x = self.df['date']
                 self.x = [t.timestamp() for t in self.x]
                 self.x = [round(t) for t in self.x]
                 self.plotData['x'] = self.x
                 self.plotData['y'] = self.y
                 self.plotCurve.setData(self.plotData['x'], self.plotData['y'])
-        except pandas.errors.EmptyDataError:
-            logger.warning("No Graph Data")
+            logger.critical('Plotting')
+            logger.critical(time.time() - t)
         except:
-            logger.exception("Couldn't Update Plot Data")
+            logger.exception("oops")
+        finally:
+            logger.info("graph_display: Exited".center(125))
+            logger.info("=" * 125)
 
-
-    def temp_display(self):
-        data = self.data.read()
-        try:
-            if data is not None:
-                self.data.seek(0)
-                self.temp_data = pandas.read_csv(self.data)
-                c = self.temp_data['temp'].iat[-1]
-                self.form.tank_display_c.display(c)
-        except pandas.errors.EmptyDataError:
-            logger.debug(f"data = {data}")
-            logger.warning("No columns to parse from file")
+    async def temp_display(self):
+        logger.info("=" * 125)
+        logger.info("temp_display: Entered".center(125))
+        if self.df is not None:
+            c = self.df['temperature_c'].iat[-1]
+            f = self.df['temperature_f'].iat[-1]
+            self.form.tank_display_c.display(c)
+            self.form.tank_display_f.display(f)
+            logger.debug(f"°C: {c}")
+            logger.debug(f"°F: {f}")
+        logger.info("temp_display: Exited".center(125))
+        logger.info("=" * 125)
 
     def load_server(self):
         logger.info("=" * 125)
@@ -456,16 +528,24 @@ class App(object):
     def graph_test(self):
         pass
 
+    async def sch_run(self):
+        try:
+            #asyncio.get_event_loop().run_until_complete(schedule.run_pending())
+            #asyncio.run(schedule.run_pending())
+            while True:
+                await schedule.run_pending()
+        except:
+            logger.exception("schedule run error")
+        #while True:
+        #  await schedule.run_pending()
+        #  await asyncio.sleep(0.1)
+
     def ws_receive(self, csv):
         try:
             self.data = io.StringIO(csv)
-        #logger.debug(len(csv))
+        # logger.debug(len(csv))
         except:
             logger.debug("stringio error")
-        try:
-            schedule.run_pending()
-        except:
-            logger.exception("schedule run error")
 
     """
     def ws_receive(self, text):
@@ -504,6 +584,7 @@ class App(object):
         except:
             logger.exception("Alert :ERROR")
     """
+
     def on_error(self, error_code):
         return
 
@@ -516,17 +597,18 @@ class TimeAxisItem(pg.AxisItem):
 
     def tickStrings(self, values, scale, spacing):
         try:
-            #print(list(datetime.datetime.fromtimestamp(value).strftime("%d-%m-%y %H:%M") for value in values))
+            # print(list(datetime.datetime.fromtimestamp(value).strftime("%d-%m-%y %H:%M") for value in values))
             for value in values:
                 a = datetime.datetime.fromtimestamp(value).strftime("%d-%m-%y %H:%M")
-                #print(a)
+                # print(a)
             return [datetime.datetime.fromtimestamp(value).strftime("%d-%m-%Y %H:%M") for value in values]
         except:
             logger.exception("tickStrings")
+
+
 def main():
     App().run()
 
 
 if __name__ == '__main__':
     main()
-

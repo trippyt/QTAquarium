@@ -128,6 +128,13 @@ class OfflineFunctions:
             logger.exception("Temperature Monitoring Failed")
 
 
+class RotatingDataBase:
+    def __init__(self, database='AquaPiDB'):
+        self.database = database
+        self.df = None
+
+
+
 class RotatingCsvData:
     def __init__(self, file_name='graph_data.csv', columns=None):
         self.columns = columns
