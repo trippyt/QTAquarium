@@ -142,18 +142,16 @@ class OfflineFunctions:
             room_entities = (self.datetimenow, self.room_temp_c, self.room_temp_f, self.room_humidity)
             logger.debug(f"Current Room Reading: {self.room_temp_c}°C/{self.room_temp_f}°F - Humidity: "
                          f"{self.room_humidity}%")
-            if room is not None:
+            if None not in room:
                 self.sql_room_insert(con=self.con, entities=room_entities)
         except TypeError as error:
             logger.exception(error.args[0])
-
 
 
 class RotatingDataBase:
     def __init__(self, database='AquaPiDB'):
         self.database = database
         self.df = None
-
 
 
 class RotatingCsvData:
@@ -234,8 +232,8 @@ class RotatingCsvData:
 offline_funcs = OfflineFunctions()
 schedule.every(2).minutes.do(offline_funcs.check_server)
 schedule.every(2).seconds.do(offline_funcs.monitor_temperature)
-#con = offline_funcs.sql_connection()
-#offline_funcs.sql_table(con=con)
+# con = offline_funcs.sql_connection()
+# offline_funcs.sql_table(con=con)
 try:
     while True:
         schedule.run_pending()
