@@ -105,6 +105,7 @@ class OfflineFunctions:
         con.commit()
 
     def monitor_temperature(self):
+        self.datetimenow = datetime.datetime.utcnow()
         try:
             """
             temp = hardware.read_temperature("temp_tank")[0]
@@ -119,32 +120,32 @@ class OfflineFunctions:
             """
             tank_temp_c = hardware.read_temperature("temp_tank")[0]
             tank_temp_f = hardware.read_temperature("temp_tank")[1]
+            self.tank_temp_c = round(tank_temp_c, 2)
+            self.tank_temp_f = round(tank_temp_f, 2)
+            tank_entities = (self.datetimenow, self.tank_temp_c, self.tank_temp_f)
+            logger.debug(f"Current Tank Reading: {self.tank_temp_c}°C/{self.tank_temp_f}°F")
+
+            self.sql_tank_insert(con=self.con, entities=tank_entities)
+
+        except w1thermsensor.errors.SensorNotReadyError as error:
+            logger.critical(f"Sensor Not Ready: {error.args[0]}")
+        except Error:
+            logger.exception("Temperature Monitoring Failed")
+        try:
             room = hardware.room_temperature()
             logger.critical(room)
             room_temp_c = room['temp_c']
             room_temp_f = room['temp_f']
             room_humidity = room['humidity']
-            self.tank_temp_c = round(tank_temp_c, 2)
-            self.tank_temp_f = round(tank_temp_f, 2)
             self.room_temp_c = room_temp_c
             self.room_temp_f = room_temp_f
             self.room_humidity = room_humidity
-            self.datetimenow = datetime.datetime.utcnow()
-            tank_entities = (self.datetimenow, self.tank_temp_c, self.tank_temp_f)
             room_entities = (self.datetimenow, self.room_temp_c, self.room_temp_f, self.room_humidity)
-            logger.debug(f"Current Tank Reading: {self.tank_temp_c}°C/{self.tank_temp_f}°F")
             logger.debug(f"Current Room Reading: {self.room_temp_c}°C/{self.room_temp_f}°F - Humidity: "
-                         f"{self.room_humidity}%") 
-            self.sql_tank_insert(con=self.con, entities=tank_entities)
+                         f"{self.room_humidity}%")
             self.sql_room_insert(con=self.con, entities=room_entities)
-            #path = 'AquaPiDB.db'
-            #db_in_bytes = os.path.getsize(path)
-            #db_size = size(db_in_bytes)
-            #logger.debug(f"Current DataBase Size: {db_size}")
-        except w1thermsensor.errors.SensorNotReadyError:
-            logger.critical("Sensor Not Ready")
-        except Error:
-            logger.exception("Temperature Monitoring Failed")
+        except TimeoutError as error:
+            logger.exception(error.args[0])
 
 
 class RotatingDataBase:
