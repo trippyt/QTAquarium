@@ -229,7 +229,7 @@ class RotatingCsvData:
 
 offline_funcs = OfflineFunctions()
 schedule.every(2).minutes.do(offline_funcs.check_server)
-schedule.every().second.do(offline_funcs.monitor_temperature)
+schedule.every(2).seconds.do(offline_funcs.monitor_temperature)
 #con = offline_funcs.sql_connection()
 #offline_funcs.sql_table(con=con)
 try:
