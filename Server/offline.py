@@ -110,8 +110,14 @@ class OfflineFunctions:
         con.commit()
 
     def monitor_temperature(self):
-        self.tank_temperature()
-        self.room_temperature()
+        try:
+            self.tank_temperature()
+        except Exception as error:
+            logger.warning(error.args[0])
+        try:
+            self.room_temperature()
+        except Exception as error:
+            logger.warning(error.args[0])
 
     def tank_temperature(self):
         self.datetimenow = datetime.datetime.utcnow()
