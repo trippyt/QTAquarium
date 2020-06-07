@@ -134,7 +134,8 @@ class OfflineFunctions:
             logger.exception("Temperature Monitoring Failed")
         try:
             room = hardware.room_temperature()
-            if None not in room:
+            #if None not in room:
+            if room is not None:
                 room_temp_c = room['temp_c']
                 room_temp_f = room['temp_f']
                 room_humidity = room['humidity']
