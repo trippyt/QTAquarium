@@ -1,6 +1,6 @@
 import asyncio
 import logging
-import loguru as logger
+from loguru import logger
 #  import dht11
 import threading
 from time import sleep
