@@ -18,6 +18,16 @@ from psycopg2 import Error
 hardware = Hardware()
 
 
+def with_logging(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        print('LOG: Running job "%s"' % func.__name__)
+        result = func(*args, **kwargs)
+        print('LOG: Job "%s" completed' % func.__name__)
+        return result
+
+    return wrapper
+
 class OfflineFunctions:
     def __init__(self):
         self.__sysStat = None
@@ -161,15 +171,7 @@ class OfflineFunctions:
         except TypeError as error:
             logger.exception(error.args[0])
 
-    def with_logging(func):
-        @functools.wraps(func)
-        def wrapper(*args, **kwargs):
-            print('LOG: Running job "%s"' % func.__name__)
-            result = func(*args, **kwargs)
-            print('LOG: Job "%s" completed' % func.__name__)
-            return result
 
-        return wrapper
 
 
 class RotatingDataBase:
