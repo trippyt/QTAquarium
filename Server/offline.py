@@ -120,6 +120,7 @@ class OfflineFunctions:
             tank_temp_c = hardware.read_temperature("temp_tank")[0]
             tank_temp_f = hardware.read_temperature("temp_tank")[1]
             room = hardware.room_temperature()
+            logger.critical(room)
             room_temp_c = room['temp_c']
             room_temp_f = room['temp_f']
             room_humidity = room['humidity']
