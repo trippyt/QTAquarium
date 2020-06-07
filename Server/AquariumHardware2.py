@@ -65,7 +65,7 @@ class Hardware:
             result = sensor_dht.sample(samples=1)
             return result
         except TimeoutError as error:
-            print(error.args[0])
+            logger.warning(error.args[0])
 
 
     def pump_on(self, pump_type):
