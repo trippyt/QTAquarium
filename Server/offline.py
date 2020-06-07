@@ -5,6 +5,7 @@ import requests.exceptions
 from loguru import logger
 import datetime
 import schedule
+import functools
 import time
 import subprocess
 import psutil
@@ -42,6 +43,7 @@ class OfflineFunctions:
         logger.success("Server Started")
         logger.debug(f"Server Process Started at {self.server_boot_time}")
 
+    @with_logging
     def check_server(self):
         try:
             r = requests.get('http://localhost:5000')
@@ -109,6 +111,7 @@ class OfflineFunctions:
             entities)
         con.commit()
 
+    @with_logging
     def monitor_temperature(self):
         try:
             self.tank_temperature()
@@ -157,6 +160,16 @@ class OfflineFunctions:
                 self.sql_room_insert(con=self.con, entities=room_entities)
         except TypeError as error:
             logger.exception(error.args[0])
+
+    def with_logging(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            print('LOG: Running job "%s"' % func.__name__)
+            result = func(*args, **kwargs)
+            print('LOG: Job "%s" completed' % func.__name__)
+            return result
+
+        return wrapper
 
 
 class RotatingDataBase:
