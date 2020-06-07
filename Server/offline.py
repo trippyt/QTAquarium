@@ -117,7 +117,7 @@ class OfflineFunctions:
         self.datetimenow = datetime.datetime.utcnow()
         count = self.tank_read_count + 1
         self.tank_read_count = count
-        logger.info(f"Sensor Read Count: {self.tank_read_count}")
+        logger.info(f"Sensor Read Count - Tank: {self.tank_read_count}")
         try:
             tank_temp_c = hardware.read_temperature("temp_tank")[0]
             tank_temp_f = hardware.read_temperature("temp_tank")[1]
@@ -136,7 +136,7 @@ class OfflineFunctions:
             room = hardware.room_temperature()
             count = self.room_read_count + 1
             self.room_read_count = count
-            logger.info(f"Sensor Read Count: {self.room_read_count}")
+            logger.info(f"Sensor Read Count - Room: {self.room_read_count}")
             if room is not None:
                 self.datetimenow = datetime.datetime.utcnow()
                 room_temp_c = room['temp_c']
