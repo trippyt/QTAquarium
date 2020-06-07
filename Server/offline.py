@@ -119,9 +119,10 @@ class OfflineFunctions:
             """
             tank_temp_c = hardware.read_temperature("temp_tank")[0]
             tank_temp_f = hardware.read_temperature("temp_tank")[1]
-            room_temp_c = hardware.room_temperature['temp_c']
-            room_temp_f = hardware.room_temperature['temp_f']
-            room_humidity = hardware.room_temperature['humidity']
+            room = hardware.room_temperature()
+            room_temp_c = room['temp_c']
+            room_temp_f = room['temp_f']
+            room_humidity = room['humidity']
             self.tank_temp_c = round(tank_temp_c, 2)
             self.tank_temp_f = round(tank_temp_f, 2)
             self.room_temp_c = room_temp_c
