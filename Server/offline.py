@@ -23,7 +23,8 @@ class OfflineFunctions:
         self.utc_now = pandas.Timestamp.utcnow()
         self.tank_temp_c = 0
         self.tank_temp_f = 0
-        self.read_count = 0
+        self.tank_read_count = 0
+        self.room_read_count = 0
         self.room_temp_c = 0
         self.room_temp_f = 0
         self.room_humidity = 0
@@ -109,10 +110,14 @@ class OfflineFunctions:
         con.commit()
 
     def monitor_temperature(self):
+        self.tank_temperature()
+        self.room_temperature()
+
+    def tank_temperature(self):
         self.datetimenow = datetime.datetime.utcnow()
-        count = self.read_count + 1
-        self.read_count = count
-        logger.info(f"Sensor Read Count: {self.read_count}")
+        count = self.tank_read_count + 1
+        self.tank_read_count = count
+        logger.info(f"Sensor Read Count: {self.tank_read_count}")
         try:
             tank_temp_c = hardware.read_temperature("temp_tank")[0]
             tank_temp_f = hardware.read_temperature("temp_tank")[1]
@@ -125,9 +130,15 @@ class OfflineFunctions:
             logger.critical(f"Sensor Not Ready: {error.args[0]}")
         except Error:
             logger.exception("Temperature Monitoring Failed")
+
+    def room_temperature(self):
         try:
             room = hardware.room_temperature()
+            count = self.room_read_count + 1
+            self.room_read_count = count
+            logger.info(f"Sensor Read Count: {self.room_read_count}")
             if room is not None:
+                self.datetimenow = datetime.datetime.utcnow()
                 room_temp_c = room['temp_c']
                 room_temp_f = room['temp_f']
                 room_humidity = room['humidity']
@@ -154,7 +165,7 @@ class RotatingCsvData:
         self.file_name = file_name
         self.df = None
         self.last_df_save = datetime.datetime.utcnow()
-        #self.load_graph_data()
+        # self.load_graph_data()
         self.save_interval = datetime.timedelta(seconds=10)
         self.line_limit = 36000
         self.line_count = None
