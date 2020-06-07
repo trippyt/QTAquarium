@@ -24,6 +24,9 @@ class OfflineFunctions:
         self.tank_temp_c = 0
         self.tank_temp_f = 0
         self.read_count = 0
+        self.room_temp_c = 0
+        self.room_temp_f = 0
+        self.room_humidity = 0
         self.csv = RotatingCsvData(columns=['timestamp', 'temp'])
         self.server_boot_time = datetime.datetime.utcnow()
         self.datetimenow = datetime.datetime.utcnow()
@@ -132,8 +135,6 @@ class OfflineFunctions:
                 self.room_temp_f = room_temp_f
                 self.room_humidity = room_humidity
                 room_entities = (self.datetimenow, self.room_temp_c, self.room_temp_f, self.room_humidity)
-
-
                 logger.debug(f"Current Room Reading: {self.room_temp_c}°C/{self.room_temp_f}°F - Humidity: "
                              f"{self.room_humidity}%")
                 self.sql_room_insert(con=self.con, entities=room_entities)
@@ -153,7 +154,7 @@ class RotatingCsvData:
         self.file_name = file_name
         self.df = None
         self.last_df_save = datetime.datetime.utcnow()
-        self.load_graph_data()
+        #self.load_graph_data()
         self.save_interval = datetime.timedelta(seconds=10)
         self.line_limit = 36000
         self.line_count = None
