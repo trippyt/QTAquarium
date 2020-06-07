@@ -107,34 +107,23 @@ class OfflineFunctions:
 
     def monitor_temperature(self):
         self.datetimenow = datetime.datetime.utcnow()
+        count = self.read_count + 1
+        self.read_count = count
+        logger.info(f"Sensor Read Count: {self.read_count}")
         try:
-            """
-            temp = hardware.read_temperature("temp_tank")[0]
-            temp_rounded = round(temp, 2)
-            path = 'graph_data.csv'
-            csv_bytes = os.path.getsize(path)
-            csv_size = size(csv_bytes)
-            logger.debug(f"Current Offline Temperature: {temp}")
-            logger.debug(f"Rounded Temperature: {temp_rounded}")
-            logger.debug(f"CSV Data File Size: {csv_size}")
-            # self.csv.append_row(timestamp=pandas.Timestamp.utcnow(), temp=temp_rounded)
-            """
             tank_temp_c = hardware.read_temperature("temp_tank")[0]
             tank_temp_f = hardware.read_temperature("temp_tank")[1]
             self.tank_temp_c = round(tank_temp_c, 2)
             self.tank_temp_f = round(tank_temp_f, 2)
             tank_entities = (self.datetimenow, self.tank_temp_c, self.tank_temp_f)
             logger.debug(f"Current Tank Reading: {self.tank_temp_c}°C/{self.tank_temp_f}°F")
-
             self.sql_tank_insert(con=self.con, entities=tank_entities)
-
         except w1thermsensor.errors.SensorNotReadyError as error:
             logger.critical(f"Sensor Not Ready: {error.args[0]}")
         except Error:
             logger.exception("Temperature Monitoring Failed")
         try:
             room = hardware.room_temperature()
-            #if None not in room:
             if room is not None:
                 room_temp_c = room['temp_c']
                 room_temp_f = room['temp_f']
@@ -143,9 +132,8 @@ class OfflineFunctions:
                 self.room_temp_f = room_temp_f
                 self.room_humidity = room_humidity
                 room_entities = (self.datetimenow, self.room_temp_c, self.room_temp_f, self.room_humidity)
-                count = self.read_count+1
-                self.read_count = count
-                logger.info(f"Read Count: {self.read_count}")
+
+
                 logger.debug(f"Current Room Reading: {self.room_temp_c}°C/{self.room_temp_f}°F - Humidity: "
                              f"{self.room_humidity}%")
                 self.sql_room_insert(con=self.con, entities=room_entities)
