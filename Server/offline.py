@@ -133,16 +133,16 @@ class OfflineFunctions:
             logger.exception("Temperature Monitoring Failed")
         try:
             room = hardware.room_temperature()
-            room_temp_c = room['temp_c']
-            room_temp_f = room['temp_f']
-            room_humidity = room['humidity']
-            self.room_temp_c = room_temp_c
-            self.room_temp_f = room_temp_f
-            self.room_humidity = room_humidity
-            room_entities = (self.datetimenow, self.room_temp_c, self.room_temp_f, self.room_humidity)
-            logger.debug(f"Current Room Reading: {self.room_temp_c}°C/{self.room_temp_f}°F - Humidity: "
-                         f"{self.room_humidity}%")
             if None not in room:
+                room_temp_c = room['temp_c']
+                room_temp_f = room['temp_f']
+                room_humidity = room['humidity']
+                self.room_temp_c = room_temp_c
+                self.room_temp_f = room_temp_f
+                self.room_humidity = room_humidity
+                room_entities = (self.datetimenow, self.room_temp_c, self.room_temp_f, self.room_humidity)
+                logger.debug(f"Current Room Reading: {self.room_temp_c}°C/{self.room_temp_f}°F - Humidity: "
+                             f"{self.room_humidity}%")
                 self.sql_room_insert(con=self.con, entities=room_entities)
         except TypeError as error:
             logger.exception(error.args[0])
