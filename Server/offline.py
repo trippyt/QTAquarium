@@ -23,6 +23,7 @@ class OfflineFunctions:
         self.utc_now = pandas.Timestamp.utcnow()
         self.tank_temp_c = 0
         self.tank_temp_f = 0
+        self.read_count = 0
         self.csv = RotatingCsvData(columns=['timestamp', 'temp'])
         self.server_boot_time = datetime.datetime.utcnow()
         self.datetimenow = datetime.datetime.utcnow()
@@ -141,6 +142,9 @@ class OfflineFunctions:
                 self.room_temp_f = room_temp_f
                 self.room_humidity = room_humidity
                 room_entities = (self.datetimenow, self.room_temp_c, self.room_temp_f, self.room_humidity)
+                count = self.read_count+1
+                self.read_count = count
+                logger.info(f"Read Count: {self.read_count}")
                 logger.debug(f"Current Room Reading: {self.room_temp_c}°C/{self.room_temp_f}°F - Humidity: "
                              f"{self.room_humidity}%")
                 self.sql_room_insert(con=self.con, entities=room_entities)
