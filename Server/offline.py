@@ -144,6 +144,9 @@ class OfflineFunctions:
             logger.debug(f"Current Room Reading: {self.room_temp_c}°C/{self.room_temp_f}°F - Humidity: "
                          f"{self.room_humidity}%")
             self.sql_room_insert(con=self.con, entities=room_entities)
+        except TypeError as error:
+            logger.exception(error.args[0])
+
         except TimeoutError as error:
             logger.exception(error.args[0])
 
