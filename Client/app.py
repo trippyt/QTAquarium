@@ -1,7 +1,6 @@
 from time import gmtime, strftime
-from PyQt5 import QtWidgets, QtWebSockets
+from PyQt5 import QtWidgets, QtWebSockets, QtCore, QtNetwork
 from PyQt5.QtWidgets import QWidget, QGridLayout
-from PyQt5 import QtCore, QtNetwork
 from PyQt5.QtCore import QTime, QUrl, QEventLoop
 from form import Ui_Form
 import logging
@@ -27,6 +26,7 @@ from psycopg2 import Error
 import asyncio
 import asyncpgsa
 import aioschedule as schedule
+from asyncqt import QEventLoop, asyncSlot, asyncClose
 
 """
 class InfoHandler(logging.Handler):  # inherit from Handler class
@@ -47,6 +47,20 @@ class PropagateHandler(logging.Handler):
     def emit(self, record):
         logging.getLogger(record.name).handle(record)
         self.textBrowser.append(record.name).handle(record)
+
+
+class AsyncScheduleMainWindow(QtWidgets.QMainWindow):
+
+    @asyncSlot()
+    async def sch_run(self):
+        try:
+            await schedule.run_pending()
+        except:
+            logger.exception("schedule run error")
+        #while True:
+        #  await schedule.run_pending()
+        #  await asyncio.sleep(0.1)
+
 
 
 class App(object):
@@ -96,7 +110,7 @@ class App(object):
         self.calibration_mode_on = True
         self.app = QtWidgets.QApplication(sys.argv)
         self.central = QtWidgets.QWidget()
-        self.window = QtWidgets.QMainWindow()
+        self.window = AsyncScheduleMainWindow()
         self.form = Ui_Form()
         self.window.setCentralWidget(self.central)
         self.form.setupUi(self.central)
@@ -178,12 +192,13 @@ class App(object):
         self.load_config()
         self.load_server()
 
-        #self.timer = QtCore.QTimer()
-        #self.timer.setInterval(10)
-        #self.timer.timeout.connect(self.sch_run)
-        #self.timer.start()
+        self.timer = QtCore.QTimer()
+        self.timer.setInterval(1000)
+        self.timer.timeout.connect(self.window.sch_run)
+        self.timer.start()
 
         self.pool = None
+        self.rows = []
 
         #asyncio.run(self.sch_run())
         #asyncio.get_event_loop().run_until_complete(self.sch_run())
@@ -192,7 +207,7 @@ class App(object):
         #    self.sch_run()
         #)
         #asyncio.get_event_loop().run_forever(self.tank_db())
-        asyncio.get_event_loop().create_task(self.sch_run())
+        #asyncio.get_event_loop().create_task(self.sch_run())
 
 
     def save_aquaPi_schedules(self):
@@ -236,42 +251,36 @@ class App(object):
     async def tank_db(self):
         logger.info("=" * 125)
         logger.info("tank_db: Entered".center(125))
-        while True:
-            try:
-                if not self.pool:
-                    self.pool = await self.sql_connection()
-                async with self.pool.transaction() as conn:
+        try:
+            if not self.pool:
+                logger.critical('NEW POOL')
+                self.pool = await self.sql_connection()
+            async with self.pool.transaction() as conn:
+                if not self.rows:
+                    logger.warning("Rows Empty, Fetching Whole DB")
                     rows = await conn.fetch('SELECT * FROM tank_temperature')
-                    df = pandas.DataFrame(rows, columns=list(rows[0].keys()))
-                    logger.success(df)
-                return df
-            except:
-                logger.exception("tank_db Error")
-            finally:
-                logger.info("tank_db: Exited".center(125))
-                logger.info("=" * 125)
+                else:
+                    last_id = self.rows[-1]['id']
+                    rows = await conn.fetch(f'SELECT * FROM tank_temperature WHERE id > {last_id}')
+                    logger.debug(f"DB still in Memory, last row id := {last_id}")
+                    logger.success(f"New DB Data Received: {rows}")
+                logger.debug(f"Rows Received : {len(rows)}")
+                self.rows.extend(rows)
+                self.df = pandas.DataFrame(rows, columns=list(self.rows[0].keys()))
+                return self.df
+        except:
+            logger.exception("tank_db Error")
+        finally:
+            logger.info("tank_db: Exited".center(125))
+            logger.info("=" * 125)
 
-    async def graph_display(self):
+    """async def graph_display(self):
         logger.info("=" * 125)
         logger.info("graph_display: Entered".center(125))
         try:
-            if not self.pool:
-                self.pool = await self.sql_connection()
-
-            t = time.time()
-            async with self.pool.transaction() as conn:
-                rows = await conn.fetch('SELECT * FROM tank_temperature')
-                # logger.debug(f"Con: {conn}")
-            logger.critical('Async')
-            logger.critical(time.time() - t)
-
-            t = time.time()
+            rows = await self.tank_db()
             self.df = pandas.DataFrame(rows, columns=list(rows[0].keys()))
-            logger.critical('DF')
-            logger.critical(time.time() - t)
 
-            # logger.debug(f"Values: {self.df.dtypes}")
-            t = time.time()
             if self.df is not None:
                 self.y = self.df['temperature_c'].to_numpy(dtype=float)
                 self.x = self.df['date']
@@ -281,7 +290,24 @@ class App(object):
                 self.plotData['y'] = self.y
                 self.plotCurve.setData(self.plotData['x'], self.plotData['y'])
             logger.critical('Plotting')
-            logger.critical(time.time() - t)
+            logger.debug(f"X = {len(self.x)}")
+            logger.debug(f"Y = {len(self.y)}")
+        except:
+            logger.exception("oops")
+        finally:
+            logger.info("graph_display: Exited".center(125))
+            logger.info("=" * 125)"""
+
+    async def graph_display(self):
+        logger.info("=" * 125)
+        logger.info("graph_display: Entered".center(125))
+        try:
+            db = await self.tank_db()
+            self.y = db['temperature_c'].to_numpy(dtype=float)
+            self.x = db['date']
+            self.x = [t.timestamp() for t in self.x]
+            self.x = [round(t) for t in self.x]
+            self.plot.plot().setData(self.x, self.y)
         except:
             logger.exception("oops")
         finally:
@@ -291,7 +317,8 @@ class App(object):
     async def temp_display(self):
         logger.info("=" * 125)
         logger.info("temp_display: Entered".center(125))
-        if self.df is not None:
+        logger.debug(self.df)
+        if self.df is not None and not self.df.empty:
             c = self.df['temperature_c'].iat[-1]
             f = self.df['temperature_f'].iat[-1]
             self.form.tank_display_c.display(c)
@@ -513,8 +540,16 @@ class App(object):
         requests.get(url=f"{self.server_ip}/emailTest")
 
     def run(self):
+        #self.window.show()
+        #self.app.exec()
+
+        loop = QEventLoop(self.app)
+        asyncio.set_event_loop(loop)
+
         self.window.show()
-        self.app.exec()
+
+        with loop:
+            sys.exit(loop.run_forever())
 
     def handle_response(self, response):
         logger.info(response.readAll())  # you can change this to show in the log instead if you want to
@@ -528,17 +563,16 @@ class App(object):
     def graph_test(self):
         pass
 
+    """@asyncSlot()
     async def sch_run(self):
-        try:
-            #asyncio.get_event_loop().run_until_complete(schedule.run_pending())
-            #asyncio.run(schedule.run_pending())
-            while True:
-                await schedule.run_pending()
-        except:
-            logger.exception("schedule run error")
+      print("nuts")
+        #try:
+        #    schedule.run_pending()
+        #except:
+        #    logger.exception("schedule run error")
         #while True:
         #  await schedule.run_pending()
-        #  await asyncio.sleep(0.1)
+        #  await asyncio.sleep(0.1)"""
 
     def ws_receive(self, csv):
         try:

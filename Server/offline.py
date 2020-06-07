@@ -21,8 +21,8 @@ class OfflineFunctions:
     def __init__(self):
         self.__sysStat = None
         self.utc_now = pandas.Timestamp.utcnow()
-        self.temp_c = 0
-        self.temp_f = 0
+        self.tank_temp_c = 0
+        self.tank_temp_f = 0
         self.csv = RotatingCsvData(columns=['timestamp', 'temp'])
         self.server_boot_time = datetime.datetime.utcnow()
         self.datetimenow = datetime.datetime.utcnow()
@@ -84,16 +84,23 @@ class OfflineFunctions:
         except Error:
             logger.exception(Error)
 
-    def sql_table(self, con):
+    def sql_tank_table(self, con):
         cursorObj = con.cursor()
         cursorObj.execute("CREATE TABLE tank_temperature(date datetime, time datetime, temperature_c float,"
                           " temperature_f float)")
         con.commit()
 
-    def sql_insert(self, con, entities):
+    def sql_tank_insert(self, con, entities):
         cursorObj = con.cursor()
         cursorObj.execute(
             '''INSERT INTO tank_temperature (date, temperature_c, temperature_f) VALUES(%s, %s, %s)''',
+            entities)
+        con.commit()
+
+    def sql_room_insert(selfself, con, entities):
+        cursorObj = con.cursor()
+        cursorObj.execute(
+            '''INSERT INTO room_temperature (date, temperature_c, temperature_f, humidity) VALUES(%s, %s, %s, %s)''',
             entities)
         con.commit()
 
@@ -110,14 +117,24 @@ class OfflineFunctions:
             logger.debug(f"CSV Data File Size: {csv_size}")
             # self.csv.append_row(timestamp=pandas.Timestamp.utcnow(), temp=temp_rounded)
             """
-            temp_c = hardware.read_temperature("temp_tank")[0]
-            temp_f = hardware.read_temperature("temp_tank")[1]
-            self.temp_c = round(temp_c, 2)
-            self.temp_f = round(temp_f, 2)
+            tank_temp_c = hardware.read_temperature("temp_tank")[0]
+            tank_temp_f = hardware.read_temperature("temp_tank")[1]
+            room_temp_c = hardware.room_temperature['temp_c']
+            room_temp_f = hardware.room_temperature['temp_f']
+            room_humidity = hardware.room_temperature['humidity']
+            self.tank_temp_c = round(tank_temp_c, 2)
+            self.tank_temp_f = round(tank_temp_f, 2)
+            self.room_temp_c = room_temp_c
+            self.room_temp_f = room_temp_f
+            self.room_humidity = room_humidity
             self.datetimenow = datetime.datetime.utcnow()
-            entities = (self.datetimenow, self.temp_c, self.temp_f)
-            logger.debug(f"Current Temperature Reading: {self.temp_c}°C/{self.temp_f}°F")
-            self.sql_insert(con=self.con, entities=entities)
+            tank_entities = (self.datetimenow, self.tank_temp_c, self.tank_temp_f)
+            room_entities = (self.datetimenow, self.room_temp_c, self.room_temp_f, self.room_humidity)
+            logger.debug(f"Current Tank Reading: {self.tank_temp_c}°C/{self.tank_temp_f}°F")
+            logger.debug(f"Current Room Reading: {self.room_temp_c}°C/{self.room_temp_f}°F - Humidity: "
+                         f"{self.room_humidity}%") 
+            self.sql_tank_insert(con=self.con, entities=tank_entities)
+            self.sql_room_insert(con=self.con, entities=room_entities)
             #path = 'AquaPiDB.db'
             #db_in_bytes = os.path.getsize(path)
             #db_size = size(db_in_bytes)

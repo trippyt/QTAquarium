@@ -4,6 +4,8 @@ import loguru as logger
 #  import dht11
 import threading
 from time import sleep
+from pigpio_dht import DHT22
+
 try:
     from w1thermsensor import W1ThermSensor, core
 except Exception:
@@ -26,6 +28,9 @@ try:
 
     FLASH = 0  # Initializing LED States
     PULSE = 1  # Initializing LED States
+
+    dht_pin = 22  # DHT22 Sensor pin
+    sensor_dht = DHT22.DHT22(dht_pin)
 
     GPIO.setup(Button, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # Setup Button
     GPIO.setup(led_pin, GPIO.OUT)  # Notification LED pin
@@ -54,6 +59,14 @@ class Hardware:
             t = threading.Thread(target=lambda: self.event_loop.run_forever())
             t.start()
         self.cal_status = ["Success", "Failed", "In Progress", "None"]
+
+    def room_temperature(self):
+        try:
+            result = sensor_dht.sample(samples=1)
+            return result
+        except TimeoutError as error:
+            print(error.args[0])
+
 
     def pump_on(self, pump_type):
         pin = pumps.get(pump_type, None)
