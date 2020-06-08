@@ -1,6 +1,7 @@
 import os
 import pandas
 from AquariumHardware2 import Hardware
+import requests
 import requests.exceptions
 from loguru import logger
 import datetime
