@@ -140,7 +140,7 @@ class OfflineFunctions:
             entities)
         con.commit()
 
-    @job_log
+    """@job_log
     #@catch_exceptions(cancel_on_failure=True)
     def monitor_temperature(self):
         try:
@@ -150,6 +150,26 @@ class OfflineFunctions:
                 logger.warning("DS18b20 Already in Use")
         except Exception as error:
             logger.warning(error.args[0])
+        try:
+            if not self.dht22_reading:
+                self.room_temperature()
+            else:
+                logger.warning("DHT22 Already in Use")
+        except Exception as error:
+            logger.warning(error.args[0])"""
+
+    @job_log
+    def monitor_tank(self):
+        try:
+            if not self.ds18b20_reading:
+                self.tank_temperature()
+            else:
+                logger.warning("DS18b20 Already in Use")
+        except Exception as error:
+            logger.warning(error.args[0])
+
+    @job_log
+    def monitor_room(self):
         try:
             if not self.dht22_reading:
                 self.room_temperature()
@@ -283,7 +303,10 @@ class RotatingCsvData:
 
 offline_funcs = OfflineFunctions()
 schedule.every(2).minutes.do(offline_funcs.check_server)
-schedule.every(2).seconds.do(offline_funcs.monitor_temperature)
+#schedule.every(2).seconds.do(offline_funcs.monitor_temperature)
+schedule.every(2).seconds.do(offline_funcs.monitor_tank)
+schedule.every(3).seconds.do(offline_funcs.monitor_room)
+
 # con = offline_funcs.sql_connection()
 # offline_funcs.sql_table(con=con)
 try:
