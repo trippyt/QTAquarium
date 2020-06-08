@@ -74,6 +74,7 @@ class OfflineFunctions:
         logger.info("Checking Server Status:")
         try:
             logger.critical("a")
+            logger.critical(requests.get('http://localhost:5000'))
             r = requests.get('http://localhost:5000')
             logger.critical("b")
             r.raise_for_status()  # Raises a HTTPError if the status is 4xx, 5xxx
