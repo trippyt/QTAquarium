@@ -50,6 +50,8 @@ class OfflineFunctions:
         self.tank_temp_c = 0
         self.tank_temp_f = 0
         self.tank_read_count = 0
+        self.tank_read_success = 0
+        self.room_read_success = 0
         self.room_read_count = 0
         self.room_temp_c = 0
         self.room_temp_f = 0
@@ -191,6 +193,10 @@ class OfflineFunctions:
             tank_entities = (self.datetimenow, self.tank_temp_c, self.tank_temp_f)
             logger.debug(f"Current Tank Reading: {self.tank_temp_c}°C/{self.tank_temp_f}°F")
             self.sql_tank_insert(con=self.con, entities=tank_entities)
+            count_success = self.tank_read_success + 1
+            self.tank_read_success = count_success
+            read_failures = self.tank_read_count - self.tank_read_success
+            logger.debug(f"Failed Tank Reads: {read_failures}")
         except w1thermsensor.errors.SensorNotReadyError as error:
             logger.critical(f"Sensor Not Ready: {error.args[0]}")
         except Error:
@@ -204,7 +210,11 @@ class OfflineFunctions:
             room = hardware.room_temperature()
             count = self.room_read_count + 1
             self.room_read_count = count
+            count_success = self.room_read_success + 1
+            self.room_read_success = count_success
+            read_failures = self.room_read_count - self.room_read_success
             logger.info(f"Sensor Read Count - Room: {self.room_read_count}")
+            logger.debug(f"Failed Room Read: {read_failures}")
             if room is not None:
                 self.datetimenow = datetime.datetime.utcnow()
                 self.room_temp_c = room['temp_c']
