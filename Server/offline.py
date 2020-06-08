@@ -73,13 +73,19 @@ class OfflineFunctions:
     def check_server(self):
         logger.info("Checking Server Status:")
         try:
+            logger.critical("a")
             r = requests.get('http://localhost:5000')
+            logger.critical("b")
             r.raise_for_status()  # Raises a HTTPError if the status is 4xx, 5xxx
+            logger.critical("c")
             server_uptime = datetime.datetime.utcnow() - self.server_boot_time
+            logger.critical("d")
             # raspberry_pi_runtime = datetime.datetime.utcnow() - psutil.boot_time()
         except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
             logger.critical("Server is Down")
+            logger.critical("e")
             self.start_server()
+            logger.critical("f")
         except requests.exceptions.HTTPError:
             logger.warning("4xx, 5xx")
         else:
