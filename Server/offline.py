@@ -18,7 +18,7 @@ from psycopg2 import Error
 hardware = Hardware()
 
 
-def with_logging(func):
+def job_log(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         logger.debug('LOG: Running job "%s"' % func.__name__)
@@ -68,13 +68,12 @@ class OfflineFunctions:
         logger.success("Server Started")
         logger.debug(f"Server Process Started at {self.server_boot_time}")
 
-    @with_logging
+    @job_log
     #@catch_exceptions(cancel_on_failure=True)
     def check_server(self):
         logger.info("Checking Server Status:")
         try:
             logger.critical("a")
-            logger.critical(requests.get('http://localhost:5000'))
             r = requests.get('http://localhost:5000')
             logger.critical("b")
             r.raise_for_status()  # Raises a HTTPError if the status is 4xx, 5xxx
@@ -146,7 +145,7 @@ class OfflineFunctions:
             entities)
         con.commit()
 
-    @with_logging
+    @job_log
     #@catch_exceptions(cancel_on_failure=True)
     def monitor_temperature(self):
         try:

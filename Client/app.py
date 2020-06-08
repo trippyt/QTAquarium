@@ -384,9 +384,9 @@ class App(object):
         logger.info("=" * 125)
         logger.info("Connecting To Server".center(125))
         logger.info("=" * 125)
-        resp = requests.get(url=f"{self.server_ip}/getConfig")
-        self.config_data = json.loads(resp.content)
         try:
+            resp = requests.get(url=f"{self.server_ip}/getConfig")
+            self.config_data = json.loads(resp.content)
             logger.debug("Loading 'config.json' From Server")
             if resp.json() is None:
                 logger.warning("No 'config.json' Found on Server")
