@@ -18,6 +18,18 @@ from psycopg2 import Error
 hardware = Hardware()
 
 
+def alerts(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except:
+            import traceback
+            logger.debug('LOG: Running function "%s"' % func.__name__)
+            logger.exception(traceback.format_exc())
+
+    return wrapper
+
 def job_log(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
@@ -180,6 +192,7 @@ class OfflineFunctions:
         except Exception as error:
             logger.warning(error.args[0])
 
+    @alerts
     def tank_temperature(self):
         self.ds18b20_reading = True
         self.datetimenow = datetime.datetime.utcnow()
@@ -204,6 +217,7 @@ class OfflineFunctions:
         finally:
             self.ds18b20_reading = False
 
+    @alerts
     def room_temperature(self):
         try:
             self.dht22_reading = True
