@@ -14,7 +14,6 @@ from hurry.filesize import size
 import w1thermsensor
 import psycopg2
 from psycopg2 import Error
-import pdb
 
 hardware = Hardware()
 
@@ -75,7 +74,6 @@ class OfflineFunctions:
         logger.info("Checking Server Status:")
         try:
             logger.critical("a")
-            pdb.set_trace()
             logger.critical("aa")
             r = requests.get('http://localhost:5000')
             logger.critical("b")
@@ -155,10 +153,10 @@ class OfflineFunctions:
             self.tank_temperature()
         except Exception as error:
             logger.warning(error.args[0])
-        try:
+        """try:
             self.room_temperature()
         except Exception as error:
-            logger.warning(error.args[0])
+            logger.warning(error.args[0])"""
 
     def tank_temperature(self):
         self.datetimenow = datetime.datetime.utcnow()
