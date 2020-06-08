@@ -18,7 +18,7 @@ from psycopg2 import Error
 hardware = Hardware()
 
 
-"""def with_logging(func):
+def with_logging(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         logger.debug('LOG: Running job "%s"' % func.__name__)
@@ -26,10 +26,10 @@ hardware = Hardware()
         logger.debug('LOG: Job "%s" completed' % func.__name__)
         return result
 
-    return wrapper"""
+    return wrapper
 
 
-def catch_exceptions(cancel_on_failure=False):
+"""def catch_exceptions(cancel_on_failure=False):
     def catch_exceptions_decorator(job_func):
         @functools.wraps(job_func)
         def wrapper(*args, **kwargs):
@@ -41,7 +41,7 @@ def catch_exceptions(cancel_on_failure=False):
                 if cancel_on_failure:
                     return schedule.CancelJob
         return wrapper
-    return catch_exceptions_decorator
+    return catch_exceptions_decorator"""
 
 class OfflineFunctions:
     def __init__(self):
@@ -68,8 +68,8 @@ class OfflineFunctions:
         logger.success("Server Started")
         logger.debug(f"Server Process Started at {self.server_boot_time}")
 
-    #@with_logging
-    @catch_exceptions(cancel_on_failure=True)
+    @with_logging
+    #@catch_exceptions(cancel_on_failure=True)
     def check_server(self):
         logger.info("Checking Server Status:")
         try:
@@ -139,8 +139,8 @@ class OfflineFunctions:
             entities)
         con.commit()
 
-    #@with_logging
-    @catch_exceptions(cancel_on_failure=True)
+    @with_logging
+    #@catch_exceptions(cancel_on_failure=True)
     def monitor_temperature(self):
         try:
             self.tank_temperature()
