@@ -74,7 +74,6 @@ class OfflineFunctions:
         logger.info("Checking Server Status:")
         try:
             logger.critical("a")
-            logger.critical("aa")
             r = requests.get('http://localhost:5000')
             logger.critical("b")
             r.raise_for_status()  # Raises a HTTPError if the status is 4xx, 5xxx
@@ -153,10 +152,10 @@ class OfflineFunctions:
             self.tank_temperature()
         except Exception as error:
             logger.warning(error.args[0])
-        """try:
+        try:
             self.room_temperature()
         except Exception as error:
-            logger.warning(error.args[0])"""
+            logger.warning(error.args[0])
 
     def tank_temperature(self):
         self.datetimenow = datetime.datetime.utcnow()
