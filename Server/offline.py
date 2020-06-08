@@ -1,7 +1,6 @@
 import os
 import pandas
 from AquariumHardware2 import Hardware
-import requests
 import requests.exceptions
 from loguru import logger
 import datetime
@@ -15,6 +14,7 @@ from hurry.filesize import size
 import w1thermsensor
 import psycopg2
 from psycopg2 import Error
+import pdb
 
 hardware = Hardware()
 
@@ -75,6 +75,8 @@ class OfflineFunctions:
         logger.info("Checking Server Status:")
         try:
             logger.critical("a")
+            pdb.set_trace()
+            logger.critical("aa")
             r = requests.get('http://localhost:5000')
             logger.critical("b")
             r.raise_for_status()  # Raises a HTTPError if the status is 4xx, 5xxx
