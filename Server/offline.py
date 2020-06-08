@@ -68,7 +68,7 @@ class OfflineFunctions:
         logger.success("Server Started")
         logger.debug(f"Server Process Started at {self.server_boot_time}")
 
-    @with_logging
+    #@with_logging
     @catch_exceptions(cancel_on_failure=True)
     def check_server(self):
         logger.info("Checking Server Status:")
@@ -139,7 +139,7 @@ class OfflineFunctions:
             entities)
         con.commit()
 
-    @with_logging
+    #@with_logging
     @catch_exceptions(cancel_on_failure=True)
     def monitor_temperature(self):
         try:
