@@ -18,7 +18,7 @@ from psycopg2 import Error
 hardware = Hardware()
 
 
-def with_logging(func):
+"""def with_logging(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         logger.debug('LOG: Running job "%s"' % func.__name__)
@@ -26,7 +26,7 @@ def with_logging(func):
         logger.debug('LOG: Job "%s" completed' % func.__name__)
         return result
 
-    return wrapper
+    return wrapper"""
 
 
 def catch_exceptions(cancel_on_failure=False):
@@ -71,6 +71,7 @@ class OfflineFunctions:
     @with_logging
     @catch_exceptions(cancel_on_failure=True)
     def check_server(self):
+        logger.info("Checking Server Status:")
         try:
             r = requests.get('http://localhost:5000')
             r.raise_for_status()  # Raises a HTTPError if the status is 4xx, 5xxx
@@ -83,7 +84,8 @@ class OfflineFunctions:
             logger.warning("4xx, 5xx")
         else:
             # logger.info("All good!")  # Proceed to do stuff with `r`
-            logger.success(f"Server Up-time: {server_uptime}")
+            logger.success("Server Running")
+            logger.info(f"Server Up-time: {server_uptime}")
             # logger.debug(f"Raspberry Pi Runtime: {raspberry_pi_runtime}")
             logger.debug(r.text)
 
