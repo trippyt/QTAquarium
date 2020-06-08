@@ -54,6 +54,8 @@ class OfflineFunctions:
         self.room_temp_c = 0
         self.room_temp_f = 0
         self.room_humidity = 0
+        self.ds18b20_reading = False
+        self.dht22_reading = False
         self.csv = RotatingCsvData(columns=['timestamp', 'temp'])
         self.server_boot_time = datetime.datetime.utcnow()
         self.datetimenow = datetime.datetime.utcnow()
@@ -73,23 +75,16 @@ class OfflineFunctions:
     def check_server(self):
         logger.info("Checking Server Status:")
         try:
-            logger.critical("a")
             r = requests.get('http://localhost:5000')
-            logger.critical("b")
             r.raise_for_status()  # Raises a HTTPError if the status is 4xx, 5xxx
-            logger.critical("c")
             server_uptime = datetime.datetime.utcnow() - self.server_boot_time
-            logger.critical("d")
             # raspberry_pi_runtime = datetime.datetime.utcnow() - psutil.boot_time()
         except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
             logger.critical("Server is Down")
-            logger.critical("e")
             self.start_server()
-            logger.critical("f")
         except requests.exceptions.HTTPError:
             logger.warning("4xx, 5xx")
         else:
-            # logger.info("All good!")  # Proceed to do stuff with `r`
             logger.success("Server Running")
             logger.info(f"Server Up-time: {server_uptime}")
             # logger.debug(f"Raspberry Pi Runtime: {raspberry_pi_runtime}")
@@ -149,24 +144,26 @@ class OfflineFunctions:
     #@catch_exceptions(cancel_on_failure=True)
     def monitor_temperature(self):
         try:
-            self.tank_temperature()
+            if not self.ds18b20_reading:
+                self.tank_temperature()
         except Exception as error:
             logger.warning(error.args[0])
         try:
-            self.room_temperature()
+            if not self.dht22_reading:
+                self.room_temperature()
         except Exception as error:
             logger.warning(error.args[0])
 
     def tank_temperature(self):
+        self.ds18b20_reading = True
         self.datetimenow = datetime.datetime.utcnow()
         count = self.tank_read_count + 1
         self.tank_read_count = count
         logger.info(f"Sensor Read Count - Tank: {self.tank_read_count}")
         try:
-            tank_temp_c = hardware.read_temperature("temp_tank")[0]
-            tank_temp_f = hardware.read_temperature("temp_tank")[1]
-            self.tank_temp_c = round(tank_temp_c, 2)
-            self.tank_temp_f = round(tank_temp_f, 2)
+            tank_data = hardware.read_temperature("temp_tank")
+            self.tank_temp_c = round(tank_data[0], 2)
+            self.tank_temp_f = round(tank_data[1], 2)
             tank_entities = (self.datetimenow, self.tank_temp_c, self.tank_temp_f)
             logger.debug(f"Current Tank Reading: {self.tank_temp_c}°C/{self.tank_temp_f}°F")
             self.sql_tank_insert(con=self.con, entities=tank_entities)
@@ -174,29 +171,29 @@ class OfflineFunctions:
             logger.critical(f"Sensor Not Ready: {error.args[0]}")
         except Error:
             logger.exception("Temperature Monitoring Failed")
+        finally:
+            self.ds18b20_reading = False
 
     def room_temperature(self):
         try:
+            self.dht22_reading = True
             room = hardware.room_temperature()
             count = self.room_read_count + 1
             self.room_read_count = count
             logger.info(f"Sensor Read Count - Room: {self.room_read_count}")
             if room is not None:
                 self.datetimenow = datetime.datetime.utcnow()
-                room_temp_c = room['temp_c']
-                room_temp_f = room['temp_f']
-                room_humidity = room['humidity']
-                self.room_temp_c = room_temp_c
-                self.room_temp_f = room_temp_f
-                self.room_humidity = room_humidity
+                self.room_temp_c = room['temp_c']
+                self.room_temp_f = room['temp_f']
+                self.room_humidity = room['humidity']
                 room_entities = (self.datetimenow, self.room_temp_c, self.room_temp_f, self.room_humidity)
                 logger.debug(f"Current Room Reading: {self.room_temp_c}°C/{self.room_temp_f}°F - Humidity: "
                              f"{self.room_humidity}%")
                 self.sql_room_insert(con=self.con, entities=room_entities)
         except TypeError as error:
             logger.exception(error.args[0])
-
-
+        finally:
+            self.dht22_reading = False
 
 
 class RotatingDataBase:
