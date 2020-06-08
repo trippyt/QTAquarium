@@ -146,11 +146,15 @@ class OfflineFunctions:
         try:
             if not self.ds18b20_reading:
                 self.tank_temperature()
+            else:
+                logger.warning("DS18b20 Already in Use")
         except Exception as error:
             logger.warning(error.args[0])
         try:
             if not self.dht22_reading:
                 self.room_temperature()
+            else:
+                logger.warning("DHT22 Already in Use")
         except Exception as error:
             logger.warning(error.args[0])
 
