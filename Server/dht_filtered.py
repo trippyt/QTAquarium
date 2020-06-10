@@ -2,8 +2,10 @@
 import math
 import numpy
 import threading
+from loguru import logger
 from time import sleep
 from datetime import datetime
+
 
 from AquariumHardware2 import Hardware
 
@@ -52,12 +54,13 @@ def readingValues():
             try:
                 if dht:
                     [temp_c, temp_f, humidity] = dht
+                logger.exception(dht)
 
             except IOError:
                 print("we've got IO error")
 
             except Exception as error:
-                print(error.args[0])
+                logger.exception(error.args[0])
 
             if math.isnan(temp_c) is False and math.isnan(temp_f) is False and math.isnan(humidity) is False:
                 values.append({"temp_c": temp_c, "temp_f": temp_f, "hum": humidity})
