@@ -63,8 +63,8 @@ class Hardware:
 
     def room_temperature(self):
         try:
-            # result = sensor_dht.sample(samples=1)
-            result = sensor_dht.read(retries=0)
+            result = sensor_dht.sample(samples=5)
+            # result = sensor_dht.read(retries=0)
             return result
         except TimeoutError as error:
             logger.warning(error.args[0])
