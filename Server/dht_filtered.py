@@ -54,13 +54,13 @@ def readingValues():
             try:
                 if dht:
                     [temp_c, temp_f, humidity] = dht
-                logger.exception(dht)
+                    logger.exception(dht)
 
-                if math.isnan(temp_c) is False and math.isnan(temp_f) is False and math.isnan(humidity) is False:
-                    values.append({"temp_c": temp_c, "temp_f": temp_f, "hum": humidity})
-                    counter += 1
-                # else:
-                # print("we've got NaN")
+                    if math.isnan(temp_c) is False and math.isnan(temp_f) is False and math.isnan(humidity) is False:
+                        values.append({"temp_c": temp_c, "temp_f": temp_f, "hum": humidity})
+                        counter += 1
+                    # else:
+                    # print("we've got NaN")
 
             except IOError:
                 print("we've got IO error")
