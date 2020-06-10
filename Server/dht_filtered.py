@@ -14,7 +14,8 @@ hardware = Hardware()
 #blue = 0  # The Blue colored sensor.
 #white = 1  # The White colored sensor.
 
-filtered_temperature = []  # here we keep the temperature values after removing outliers
+filtered_temperature_c = []  # here we keep the temperature C values after removing outliers
+filtered_temperature_f = []  # here we keep the temperature F values after removing outliers
 filtered_humidity = []  # here we keep the filtered humidity values after removing the outliers
 
 lock = threading.Lock()  # we are using locks so we don't have conflicts while accessing the shared variables
@@ -54,16 +55,17 @@ def readingValues():
     while not event.is_set():
         counter = 0
         while counter < seconds_window and not event.is_set():
-            temp = None
+            temp_c = None
+            temp_f = None
             humidity = None
             try:
-                [temp, humidity] = (dht['temp_c'], dht['humidity'])
+                [temp_c, temp_f, humidity] = (dht['temp_c'], dht['humidity'])
 
             except IOError:
                 print("we've got IO error")
 
-            if math.isnan(temp) is False and math.isnan(humidity) is False:
-                values.append({"temp": temp, "hum": humidity})
+            if math.isnan(temp_c) is False and math.isnan(temp_f) is False and math.isnan(humidity) is False:
+                values.append({"temp_c": temp_c, "temp_f": temp_f, "hum": humidity})
                 counter += 1
             # else:
             # print("we've got NaN")
@@ -71,7 +73,9 @@ def readingValues():
             sleep(1)
 
         lock.acquire()
-        filtered_temperature.append(numpy.mean(eliminateNoise([x["temp"] for x in values])))
+        filtered_temperature_c.append(numpy.mean(eliminateNoise([x["temp_c"] for x in values])))
+        filtered_temperature_f.append(numpy.mean(eliminateNoise([x["temp_f"] for x in values])))
+
         filtered_humidity.append(numpy.mean(eliminateNoise([x["hum"] for x in values])))
         lock.release()
 
@@ -85,13 +89,14 @@ def Main():
     data_collector.start()
 
     while not event.is_set():
-        if len(filtered_temperature) > 0:  # or we could have used filtered_humidity instead
+        if len(filtered_temperature_c) > 0:  # or we could have used filtered_humidity instead
             lock.acquire()
 
             # here you can do whatever you want with the variables: print them, file them out, anything
-            temperature = filtered_temperature.pop()
+            temperature_c = filtered_temperature_c.pop()
+            temperature_f = filtered_temperature_f.pop()
             humidity = filtered_humidity.pop()
-            print('{},{:.01f},{:.01f}'.format(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), temperature, humidity))
+            print('{},{:.01f},{:.01f},{:.01f}'.format(datetime.now().strftime("%Y-%m-%d %H:%M:%S"), temperature_c, temperature_f, humidity))
 
             lock.release()
 
