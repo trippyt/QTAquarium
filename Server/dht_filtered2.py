@@ -18,7 +18,6 @@ filtered_humidity = []  # here we keep the filtered humidity values after removi
 lock = threading.Lock()  # we are using locks so we don't have conflicts while accessing the shared variables
 event = threading.Event()  # we are using an event so we can close the thread as soon as KeyboardInterrupt is raised
 
-dht = hardware.room_temperature()
 # function which eliminates the noise
 # by using a statistical model
 # we determine the standard normal deviation and we exclude anything that goes beyond a threshold
@@ -52,6 +51,7 @@ def readingValues():
             temp_f = None
             humidity = None
             try:
+                dht = hardware.room_temperature()
                 if dht:
                     [temp_c, temp_f, humidity] = dht
                     logger.exception(dht)
@@ -68,16 +68,15 @@ def readingValues():
             except Exception as error:
                 logger.exception(error.args[0])
 
-            lock.acquire()
-            filtered_temperature_c.append(numpy.mean(eliminateNoise([x["temp_c"] for x in values])))
-            filtered_temperature_f.append(numpy.mean(eliminateNoise([x["temp_f"] for x in values])))
-
-            filtered_humidity.append(numpy.mean(eliminateNoise([x["hum"] for x in values])))
-            lock.release()
-
-            values = []
-
             sleep(1)
+
+        lock.acquire()
+        filtered_temperature_c.append(numpy.mean(eliminateNoise([x["temp_c"] for x in values])))
+        filtered_temperature_f.append(numpy.mean(eliminateNoise([x["temp_f"] for x in values])))
+        filtered_humidity.append(numpy.mean(eliminateNoise([x["hum"] for x in values])))
+        lock.release()
+
+        values = []
 
 
 def Main():
