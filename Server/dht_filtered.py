@@ -5,8 +5,6 @@ import threading
 from loguru import logger
 from time import sleep
 from datetime import datetime
-
-
 from AquariumHardware2 import Hardware
 
 hardware = Hardware()
@@ -68,8 +66,6 @@ def readingValues():
             except Exception as error:
                 logger.exception(error.args[0])
 
-            sleep(1)
-
         lock.acquire()
         filtered_temperature_c.append(numpy.mean(eliminateNoise([x["temp_c"] for x in values])))
         filtered_temperature_f.append(numpy.mean(eliminateNoise([x["temp_f"] for x in values])))
@@ -78,6 +74,7 @@ def readingValues():
         lock.release()
 
         values = []
+        sleep(1)
 
 
 def Main():
