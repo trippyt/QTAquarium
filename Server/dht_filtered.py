@@ -59,7 +59,8 @@ def readingValues():
             temp_f = None
             humidity = None
             try:
-                [temp_c, temp_f, humidity] = (dht['temp_c'], dht['humidity'])
+                if dht:
+                    [temp_c, temp_f, humidity] = dht
 
             except IOError:
                 print("we've got IO error")
