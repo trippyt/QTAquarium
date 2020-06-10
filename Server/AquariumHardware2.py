@@ -65,6 +65,7 @@ class Hardware:
         try:
             #result = sensor_dht.sample(samples=5)
             result = sensor_dht.read(retries=1)
+            logger.debug(f"Room_temperature: {result}")
             return result
         except TimeoutError as error:
             logger.warning(error.args[0])
