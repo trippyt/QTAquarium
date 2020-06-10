@@ -11,14 +11,16 @@ hardware = Hardware()
 
 #sensor = 4  # The Sensor goes on digital port 4.
 # temp_humidity_sensor_type
-blue = 0  # The Blue colored sensor.
-white = 1  # The White colored sensor.
+#blue = 0  # The Blue colored sensor.
+#white = 1  # The White colored sensor.
 
 filtered_temperature = []  # here we keep the temperature values after removing outliers
 filtered_humidity = []  # here we keep the filtered humidity values after removing the outliers
 
 lock = threading.Lock()  # we are using locks so we don't have conflicts while accessing the shared variables
 event = threading.Event()  # we are using an event so we can close the thread as soon as KeyboardInterrupt is raised
+
+dht = hardware.room_temperature()
 
 
 # function which eliminates the noise
@@ -55,7 +57,7 @@ def readingValues():
             temp = None
             humidity = None
             try:
-                [temp, humidity] = hardware.room_temperature()
+                [temp, humidity] = (dht['temp_c'], dht['humidity'])
 
             except IOError:
                 print("we've got IO error")
