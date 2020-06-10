@@ -53,7 +53,7 @@ def readingValues():
             try:
                 dht = hardware.room_temperature()
                 if dht:
-                    [temp_c, temp_f, humidity] = dht
+                    [temp_c, temp_f, humidity, _] = dht.values()
                     logger.exception(dht)
 
                     if math.isnan(temp_c) is False and math.isnan(temp_f) is False and math.isnan(humidity) is False:
