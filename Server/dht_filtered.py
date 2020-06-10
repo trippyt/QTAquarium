@@ -9,11 +9,6 @@ from AquariumHardware2 import Hardware
 
 hardware = Hardware()
 
-#sensor = 4  # The Sensor goes on digital port 4.
-# temp_humidity_sensor_type
-#blue = 0  # The Blue colored sensor.
-#white = 1  # The White colored sensor.
-
 filtered_temperature_c = []  # here we keep the temperature C values after removing outliers
 filtered_temperature_f = []  # here we keep the temperature F values after removing outliers
 filtered_humidity = []  # here we keep the filtered humidity values after removing the outliers
@@ -22,8 +17,6 @@ lock = threading.Lock()  # we are using locks so we don't have conflicts while a
 event = threading.Event()  # we are using an event so we can close the thread as soon as KeyboardInterrupt is raised
 
 dht = hardware.room_temperature()
-
-
 # function which eliminates the noise
 # by using a statistical model
 # we determine the standard normal deviation and we exclude anything that goes beyond a threshold
@@ -42,8 +35,6 @@ def eliminateNoise(values, std_factor=2):
     final_values = [element for element in final_values if element < mean + std_factor * standard_deviation]
 
     return final_values
-
-
 # function for processing the data
 # filtering, periods of time, yada yada
 
@@ -64,6 +55,9 @@ def readingValues():
 
             except IOError:
                 print("we've got IO error")
+
+            except Exception as error:
+                print(error.args[0])
 
             if math.isnan(temp_c) is False and math.isnan(temp_f) is False and math.isnan(humidity) is False:
                 values.append({"temp_c": temp_c, "temp_f": temp_f, "hum": humidity})
