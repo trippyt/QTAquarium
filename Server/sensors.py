@@ -47,7 +47,7 @@ def read_sensors():
         for second in range(seconds_window):
             dht = hardware.room_temperature()
             if dht:
-                values = dht.values()
+                values = dict(dht.values())
                 print('Values 1:', values)
                 samples['room_temp_c'].append(values['temp_c'])
                 samples['room_temp_f'].append(values['temp_f'])
