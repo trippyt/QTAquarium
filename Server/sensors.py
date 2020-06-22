@@ -48,6 +48,7 @@ def read_sensors():
             dht = hardware.room_temperature()
             if dht:
                 values = dht.values()
+                print('Values 1:', values)
                 samples['room_temp_c'].append(values[0])
                 samples['room_temp_f'].append(values[1])
                 samples['room_humidity'].append(values[2])
@@ -55,7 +56,7 @@ def read_sensors():
             ds18b20 = hardware.read_temperature('temp_tank')
             if ds18b20:
                 values = ds18b20
-                print(f"Values: {values}")
+                print('Values 2:', values)
                 samples['tank_temp_c'].append(values['temp_c'])
                 samples['tank_temp_f'].append(values['temp_f'])
 
