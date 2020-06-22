@@ -7,15 +7,16 @@ from hardwarenew import Hardware
 
 hardware = Hardware()
 
-filtered_temperature = [] # here we keep the temperature values after removing outliers
-filtered_humidity = [] # here we keep the filtered humidity values after removing the outliers
+filtered_temperature = []  # here we keep the temperature values after removing outliers
+filtered_humidity = []  # here we keep the filtered humidity values after removing the outliers
+
 
 # function which eliminates the noise
 # by using a statistical model
 # we determine the standard normal deviation and we exclude anything that goes beyond a threshold
 # think of a probability distribution plot - we remove the extremes
 # the greater the std_factor, the more "forgiving" is the algorithm with the extreme values
-def eliminateNoise(values, std_factor = 2):
+def eliminateNoise(values, std_factor=2):
     mean = numpy.mean(values)
     standard_deviation = numpy.std(values)
 
@@ -27,10 +28,13 @@ def eliminateNoise(values, std_factor = 2):
 
     return final_values
 
+
 # function for processing the data
 # filtering, periods of time, yada yada
+
+
 def read_sensors():
-    seconds_window = 5 # after this many second we make a record
+    seconds_window = 5  # after this many second we make a record
     values = []
     while True:
         samples = {
@@ -48,7 +52,7 @@ def read_sensors():
                 samples['room_temp_f'].append(values[1])
                 samples['room_humidity'].append(values[2])
 
-            ds18b20 = hardware.read_temperature()
+            ds18b20 = hardware.read_temperature('temp_tank')
             if ds18b20:
                 values = ds18b20.values()
                 samples['tank_temp_c'].append(values[0])
