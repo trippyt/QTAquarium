@@ -56,8 +56,8 @@ def read_sensors():
             if ds18b20:
                 values = ds18b20
                 print(f"Values: {values}")
-                samples['tank_temp_c'].append(values[0])
-                samples['tank_temp_f'].append(values[1])
+                samples['tank_temp_c'].append(values['temp_c'])
+                samples['tank_temp_f'].append(values['temp_f'])
 
             sleep(1)
 
