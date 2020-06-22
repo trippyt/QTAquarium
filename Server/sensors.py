@@ -3,7 +3,7 @@ import numpy
 from time import sleep
 from datetime import datetime
 
-from hardware import Hardware
+from hardwarenew import Hardware
 
 hardware = Hardware()
 
