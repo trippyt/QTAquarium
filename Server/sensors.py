@@ -55,8 +55,8 @@ def read_sensors():
             ds18b20 = hardware.read_temperature('temp_tank')
             if ds18b20:
                 values = ds18b20
-                samples['tank_temp_c'].append(values[''])
-                samples['tank_temp_f'].append(values[''])
+                samples['tank_temp_c'].append(values['temp_c'])
+                samples['tank_temp_f'].append(values['temp_f'])
 
             sleep(1)
 
