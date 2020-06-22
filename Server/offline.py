@@ -154,6 +154,20 @@ class OfflineFunctions:
             entities)
         con.commit()
 
+    def sql_tank_filtered_insert(self, con, entities):
+        cursorObj = con.cursor()
+        cursorObj.execute(
+            '''INSERT INTO filtered_tank_temperature (date, temperature_c, temperature_f) VALUES(%s, %s, %s)''',
+            entities)
+        con.commit()
+
+    def sql_room_filtered_insert(selfself, con, entities):
+        cursorObj = con.cursor()
+        cursorObj.execute(
+            '''INSERT INTO filtered_room_temperature (date, temperature_c, temperature_f, humidity) VALUES(%s, %s, %s, %s)''',
+            entities)
+        con.commit()
+
     """@job_log
     #@catch_exceptions(cancel_on_failure=True)
     def monitor_temperature(self):
