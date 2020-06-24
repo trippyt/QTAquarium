@@ -4,11 +4,9 @@ from time import sleep
 from datetime import datetime
 
 from hardwarenew import Hardware
+import json
 
 hardware = Hardware()
-
-filtered_temperature = []  # here we keep the temperature values after removing outliers
-filtered_humidity = []  # here we keep the filtered humidity values after removing the outliers
 
 
 # function which eliminates the noise
@@ -35,7 +33,7 @@ def eliminateNoise(values, std_factor=2):
 
 def read_sensors():
     seconds_window = 5  # after this many second we make a record
-    values = []
+    filtered = []
     while True:
         samples = {
             'room_temp_c': [],
@@ -47,18 +45,16 @@ def read_sensors():
         for second in range(seconds_window):
             dht = hardware.room_temperature()
             if dht:
-                values = dht
-                print('Values 1:', values)
-                samples['room_temp_c'].append(values['temp_c'])
-                samples['room_temp_f'].append(values['temp_f'])
-                samples['room_humidity'].append(values['humidity'])
+                print('Values 1:', dht)
+                samples['room_temp_c'].append(dht['temp_c'])
+                samples['room_temp_f'].append(dht['temp_f'])
+                samples['room_humidity'].append(dht['humidity'])
 
             ds18b20 = hardware.read_temperature('temp_tank')
             if ds18b20:
-                values = ds18b20
-                print('Values 2:', values)
-                samples['tank_temp_c'].append(values[0])
-                samples['tank_temp_f'].append(values[1])
+                print('Values 2:', ds18b20)
+                samples['tank_temp_c'].append(ds18b20[0])
+                samples['tank_temp_f'].append(ds18b20[1])
 
             sleep(1)
 
@@ -75,6 +71,9 @@ def read_sensors():
         print()
 
         # TODO: Write to DB here
+        filtered.append(samples)
+        with open('sensors.json', 'w') as sensor_json:
+            json.dump(filtered, sensor_json, indent=4, sort_keys=True)
 
 
 if __name__ == "__main__":
